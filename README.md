@@ -1,5 +1,7 @@
 # envcd
 
+environment configurations detector/discovery/dictionary
+
 [![license card](https://img.shields.io/badge/License-Apache%202.0-brightgreen.svg?label=license)](https://github.com/openingo/envcd/blob/main/LICENSE)
 [![go version](https://img.shields.io/github/go-mod/go-version/openingo/envcd)](#)
 [![go report](https://goreportcard.com/badge/github.com/openingo/envcd)](https://goreportcard.com/report/github.com/openingo/envcd)
