@@ -9,5 +9,5 @@ environment configurations detector/discovery/dictionary
 [![workflow](https://github.com/openingo/envcd/actions/workflows/go.yml/badge.svg?event=push)](#)
 [![lasted release](https://img.shields.io/github/v/release/openingo/envcd?label=lasted)](https://github.com/openingo/envcd/releases)
 
-
+![Envcd Architecture](envcd.png)
 
