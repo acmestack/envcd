@@ -1,4 +1,2 @@
-github.com/openingo/godkits v0.0.5 h1:PvgC1CiuGccWY4buUHdAR3cp5tWVd4W1lUnCW4CJ2nQ=
-github.com/openingo/godkits v0.0.5/go.mod h1:NtMt8o2O/MLtGUm+C4QptdL7u39WVsxlFDCw9tw01fM=
-github.com/openingo/godkits v0.0.6 h1:E2srYNuarN2XfUNzos3XH0cFjNlwUBN9R+5g4l9CMWY=
-github.com/openingo/godkits v0.0.6/go.mod h1:NtMt8o2O/MLtGUm+C4QptdL7u39WVsxlFDCw9tw01fM=
+github.com/acmestack/godkits v0.0.7 h1:uclpGJvgJvoIVz3Vs+k4A5QojJ504zF4kfWhE9GqzPY=
+github.com/acmestack/godkits v0.0.7/go.mod h1:/Z8d3az1R7IVWJ2hjtp17yIGFSi9a/fnlEVmdB5LEXY=
