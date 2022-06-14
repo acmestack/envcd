@@ -1,5 +1,5 @@
-module github.com/openingo/envcd
+module github.com/acmestack/envcd
 
 go 1.18
 
-require github.com/openingo/godkits v0.0.6 // indirect
+require github.com/acmestack/godkits v0.0.7
