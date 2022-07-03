@@ -9,5 +9,29 @@ environment configurations detector/discovery/dictionary
 [![workflow](https://github.com/acmestack/envcd/actions/workflows/go.yml/badge.svg?event=push)](#)
 [![lasted release](https://img.shields.io/github/v/release/acmestack/envcd?label=lasted)](https://github.com/acmestack/envcd/releases)
 
+## Software Architecture
 ![Envcd Architecture](envcd.png)
+
+## Stargazers over time
+
+[![Stargazers over time](https://starchart.cc/acmestack/envcd.svg)](https://starchart.cc/acmestack/envcd)
+
+## Contribute and Support
+
+- [How to Contribute](https://acmestack.org/docs/contributing/guide/)
+
+## Code Comment Polish
+
+* you can comment with idea plugin `Gonano`
+
+```go
+// NewAsyncWriter 
+//  @description: Write data with Buffer, this Writer and Closer is thread safety, but WriteCloser parameters not safety.
+//  @param w       Writer
+//  @param bufSize accept buffer max length
+//  @param block   if true, overflow buffer size, will blocking, if false will occur error
+//  @return *AsyncLogWriter
+func NewAsyncWriter(w io.Writer, bufSize int, block bool) *AsyncLogWriter {
+}
+```
 
