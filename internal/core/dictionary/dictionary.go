@@ -19,24 +19,28 @@ package dictionary
 
 import "errors"
 
-// dictionary key value
-type dictionary struct {
+type aa struct {
+}
+
+// Dictionary key value
+type Dictionary struct {
 	size uint
 	data map[interface{}]interface{}
 }
 
-// NewDictionary make new dictionary
-func NewDictionary() *dictionary {
-	return &dictionary{
+// NewDictionary make new Dictionary
+// todo with config store kind
+func NewDictionary() *Dictionary {
+	return &Dictionary{
 		size: 0,
 		data: make(map[any]any, 10),
 	}
 }
 
-// Put new data to dictionary by key and value
-func (dict *dictionary) Put(key interface{}, value interface{}) error {
+// Put new data to Dictionary by key and value
+func (dict *Dictionary) Put(key interface{}, value interface{}) error {
 	if dict == nil || dict.data == nil {
-		return errors.New("the dictionary illegal state")
+		return errors.New("the Dictionary illegal state")
 	}
 	if dict.data[key] == nil {
 		dict.size++
@@ -46,26 +50,26 @@ func (dict *dictionary) Put(key interface{}, value interface{}) error {
 	return nil
 }
 
-// Get the data from dictionary by key
-func (dict *dictionary) Get(key interface{}) (interface{}, error) {
+// Get the data from Dictionary by key
+func (dict *Dictionary) Get(key interface{}) (interface{}, error) {
 	if dict == nil || dict.data == nil {
-		return nil, errors.New("the dictionary illegal state")
+		return nil, errors.New("the Dictionary illegal state")
 	}
 	return dict.data[key], nil
 }
 
-// Remove delete the data from dictionary by key
-func (dict *dictionary) Remove(key interface{}) error {
+// Remove delete the data from Dictionary by key
+func (dict *Dictionary) Remove(key interface{}) error {
 	if dict == nil || dict.data == nil {
-		return errors.New("the dictionary illegal state")
+		return errors.New("the Dictionary illegal state")
 	}
 	delete(dict.data, key)
 	dict.size--
 	return nil
 }
 
-// Size the dictionary data size
-func (dict *dictionary) Size() uint {
+// Size the Dictionary data size
+func (dict *Dictionary) Size() uint {
 	if dict == nil || dict.data == nil {
 		return 0
 	}

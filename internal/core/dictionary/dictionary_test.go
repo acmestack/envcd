@@ -25,7 +25,7 @@ import (
 func TestNewDictionary(t *testing.T) {
 	tests := []struct {
 		name string
-		want *dictionary
+		want *Dictionary
 	}{
 		{
 			want: NewDictionary(),
@@ -69,7 +69,7 @@ func Test_dictionary_Get(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dict := &dictionary{
+			dict := &Dictionary{
 				size: tt.fields.size,
 				data: tt.fields.data,
 			}
@@ -112,7 +112,7 @@ func Test_dictionary_Put(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dict := &dictionary{
+			dict := &Dictionary{
 				size: tt.fields.size,
 				data: tt.fields.data,
 			}
@@ -154,7 +154,7 @@ func Test_dictionary_Remove(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dict := &dictionary{
+			dict := &Dictionary{
 				size: tt.fields.size,
 				data: tt.fields.data,
 			}
@@ -173,7 +173,7 @@ func Test_dictionary_Size(t *testing.T) {
 	_ = dict.Put("a", "value")
 	tests := []struct {
 		name   string
-		fields *dictionary
+		fields *Dictionary
 		want   uint
 	}{
 		{
@@ -183,7 +183,7 @@ func Test_dictionary_Size(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dict := &dictionary{
+			dict := &Dictionary{
 				size: tt.fields.size,
 				data: tt.fields.data,
 			}
