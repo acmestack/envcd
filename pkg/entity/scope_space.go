@@ -15,17 +15,7 @@
  * limitations under the License.
  */
 
-package config
+package entity
 
-// StoreCenter the data store center
-type StoreCenter interface {
-	Kind() string
-	// Servers with standard URL: etcd://user:123@localhost:123
-	// the schema is the kind of the center
-	Servers() []string
-}
-
-// EnvcdConfig the envcd config
-type EnvcdConfig struct {
-	StoreCenter *StoreCenter
+type ScopeSpace struct {
 }
