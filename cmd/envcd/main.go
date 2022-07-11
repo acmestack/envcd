@@ -17,15 +17,15 @@
 
 package main
 
+import (
+	"flag"
+
+	"github.com/acmestack/envcd/internal/envcd"
+	"github.com/acmestack/envcd/internal/pkg/config"
+)
+
 func main() {
-	//cfg := flag.String("config", "config/config.yaml", "-")
-	//flag.Parse()
-	//data, err := ioutil.ReadFile(*cfg)
-	//if err != nil {
-	//	log.Fatalf("error %v", err)
-	//}
-	//c := config.Config{}
-	//if e := yaml.Unmarshal(data, &c); e != nil {
-	//	log.Fatalf("error %v", err)
-	//}
+	configFile := flag.String("config", "config/envcd.yaml", "envcd -config config/envcd.yaml")
+	flag.Parse()
+	envcd.Start(config.NewConfig(configFile))
 }

@@ -17,6 +17,14 @@
 
 package config
 
+import (
+	"fmt"
+	"io/ioutil"
+	"log"
+
+	"gopkg.in/yaml.v3"
+)
+
 // mysql the MySQL config
 type mysql struct {
 	// Url with standard Url: mysql://user:123@localhost:123
@@ -29,4 +37,26 @@ type Config struct {
 	// the schema is the kind of the center
 	Exchanger string `yaml:"exchanger"`
 	Mysql     *mysql `yaml:"mysql"`
+}
+
+// NewConfig new envcd config
+//  @param configFile the config file
+//  @return *Config current config instance
+func NewConfig(configFile *string) *Config {
+	data, err := ioutil.ReadFile(*configFile)
+	if err != nil {
+		log.Fatalf("error %v", err)
+	}
+	envcdConfig := &Config{}
+	if e := yaml.Unmarshal(data, envcdConfig); e != nil {
+		log.Fatalf("error %v", err)
+	}
+	return envcdConfig
+}
+
+// Information the envcd config information
+//  @receiver cfg
+func (cfg *Config) Information() {
+	// todo log
+	fmt.Println(cfg.Exchanger)
 }

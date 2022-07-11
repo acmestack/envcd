@@ -15,4 +15,10 @@
  * limitations under the License.
  */
 
-package core
+package envcd
+
+import "github.com/acmestack/envcd/internal/pkg/config"
+
+func Start(envcdConfig *config.Config) {
+	envcdConfig.Information()
+}
