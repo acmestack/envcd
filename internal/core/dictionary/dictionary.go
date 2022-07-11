@@ -19,8 +19,7 @@ package dictionary
 
 import "errors"
 
-type aa struct {
-}
+type Any = interface{}
 
 // Dictionary key value
 type Dictionary struct {
@@ -33,7 +32,7 @@ type Dictionary struct {
 func NewDictionary() *Dictionary {
 	return &Dictionary{
 		size: 0,
-		data: make(map[any]any, 10),
+		data: make(map[Any]Any, 10),
 	}
 }
 
