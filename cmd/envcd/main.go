@@ -18,12 +18,14 @@
 package main
 
 import (
-	"fmt"
+	"flag"
 
-	"github.com/acmestack/godkits/gox/stringsx"
+	"github.com/acmestack/envcd/internal/envcd"
+	"github.com/acmestack/envcd/internal/pkg/config"
 )
 
 func main() {
-	helloworld := stringsx.DefaultIfEmpty("", "hello world")
-	fmt.Println(helloworld)
+	configFile := flag.String("config", "config/envcd.yaml", "envcd -config config/envcd.yaml")
+	flag.Parse()
+	envcd.Start(config.NewConfig(configFile))
 }
