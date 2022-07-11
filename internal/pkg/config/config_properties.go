@@ -17,15 +17,16 @@
 
 package config
 
-// StoreCenter the data store center
-type StoreCenter interface {
-	Kind() string
-	// Servers with standard URL: etcd://user:123@localhost:123
-	// the schema is the kind of the center
-	Servers() []string
+// mysql the MySQL config
+type mysql struct {
+	// Url with standard Url: mysql://user:123@localhost:123
+	Url string `yaml:"url"`
 }
 
-// EnvcdConfig the internal config
-type EnvcdConfig struct {
-	StoreCenter *StoreCenter
+// Config the envcd config
+type Config struct {
+	// Exchanger with standard Url: etcd://user:123@localhost:123
+	// the schema is the kind of the center
+	Exchanger string `yaml:"exchanger"`
+	Mysql     *mysql `yaml:"mysql"`
 }

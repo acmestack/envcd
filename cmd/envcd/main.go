@@ -17,13 +17,15 @@
 
 package main
 
-import (
-	"fmt"
-
-	"github.com/acmestack/godkits/gox/stringsx"
-)
-
 func main() {
-	helloworld := stringsx.DefaultIfEmpty("", "hello world")
-	fmt.Println(helloworld)
+	//cfg := flag.String("config", "config/config.yaml", "-")
+	//flag.Parse()
+	//data, err := ioutil.ReadFile(*cfg)
+	//if err != nil {
+	//	log.Fatalf("error %v", err)
+	//}
+	//c := config.Config{}
+	//if e := yaml.Unmarshal(data, &c); e != nil {
+	//	log.Fatalf("error %v", err)
+	//}
 }
