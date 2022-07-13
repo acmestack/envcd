@@ -15,29 +15,26 @@
  * limitations under the License.
  */
 
-package dictionary
+package memory
 
 import (
 	"reflect"
 	"testing"
-
-	"github.com/acmestack/envcd/internal/core/storage/memory"
-	"github.com/acmestack/envcd/internal/pkg/storage"
 )
 
 func TestNewDictionary(t *testing.T) {
 	tests := []struct {
 		name string
-		want *Dictionary
+		want *Memory
 	}{
 		{
-			want: NewDictionary(),
+			want: New(),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewDictionary(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewDictionary() = %v, want %v", got, tt.want)
+			if got := New(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("New() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -45,13 +42,12 @@ func TestNewDictionary(t *testing.T) {
 
 func Test_dictionary_Get(t *testing.T) {
 	type fields struct {
-		storage storage.Storage
+		size uint
+		data map[interface{}]interface{}
 	}
 	type args struct {
 		key interface{}
 	}
-	mem := memory.New()
-	_ = mem.Put("a", "value")
 	tests := []struct {
 		name    string
 		fields  fields
@@ -61,7 +57,10 @@ func Test_dictionary_Get(t *testing.T) {
 	}{
 		{
 			fields: fields{
-				storage: mem,
+				size: 1,
+				data: map[interface{}]interface{}{
+					"a": "value",
+				},
 			},
 			args:    args{key: "a"},
 			want:    "value",
@@ -70,8 +69,9 @@ func Test_dictionary_Get(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dict := &Dictionary{
-				storage: tt.fields.storage,
+			dict := &Memory{
+				size: tt.fields.size,
+				data: tt.fields.data,
 			}
 			got, err := dict.Get(tt.args.key)
 			if (err != nil) != tt.wantErr {
@@ -87,7 +87,8 @@ func Test_dictionary_Get(t *testing.T) {
 
 func Test_dictionary_Put(t *testing.T) {
 	type fields struct {
-		storage storage.Storage
+		size uint
+		data map[interface{}]interface{}
 	}
 	type args struct {
 		key   interface{}
@@ -102,7 +103,8 @@ func Test_dictionary_Put(t *testing.T) {
 		{
 
 			fields: fields{
-				storage: memory.New(),
+				size: 1,
+				data: map[interface{}]interface{}{},
 			},
 			args:    args{key: "a", value: "value"},
 			wantErr: false,
@@ -110,8 +112,9 @@ func Test_dictionary_Put(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dict := &Dictionary{
-				storage: tt.fields.storage,
+			dict := &Memory{
+				size: tt.fields.size,
+				data: tt.fields.data,
 			}
 			if err := dict.Put(tt.args.key, tt.args.value); (err != nil) != tt.wantErr {
 				t.Errorf("Put() error = %v, wantErr %v", err, tt.wantErr)
@@ -125,13 +128,12 @@ func Test_dictionary_Put(t *testing.T) {
 
 func Test_dictionary_Remove(t *testing.T) {
 	type fields struct {
-		storage storage.Storage
+		size uint
+		data map[interface{}]interface{}
 	}
 	type args struct {
 		key interface{}
 	}
-	mem := memory.New()
-	_ = mem.Put("a", "value")
 	tests := []struct {
 		name    string
 		fields  fields
@@ -141,7 +143,10 @@ func Test_dictionary_Remove(t *testing.T) {
 		{
 
 			fields: fields{
-				storage: mem,
+				size: 1,
+				data: map[interface{}]interface{}{
+					"a": "value",
+				},
 			},
 			args:    args{key: "a"},
 			wantErr: false,
@@ -149,8 +154,9 @@ func Test_dictionary_Remove(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dict := &Dictionary{
-				storage: tt.fields.storage,
+			dict := &Memory{
+				size: tt.fields.size,
+				data: tt.fields.data,
 			}
 			if err := dict.Remove(tt.args.key); (err != nil) != tt.wantErr {
 				t.Errorf("Remove() error = %v, wantErr %v", err, tt.wantErr)

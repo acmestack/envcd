@@ -15,54 +15,43 @@
  * limitations under the License.
  */
 
-package store
-
-import "github.com/acmestack/envcd/internal/core/base"
+package etcd
 
 // todo memory storage
 // todo write log first, write data second
 // todo log module, chain
 
-type EtcdStorage struct {
-	Storage
+type Etcd struct {
 }
 
-type EtcdPlugin struct {
-	base.PluginExecutor
-}
-
-// Put put data into etcd
-//  @receiver store etcd store
-//  @param o data
-func (store EtcdStorage) Put(o interface{}) {
-
+// Put put data into storage
+//  @param key data identity
+//  @param value data
+func (etcd *Etcd) Put(key interface{}, value interface{}) error {
+	//TODO implement me
+	panic("implement me")
 }
 
 // Get get data from etcd
-//  @receiver store etcd store
+//  @receiver storage etcd storage
 //  @param o data
-func (store EtcdStorage) Get(o interface{}) {
-
+func (etcd *Etcd) Get(key interface{}) (interface{}, error) {
+	//TODO implement me
+	panic("implement me")
 }
 
 // Find find data from etcd
-//  @receiver store etcd store
+//  @receiver storage etcd storage
 //  @param o data
-func (store EtcdStorage) Find(o interface{}) {
-
+func (etcd *Etcd) Find(key interface{}) (interface{}, error) {
+	//TODO implement me
+	panic("implement me")
 }
 
 // Remove remove data from etcd
-//  @receiver store etcd store
+//  @receiver storage etcd storage
 //  @param o data
-func (store EtcdStorage) Remove(o interface{}) {
-
-}
-
-func (plugin EtcdPlugin) Execute(context interface{}, data interface{}, executor base.PluginChainExecutor) {
-
-}
-
-func (plugin EtcdPlugin) Skip(context interface{}) bool {
-	return false
+func (etcd *Etcd) Remove(key interface{}) error {
+	//TODO implement me
+	panic("implement me")
 }

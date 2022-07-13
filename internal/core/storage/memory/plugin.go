@@ -15,24 +15,18 @@
  * limitations under the License.
  */
 
-package store
+package memory
 
-// Storage store interface
-type Storage interface {
+import "github.com/acmestack/envcd/internal/pkg/plugin"
 
-	// Put put data into storage
-	//  @param o data
-	Put(o interface{})
+type Plugin struct {
+	plugin.Executor
+}
 
-	// Get get data from storage
-	//  @param o data
-	Get(o interface{})
+func (plugin *Plugin) Execute(context interface{}, data interface{}, executor plugin.Chain) {
 
-	// Find find data in storage
-	//  @param o data
-	Find(o interface{})
+}
 
-	// Remove remove data from storage
-	//  @param o data
-	Remove(o interface{})
+func (plugin *Plugin) Skip(context interface{}) bool {
+	return false
 }

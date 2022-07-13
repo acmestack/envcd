@@ -17,60 +17,56 @@
 
 package dictionary
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/acmestack/envcd/internal/core/storage/memory"
+	"github.com/acmestack/envcd/internal/pkg/storage"
+)
 
 type Any = interface{}
 
 // Dictionary key value
 type Dictionary struct {
-	size uint
-	data map[interface{}]interface{}
+	storage storage.Storage
 }
 
 // NewDictionary make new Dictionary
-// todo with config store kind
+// todo with config storage kind
 func NewDictionary() *Dictionary {
 	return &Dictionary{
-		size: 0,
-		data: make(map[Any]Any, 10),
+		storage: memory.New(),
 	}
 }
 
 // Put new data to Dictionary by key and value
 func (dict *Dictionary) Put(key interface{}, value interface{}) error {
-	if dict == nil || dict.data == nil {
+	if dict == nil || dict.storage == nil {
 		return errors.New("the Dictionary illegal state")
 	}
-	if dict.data[key] == nil {
-		dict.size++
-	}
-	// if key is exist override or put it
-	dict.data[key] = value
-	return nil
+	return dict.storage.Put(key, value)
 }
 
 // Get the data from Dictionary by key
 func (dict *Dictionary) Get(key interface{}) (interface{}, error) {
-	if dict == nil || dict.data == nil {
+	if dict == nil || dict.storage == nil {
 		return nil, errors.New("the Dictionary illegal state")
 	}
-	return dict.data[key], nil
+	return dict.storage.Get(key)
+}
+
+// Find delete the data from Dictionary by key
+func (dict *Dictionary) Find(key interface{}) (interface{}, error) {
+	if dict == nil || dict.storage == nil {
+		return nil, errors.New("the Dictionary illegal state")
+	}
+	return dict.storage.Find(key)
 }
 
 // Remove delete the data from Dictionary by key
 func (dict *Dictionary) Remove(key interface{}) error {
-	if dict == nil || dict.data == nil {
+	if dict == nil || dict.storage == nil {
 		return errors.New("the Dictionary illegal state")
 	}
-	delete(dict.data, key)
-	dict.size--
-	return nil
-}
-
-// Size the Dictionary data size
-func (dict *Dictionary) Size() uint {
-	if dict == nil || dict.data == nil {
-		return 0
-	}
-	return dict.size
+	return dict.storage.Remove(key)
 }

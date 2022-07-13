@@ -15,11 +15,25 @@
  * limitations under the License.
  */
 
-package base
+package storage
 
-type PluginChainExecutor interface {
+// Storage storage interface
+type Storage interface {
 
-	// Execute plugin chain executor
-	//  @param context chain context
-	Execute(context interface{})
+	// Put put data into storage
+	//  @param key data identity
+	//  @param value data
+	Put(key interface{}, value interface{}) error
+
+	// Get get data from storage
+	//  @param o data
+	Get(key interface{}) (interface{}, error)
+
+	// Find find data in storage
+	//  @param o data
+	Find(key interface{}) (interface{}, error)
+
+	// Remove remove data from storage
+	//  @param o data
+	Remove(key interface{}) error
 }
