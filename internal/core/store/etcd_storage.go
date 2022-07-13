@@ -17,12 +17,18 @@
 
 package store
 
+import "github.com/acmestack/envcd/internal/core/base"
+
 // todo memory storage
 // todo write log first, write data second
 // todo log module, chain
 
 type EtcdStorage struct {
 	Storage
+}
+
+type EtcdPlugin struct {
+	base.PluginExecutor
 }
 
 // Put put data into etcd
@@ -51,4 +57,12 @@ func (store EtcdStorage) Find(o interface{}) {
 //  @param o data
 func (store EtcdStorage) Remove(o interface{}) {
 
+}
+
+func (plugin EtcdPlugin) Execute(context interface{}, data interface{}, executor base.PluginChainExecutor) {
+
+}
+
+func (plugin EtcdPlugin) Skip(context interface{}) bool {
+	return false
 }

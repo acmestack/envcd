@@ -17,9 +17,22 @@
 
 package base
 
-type PluginChainExecutor interface {
+type PluginExecutor interface {
 
-	// Execute plugin chain executor
-	//  @param context chain context
-	Execute(context interface{})
+	// Execute execute code
+	// Context come from every plugins, data from dashboard
+	//  @param data
+	Execute(context interface{}, data interface{}, executor PluginChainExecutor)
+
+	// Skip skip current plugin
+	//  @param exist
+	Skip(context interface{}) bool
+
+	// Order plugin execute order
+	//  @param order order
+	Order() uint8
+
+	// Named plugin name
+	//  @param name plugin name
+	Named() string
 }
