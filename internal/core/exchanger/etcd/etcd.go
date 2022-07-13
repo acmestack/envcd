@@ -17,14 +17,18 @@
 
 package etcd
 
-// todo memory storage
+// todo memory exchanger
 // todo write log first, write data second
 // todo log module, chain
 
 type Etcd struct {
 }
 
-// Put put data into storage
+func New() *Etcd {
+	return &Etcd{}
+}
+
+// Put put data into exchanger
 //  @param key data identity
 //  @param value data
 func (etcd *Etcd) Put(key interface{}, value interface{}) error {
@@ -33,7 +37,7 @@ func (etcd *Etcd) Put(key interface{}, value interface{}) error {
 }
 
 // Get get data from etcd
-//  @receiver storage etcd storage
+//  @receiver exchanger etcd exchanger
 //  @param o data
 func (etcd *Etcd) Get(key interface{}) (interface{}, error) {
 	//TODO implement me
@@ -41,7 +45,7 @@ func (etcd *Etcd) Get(key interface{}) (interface{}, error) {
 }
 
 // Find find data from etcd
-//  @receiver storage etcd storage
+//  @receiver exchanger etcd exchanger
 //  @param o data
 func (etcd *Etcd) Find(key interface{}) (interface{}, error) {
 	//TODO implement me
@@ -49,7 +53,7 @@ func (etcd *Etcd) Find(key interface{}) (interface{}, error) {
 }
 
 // Remove remove data from etcd
-//  @receiver storage etcd storage
+//  @receiver exchanger etcd exchanger
 //  @param o data
 func (etcd *Etcd) Remove(key interface{}) error {
 	//TODO implement me

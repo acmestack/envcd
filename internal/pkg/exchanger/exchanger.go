@@ -15,18 +15,25 @@
  * limitations under the License.
  */
 
-package etcd
+package exchanger
 
-import "github.com/acmestack/envcd/internal/pkg/plugin"
+// Exchanger exchanger interface
+type Exchanger interface {
 
-type Plugin struct {
-	plugin.Executor
-}
+	// Put put data into exchanger
+	//  @param key data identity
+	//  @param value data
+	Put(key interface{}, value interface{}) error
 
-func (plugin *Plugin) Execute(context interface{}, data interface{}, executor plugin.Chain) {
+	// Get get data from exchanger
+	//  @param o data
+	Get(key interface{}) (interface{}, error)
 
-}
+	// Find find data in exchanger
+	//  @param o data
+	Find(key interface{}) (interface{}, error)
 
-func (plugin *Plugin) Skip(context interface{}) bool {
-	return false
+	// Remove remove data from exchanger
+	//  @param o data
+	Remove(key interface{}) error
 }
