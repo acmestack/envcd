@@ -23,7 +23,7 @@ type Executor interface {
 	// Execute execute code
 	// Context come from every plugins, data from dashboard
 	//  @param data
-	Execute(context interface{}, data interface{}, executor Chain)
+	Execute(context interface{}, data interface{}, executor ExecutorChain)
 
 	// Skip skip current plugin
 	//  @param exist
