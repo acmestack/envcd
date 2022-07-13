@@ -15,14 +15,15 @@
  * limitations under the License.
  */
 
-package base
+package plugin
 
-type PluginExecutor interface {
+// Executor the plugin executor
+type Executor interface {
 
 	// Execute execute code
 	// Context come from every plugins, data from dashboard
 	//  @param data
-	Execute(context interface{}, data interface{}, executor PluginChainExecutor)
+	Execute(context interface{}, data interface{}, executor Chain)
 
 	// Skip skip current plugin
 	//  @param exist
