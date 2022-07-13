@@ -33,7 +33,7 @@ func New() *Memory {
 
 func (memory *Memory) Put(key interface{}, value interface{}) error {
 	if memory == nil || memory.data == nil {
-		return errors.New("the illegal state of memory storage")
+		return errors.New("the illegal state of memory exchanger")
 	}
 	if memory.data[key] == nil {
 		memory.size++
@@ -45,7 +45,7 @@ func (memory *Memory) Put(key interface{}, value interface{}) error {
 
 func (memory *Memory) Get(key interface{}) (interface{}, error) {
 	if memory == nil || memory.data == nil {
-		return nil, errors.New("the illegal state of memory storage")
+		return nil, errors.New("the illegal state of memory exchanger")
 	}
 	return memory.data[key], nil
 }

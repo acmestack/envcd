@@ -15,25 +15,7 @@
  * limitations under the License.
  */
 
-package storage
+package array
 
-// Storage storage interface
-type Storage interface {
-
-	// Put put data into storage
-	//  @param key data identity
-	//  @param value data
-	Put(key interface{}, value interface{}) error
-
-	// Get get data from storage
-	//  @param o data
-	Get(key interface{}) (interface{}, error)
-
-	// Find find data in storage
-	//  @param o data
-	Find(key interface{}) (interface{}, error)
-
-	// Remove remove data from storage
-	//  @param o data
-	Remove(key interface{}) error
+type Array interface {
 }

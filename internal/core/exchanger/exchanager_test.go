@@ -15,37 +15,37 @@
  * limitations under the License.
  */
 
-package dictionary
+package exchanger
 
 import (
 	"reflect"
 	"testing"
 
 	"github.com/acmestack/envcd/internal/core/storage/memory"
-	"github.com/acmestack/envcd/internal/pkg/storage"
+	"github.com/acmestack/envcd/internal/pkg/exchanger"
 )
 
-func TestNewDictionary(t *testing.T) {
+func TestNew(t *testing.T) {
 	tests := []struct {
 		name string
-		want *Dictionary
+		want *Exchanger
 	}{
 		{
-			want: NewDictionary(),
+			want: New(),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewDictionary(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("NewDictionary() = %v, want %v", got, tt.want)
+			if got := New(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("New() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_dictionary_Get(t *testing.T) {
+func Test_Exchanger_Get(t *testing.T) {
 	type fields struct {
-		storage storage.Storage
+		chain *exchanger.Chain
 	}
 	type args struct {
 		key interface{}
@@ -61,7 +61,7 @@ func Test_dictionary_Get(t *testing.T) {
 	}{
 		{
 			fields: fields{
-				storage: mem,
+				chain: exchanger.New(mem),
 			},
 			args:    args{key: "a"},
 			want:    "value",
@@ -70,8 +70,8 @@ func Test_dictionary_Get(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dict := &Dictionary{
-				storage: tt.fields.storage,
+			dict := &Exchanger{
+				chain: tt.fields.chain,
 			}
 			got, err := dict.Get(tt.args.key)
 			if (err != nil) != tt.wantErr {
@@ -85,9 +85,9 @@ func Test_dictionary_Get(t *testing.T) {
 	}
 }
 
-func Test_dictionary_Put(t *testing.T) {
+func Test_Exchanger_Put(t *testing.T) {
 	type fields struct {
-		storage storage.Storage
+		chain *exchanger.Chain
 	}
 	type args struct {
 		key   interface{}
@@ -102,7 +102,7 @@ func Test_dictionary_Put(t *testing.T) {
 		{
 
 			fields: fields{
-				storage: memory.New(),
+				chain: exchanger.New(memory.New()),
 			},
 			args:    args{key: "a", value: "value"},
 			wantErr: false,
@@ -110,22 +110,19 @@ func Test_dictionary_Put(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dict := &Dictionary{
-				storage: tt.fields.storage,
+			dict := &Exchanger{
+				chain: tt.fields.chain,
 			}
 			if err := dict.Put(tt.args.key, tt.args.value); (err != nil) != tt.wantErr {
 				t.Errorf("Put() error = %v, wantErr %v", err, tt.wantErr)
-			}
-			if data, err := dict.Get(tt.args.key); (err != nil) || data != tt.args.value {
-				t.Errorf("Get() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
 }
 
-func Test_dictionary_Remove(t *testing.T) {
+func Test_Exchanger_Remove(t *testing.T) {
 	type fields struct {
-		storage storage.Storage
+		chain *exchanger.Chain
 	}
 	type args struct {
 		key interface{}
@@ -139,9 +136,8 @@ func Test_dictionary_Remove(t *testing.T) {
 		wantErr bool
 	}{
 		{
-
 			fields: fields{
-				storage: mem,
+				chain: exchanger.New(mem),
 			},
 			args:    args{key: "a"},
 			wantErr: false,
@@ -149,8 +145,8 @@ func Test_dictionary_Remove(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dict := &Dictionary{
-				storage: tt.fields.storage,
+			dict := &Exchanger{
+				chain: tt.fields.chain,
 			}
 			if err := dict.Remove(tt.args.key); (err != nil) != tt.wantErr {
 				t.Errorf("Remove() error = %v, wantErr %v", err, tt.wantErr)

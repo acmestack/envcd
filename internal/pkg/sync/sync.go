@@ -15,18 +15,4 @@
  * limitations under the License.
  */
 
-package memory
-
-import "github.com/acmestack/envcd/internal/pkg/plugin"
-
-type Plugin struct {
-	plugin.Executor
-}
-
-func (plugin *Plugin) Execute(context interface{}, data interface{}, executor plugin.Chain) {
-
-}
-
-func (plugin *Plugin) Skip(context interface{}) bool {
-	return false
-}
+package sync
