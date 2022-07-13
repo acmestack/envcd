@@ -45,7 +45,7 @@ func TestNew(t *testing.T) {
 
 func Test_Exchanger_Get(t *testing.T) {
 	type fields struct {
-		chain *exchanger.Chain
+		chain *exchanger.ExchangeChain
 	}
 	type args struct {
 		key interface{}
@@ -87,7 +87,7 @@ func Test_Exchanger_Get(t *testing.T) {
 
 func Test_Exchanger_Put(t *testing.T) {
 	type fields struct {
-		chain *exchanger.Chain
+		chain *exchanger.ExchangeChain
 	}
 	type args struct {
 		key   interface{}
@@ -122,7 +122,7 @@ func Test_Exchanger_Put(t *testing.T) {
 
 func Test_Exchanger_Remove(t *testing.T) {
 	type fields struct {
-		chain *exchanger.Chain
+		chain *exchanger.ExchangeChain
 	}
 	type args struct {
 		key interface{}

@@ -17,8 +17,9 @@
 
 package plugin
 
-// Chain the plugin executor chain
-type Chain interface {
+// ExecutorChain the plugin executor chain
+// this is openapi chain, when http or client request into openapi, construct this chain
+type ExecutorChain interface {
 
 	// Execute plugin chain executor
 	//  @param context chain context

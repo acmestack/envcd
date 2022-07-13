@@ -25,7 +25,7 @@ import (
 )
 
 type Exchanger struct {
-	chain *exchanger.Chain
+	chain *exchanger.ExchangeChain
 }
 
 // New make new Exchanger
