@@ -37,7 +37,7 @@ func TestNew(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := New(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("New() = %v, want %v", got, tt.want)
+				t.Errorf("Chain() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -61,7 +61,7 @@ func Test_Exchanger_Get(t *testing.T) {
 	}{
 		{
 			fields: fields{
-				chain: exchanger.New(mem),
+				chain: exchanger.Chain(mem),
 			},
 			args:    args{key: "a"},
 			want:    "value",
@@ -102,7 +102,7 @@ func Test_Exchanger_Put(t *testing.T) {
 		{
 
 			fields: fields{
-				chain: exchanger.New(memory.New()),
+				chain: exchanger.Chain(memory.New()),
 			},
 			args:    args{key: "a", value: "value"},
 			wantErr: false,
@@ -137,7 +137,7 @@ func Test_Exchanger_Remove(t *testing.T) {
 	}{
 		{
 			fields: fields{
-				chain: exchanger.New(mem),
+				chain: exchanger.Chain(mem),
 			},
 			args:    args{key: "a"},
 			wantErr: false,

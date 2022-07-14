@@ -43,6 +43,11 @@ func (memory *Memory) Put(key interface{}, value interface{}) error {
 	return nil
 }
 
+func (memory *Memory) Sync(key interface{}, value interface{}) error {
+	//TODO implement me
+	return nil
+}
+
 func (memory *Memory) Get(key interface{}) (interface{}, error) {
 	if memory == nil || memory.data == nil {
 		return nil, errors.New("the illegal state of memory exchanger")
