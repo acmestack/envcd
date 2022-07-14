@@ -20,5 +20,6 @@ package envcd
 import "github.com/acmestack/envcd/internal/pkg/config"
 
 func Start(envcdConfig *config.Config) {
-	envcdConfig.Information()
+	// show start information & parser config
+	envcdConfig.StartInformation()
 }

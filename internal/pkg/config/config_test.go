@@ -49,6 +49,12 @@ func TestURL(t *testing.T) {
 			if uri.Host != "localhost:123" {
 				t.Errorf("Host is not eq = %v", uri.Host)
 			}
+			if uri.Hostname() != "localhost" {
+				t.Errorf("Host is not eq = %v", uri.Host)
+			}
+			if uri.Port() != "123" {
+				t.Errorf("Port is not eq = %v", uri.Port())
+			}
 		})
 	}
 }
