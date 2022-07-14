@@ -19,7 +19,11 @@ package envcd
 
 import "github.com/acmestack/envcd/internal/pkg/config"
 
+// EnvcdConfig the envcd global config
+var EnvcdConfig *config.Config
+
 func Start(envcdConfig *config.Config) {
 	// show start information & parser config
 	envcdConfig.StartInformation()
+	EnvcdConfig = envcdConfig
 }

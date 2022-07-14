@@ -58,3 +58,34 @@ func TestURL(t *testing.T) {
 		})
 	}
 }
+
+func TestConfig_StartInformation(t *testing.T) {
+	type fields struct {
+		Exchanger                   string
+		ExchangerConnectionMetadata *ConnMetadata
+		Mysql                       *mysql
+		MysqlConnectionMetadata     *ConnMetadata
+	}
+	tests := []struct {
+		name   string
+		fields fields
+	}{
+		{
+			fields: fields{
+				Exchanger: "etcd://user:password@localhost:2379",
+				Mysql:     &mysql{Url: "mysql://user:password@localhost:3306"},
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			cfg := &Config{
+				Exchanger:             tt.fields.Exchanger,
+				ExchangerConnMetadata: tt.fields.ExchangerConnectionMetadata,
+				Mysql:                 tt.fields.Mysql,
+				MysqlConnMetadata:     tt.fields.MysqlConnectionMetadata,
+			}
+			cfg.StartInformation()
+		})
+	}
+}

@@ -39,10 +39,10 @@ type mysql struct {
 type Config struct {
 	// Exchanger with standard Url: etcd://user:123@localhost:123
 	// the schema is the kind of the center
-	Exchanger                   string `yaml:"exchanger"`
-	ExchangerConnectionMetadata *ConnMetadata
-	Mysql                       *mysql `yaml:"mysql"`
-	MysqlConnectionMetadata     *ConnMetadata
+	Exchanger             string `yaml:"exchanger"`
+	ExchangerConnMetadata *ConnMetadata
+	Mysql                 *mysql `yaml:"mysql"`
+	MysqlConnMetadata     *ConnMetadata
 }
 
 // NewConfig new envcd config
@@ -63,8 +63,8 @@ func NewConfig(configFile *string) *Config {
 // StartInformation the envcd config information
 //  @receiver cfg
 func (cfg *Config) StartInformation() {
-	cfg.ExchangerConnectionMetadata = parser(cfg.Exchanger)
-	cfg.ExchangerConnectionMetadata.information(ExchangerType)
-	cfg.MysqlConnectionMetadata = parser(cfg.Mysql.Url)
-	cfg.MysqlConnectionMetadata.information(MysqlType)
+	cfg.ExchangerConnMetadata = parser(cfg.Exchanger)
+	cfg.ExchangerConnMetadata.information(ExchangerType)
+	cfg.MysqlConnMetadata = parser(cfg.Mysql.Url)
+	cfg.MysqlConnMetadata.information(MysqlType)
 }
