@@ -18,11 +18,15 @@
 package config
 
 import (
-	"fmt"
 	"io/ioutil"
 	"log"
 
 	"gopkg.in/yaml.v3"
+)
+
+var (
+	ExchangerType = "Exchanger"
+	MysqlType     = "MySQL"
 )
 
 // mysql the MySQL config
@@ -35,8 +39,10 @@ type mysql struct {
 type Config struct {
 	// Exchanger with standard Url: etcd://user:123@localhost:123
 	// the schema is the kind of the center
-	Exchanger string `yaml:"exchanger"`
-	Mysql     *mysql `yaml:"mysql"`
+	Exchanger                   string `yaml:"exchanger"`
+	ExchangerConnectionMetadata *ConnMetadata
+	Mysql                       *mysql `yaml:"mysql"`
+	MysqlConnectionMetadata     *ConnMetadata
 }
 
 // NewConfig new envcd config
@@ -54,9 +60,11 @@ func NewConfig(configFile *string) *Config {
 	return envcdConfig
 }
 
-// Information the envcd config information
+// StartInformation the envcd config information
 //  @receiver cfg
-func (cfg *Config) Information() {
-	// todo log
-	fmt.Println(cfg.Exchanger)
+func (cfg *Config) StartInformation() {
+	cfg.ExchangerConnectionMetadata = parser(cfg.Exchanger)
+	cfg.ExchangerConnectionMetadata.information(ExchangerType)
+	cfg.MysqlConnectionMetadata = parser(cfg.Mysql.Url)
+	cfg.MysqlConnectionMetadata.information(MysqlType)
 }
