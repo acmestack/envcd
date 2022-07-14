@@ -42,6 +42,8 @@ func parser(connection string) *ConnMetadata {
 	metadata.UserName = u.User.Username()
 	password, _ := u.User.Password()
 	metadata.Password = password
+	metadata.Host = u.Hostname()
+	// todo port to int?
 	metadata.Port = u.Port()
 	return metadata
 }
