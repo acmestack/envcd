@@ -15,12 +15,15 @@
  * limitations under the License.
  */
 
-package sync
+package synccenter
 
-// Synchronizer data synchronizer
-type Synchronizer interface {
+import "github.com/acmestack/envcd/internal/pkg/sync"
 
-	// SynchronizeData sync data to envcd client
-	//  @param data need to sync data
-	SynchronizeData(data interface{})
+type WebSocketSynchronizer struct {
+	synchronizer sync.Synchronizer
+}
+
+func (wsSync WebSocketSynchronizer) SynchronizeData(data interface{}) {
+	//TODO implement me
+	panic("implement me")
 }
