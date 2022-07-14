@@ -52,7 +52,7 @@ func (exchanger *Exchanger) Get(key interface{}) (interface{}, error) {
 	return exchanger.chain.Get(key)
 }
 
-// Find delete the data from Exchanger by key
+// Find the data from Exchanger by key
 func (exchanger *Exchanger) Find(key interface{}) (interface{}, error) {
 	if exchanger == nil || exchanger.chain == nil {
 		return nil, errors.New("IIllegal state for exchanger")
