@@ -25,6 +25,11 @@ type Exchanger interface {
 	//  @param value data
 	Put(key interface{}, value interface{}) error
 
+	// Sync sync data into exchanger
+	//  @param key data identity
+	//  @param value data
+	Sync(key interface{}, value interface{}) error
+
 	// Get get data from exchanger
 	//  @param o data
 	Get(key interface{}) (interface{}, error)

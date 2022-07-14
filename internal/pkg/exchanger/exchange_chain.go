@@ -21,14 +21,16 @@ type ExchangeChain struct {
 	exchangers []Exchanger
 }
 
-func New(exchangers ...Exchanger) *ExchangeChain {
+func Chain(exchangers ...Exchanger) *ExchangeChain {
 	return &ExchangeChain{exchangers: exchangers}
 }
 
 func (chain *ExchangeChain) Put(key interface{}, value interface{}) error {
 	for i := 0; i < len(chain.exchangers); i++ {
-		err := chain.exchangers[i].Put(key, value)
-		if err != nil {
+		if err := chain.exchangers[i].Put(key, value); err != nil {
+			return err
+		}
+		if err := chain.exchangers[i].Sync(key, value); err != nil {
 			return err
 		}
 	}
@@ -63,8 +65,7 @@ func (chain *ExchangeChain) Find(key interface{}) (interface{}, error) {
 
 func (chain *ExchangeChain) Remove(key interface{}) error {
 	for i := 0; i < len(chain.exchangers); i++ {
-		err := chain.exchangers[i].Remove(key)
-		if err != nil {
+		if err := chain.exchangers[i].Remove(key); err != nil {
 			return err
 		}
 	}

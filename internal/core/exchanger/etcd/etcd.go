@@ -36,6 +36,14 @@ func (etcd *Etcd) Put(key interface{}, value interface{}) error {
 	panic("implement me")
 }
 
+// Sync sync data into exchanger
+//  @param key data identity
+//  @param value data
+func (etcd *Etcd) Sync(key interface{}, value interface{}) error {
+	//TODO implement me
+	panic("implement me")
+}
+
 // Get get data from etcd
 //  @receiver exchanger etcd exchanger
 //  @param o data

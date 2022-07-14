@@ -32,7 +32,7 @@ type Exchanger struct {
 // todo with config exchanger kind
 func New() *Exchanger {
 	return &Exchanger{
-		chain: exchanger.New(etcd.New()),
+		chain: exchanger.Chain(etcd.New()),
 	}
 }
 
