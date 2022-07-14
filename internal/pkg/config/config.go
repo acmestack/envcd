@@ -24,9 +24,9 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-var (
-	ExchangerType = "Exchanger"
-	MysqlType     = "MySQL"
+const (
+	exchangerType = "Exchanger"
+	mysqlType     = "MySQL"
 )
 
 // mysql the MySQL config
@@ -64,7 +64,7 @@ func NewConfig(configFile *string) *Config {
 //  @receiver cfg
 func (cfg *Config) StartInformation() {
 	cfg.ExchangerConnMetadata = parser(cfg.Exchanger)
-	cfg.ExchangerConnMetadata.information(ExchangerType)
+	cfg.ExchangerConnMetadata.information(exchangerType)
 	cfg.MysqlConnMetadata = parser(cfg.Mysql.Url)
-	cfg.MysqlConnMetadata.information(MysqlType)
+	cfg.MysqlConnMetadata.information(mysqlType)
 }
