@@ -18,16 +18,16 @@
 package exchanger
 
 type ExchangeChain struct {
-	elements []Exchanger
+	exchangers []Exchanger
 }
 
 func New(exchangers ...Exchanger) *ExchangeChain {
-	return &ExchangeChain{elements: exchangers}
+	return &ExchangeChain{exchangers: exchangers}
 }
 
 func (chain *ExchangeChain) Put(key interface{}, value interface{}) error {
-	for i := 0; i < len(chain.elements); i++ {
-		err := chain.elements[i].Put(key, value)
+	for i := 0; i < len(chain.exchangers); i++ {
+		err := chain.exchangers[i].Put(key, value)
 		if err != nil {
 			return err
 		}
@@ -36,8 +36,8 @@ func (chain *ExchangeChain) Put(key interface{}, value interface{}) error {
 }
 
 func (chain *ExchangeChain) Get(key interface{}) (interface{}, error) {
-	for i := 0; i < len(chain.elements); i++ {
-		data, err := chain.elements[i].Get(key)
+	for i := 0; i < len(chain.exchangers); i++ {
+		data, err := chain.exchangers[i].Get(key)
 		if err != nil {
 			return nil, err
 		}
@@ -49,8 +49,8 @@ func (chain *ExchangeChain) Get(key interface{}) (interface{}, error) {
 }
 
 func (chain *ExchangeChain) Find(key interface{}) (interface{}, error) {
-	for i := 0; i < len(chain.elements); i++ {
-		data, err := chain.elements[i].Find(key)
+	for i := 0; i < len(chain.exchangers); i++ {
+		data, err := chain.exchangers[i].Find(key)
 		if err != nil {
 			return nil, err
 		}
@@ -62,8 +62,8 @@ func (chain *ExchangeChain) Find(key interface{}) (interface{}, error) {
 }
 
 func (chain *ExchangeChain) Remove(key interface{}) error {
-	for i := 0; i < len(chain.elements); i++ {
-		err := chain.elements[i].Remove(key)
+	for i := 0; i < len(chain.exchangers); i++ {
+		err := chain.exchangers[i].Remove(key)
 		if err != nil {
 			return err
 		}
