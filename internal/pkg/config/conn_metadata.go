@@ -51,7 +51,6 @@ func (connMedata *ConnMetadata) information(t string) {
 	fmt.Println(fmt.Sprintf("ConnectionMetadata For %v", t))
 	fmt.Println(fmt.Sprintf("Type: %v", connMedata.Type))
 	fmt.Println(fmt.Sprintf("UserName: %v", connMedata.UserName))
-	fmt.Println(fmt.Sprintf("Password: %v", connMedata.Password))
 	fmt.Println(fmt.Sprintf("Host: %v", connMedata.Host))
 	fmt.Println(fmt.Sprintf("Port: %v", connMedata.Port))
 	fmt.Println("--")
