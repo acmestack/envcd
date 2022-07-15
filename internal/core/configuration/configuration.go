@@ -22,7 +22,7 @@ import "github.com/acmestack/envcd/pkg/entity"
 type Configuration struct {
 	user  *entity.User
 	space *entity.ScopeSpace
-	data  *entity.Envcdata
+	data  *entity.EnvcdData
 }
 
 // NewConfiguration create new Configuration by user, space, data.
@@ -30,7 +30,7 @@ type Configuration struct {
 //  @param space the Configuration space
 //  @param data the Configuration data
 //  @return *Configuration
-func NewConfiguration(user *entity.User, space *entity.ScopeSpace, data *entity.Envcdata) *Configuration {
+func NewConfiguration(user *entity.User, space *entity.ScopeSpace, data *entity.EnvcdData) *Configuration {
 	return &Configuration{
 		user:  user,
 		space: space,
@@ -52,8 +52,8 @@ func (configuration *Configuration) Identity() string {
 
 // Data get configuration's data.
 //  @receiver configuration current config
-//  @return *entity.Envcdata the configuration's nullable data
-func (configuration *Configuration) Data() *entity.Envcdata {
+//  @return *entity.EnvcdData the configuration's nullable data
+func (configuration *Configuration) Data() *entity.EnvcdData {
 	if configuration == nil {
 		return nil
 	}

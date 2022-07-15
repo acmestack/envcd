@@ -17,5 +17,5 @@
 
 package entity
 
-type Envcdata struct {
+type EnvcdData struct {
 }
