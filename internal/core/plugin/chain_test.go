@@ -22,6 +22,8 @@ import (
 	"testing"
 
 	"github.com/acmestack/envcd/internal/core/plugin/logging"
+	"github.com/acmestack/envcd/internal/core/plugin/response"
+	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/executor"
 )
 
@@ -54,7 +56,7 @@ func TestExecutorChain_Execute(t *testing.T) {
 		index     int
 	}
 	type args struct {
-		context interface{}
+		context context.Context
 	}
 	tests := []struct {
 		name    string
@@ -68,8 +70,8 @@ func TestExecutorChain_Execute(t *testing.T) {
 				executors: []executor.Executor{logging.New()},
 				index:     0,
 			},
-			args:    args{context: "string"},
-			wantRet: "string",
+			args:    args{context: context.Context{}},
+			wantRet: response.Success(nil),
 			wantErr: false,
 		},
 	}
