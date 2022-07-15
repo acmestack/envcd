@@ -35,7 +35,7 @@ type Response struct {
 func New() *Response {
 	r := &Response{}
 	r.Name = name
-	r.Sort = constants.ResponseOrder
+	r.Sort = constants.ResponseSorted
 	return r
 }
 

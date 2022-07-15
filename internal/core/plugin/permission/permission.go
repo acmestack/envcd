@@ -35,7 +35,7 @@ type Permission struct {
 func New() *Permission {
 	p := &Permission{}
 	p.Name = name
-	p.Sort = constants.PermissionOrder
+	p.Sort = constants.PermissionSorted
 	return p
 }
 

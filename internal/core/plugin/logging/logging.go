@@ -35,7 +35,7 @@ type Logging struct {
 func New() *Logging {
 	l := &Logging{}
 	l.Name = name
-	l.Sort = constants.LoggingOrder
+	l.Sort = constants.LoggingSorted
 	return l
 }
 
