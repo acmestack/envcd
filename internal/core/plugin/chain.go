@@ -27,19 +27,12 @@ import (
 	"github.com/acmestack/godkits/gox/errorsx"
 )
 
+// executorArray for sort.Sort(Interface)
 type executorArray []executor.Executor
 
-func (ea executorArray) Len() int {
-	return len(ea)
-}
-
-func (ea executorArray) Less(i, j int) bool {
-	return ea[i].Sorted() < ea[j].Sorted()
-}
-
-func (ea executorArray) Swap(i, j int) {
-	ea[i], ea[j] = ea[j], ea[i]
-}
+func (ea executorArray) Len() int           { return len(ea) }
+func (ea executorArray) Less(i, j int) bool { return ea[i].Sorted() < ea[j].Sorted() }
+func (ea executorArray) Swap(i, j int)      { ea[i], ea[j] = ea[j], ea[i] }
 
 // Chain the executor chain
 // this is openapi chain, when http or client request into openapi, construct this chain
