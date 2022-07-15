@@ -21,19 +21,26 @@ import (
 	"github.com/acmestack/envcd/internal/pkg/context"
 )
 
+// Plugin the executor.Executor's sub struct and the all executor's base struct
 type Plugin struct {
 	Name string
 	Sort uint8
 }
 
+// Skip current executor
+//  @return skip current executor or not
 func (p *Plugin) Skip(context context.Context) bool {
 	return false
 }
 
+// Sorted executor execute order
+//  @return order
 func (p *Plugin) Sorted() uint8 {
 	return p.Sort
 }
 
+// Named executor name
+//  @return named for executor
 func (p *Plugin) Named() string {
 	return p.Name
 }
