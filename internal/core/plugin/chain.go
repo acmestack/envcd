@@ -18,10 +18,26 @@
 package plugin
 
 import (
+	"sort"
+
 	"github.com/acmestack/envcd/internal/core/plugin/response"
 	"github.com/acmestack/envcd/internal/pkg/executor"
 	"github.com/acmestack/godkits/gox/errorsx"
 )
+
+type sortedExecutor []executor.Executor
+
+func (s sortedExecutor) Len() int {
+	return len(s)
+}
+
+func (s sortedExecutor) Less(i, j int) bool {
+	return s[i].Order() < s[j].Order()
+}
+
+func (s sortedExecutor) Swap(i, j int) {
+	s[i], s[j] = s[j], s[i]
+}
 
 // Chain the executor chain
 // this is openapi chain, when http or client request into openapi, construct this chain
@@ -30,7 +46,13 @@ type Chain struct {
 	index     int
 }
 
-func New(executors ...executor.Executor) *Chain {
+// Sort the plugins
+func Sort(executors sortedExecutor) {
+	sort.Sort(executors)
+}
+
+// NewChain plugin chain for peer request
+func NewChain(executors sortedExecutor) *Chain {
 	return &Chain{executors: executors, index: 0}
 }
 

@@ -17,7 +17,10 @@
 
 package response
 
-import "github.com/acmestack/envcd/internal/pkg/executor"
+import (
+	"github.com/acmestack/envcd/internal/pkg/constants"
+	"github.com/acmestack/envcd/internal/pkg/executor"
+)
 
 type Response struct {
 }
@@ -32,13 +35,11 @@ func (response *Response) Execute(context interface{}, data interface{}, chain e
 }
 
 func (response *Response) Skip(context interface{}) bool {
-	//TODO implement me
-	panic("implement me")
+	return false
 }
 
 func (response *Response) Order() uint8 {
-	//TODO implement me
-	panic("implement me")
+	return constants.ResponseOrder
 }
 
 func (response *Response) Named() string {

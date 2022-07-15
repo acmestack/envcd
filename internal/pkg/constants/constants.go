@@ -15,32 +15,13 @@
  * limitations under the License.
  */
 
-package logging
+package constants
 
-import (
-	"github.com/acmestack/envcd/internal/pkg/constants"
-	"github.com/acmestack/envcd/internal/pkg/executor"
+const (
+	// LoggingOrder plugin of logging order
+	LoggingOrder = 0x1
+	// PermissionOrder plugin of logging order
+	PermissionOrder = 0x2
+	// ResponseOrder plugin of logging order
+	ResponseOrder = 0x3
 )
-
-type Logging struct{}
-
-func New() *Logging {
-	return &Logging{}
-}
-
-func (logging *Logging) Execute(context interface{}, data interface{}, chain executor.Chain) (ret interface{}, err error) {
-	return context, nil
-}
-
-func (logging *Logging) Skip(context interface{}) bool {
-	return false
-}
-
-func (logging *Logging) Order() uint8 {
-	return constants.LoggingOrder
-}
-
-func (logging *Logging) Named() string {
-	//TODO implement me
-	panic("implement me")
-}

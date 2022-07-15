@@ -24,26 +24,28 @@ import (
 	"github.com/acmestack/envcd/internal/core/plugin/response"
 	"github.com/acmestack/envcd/internal/core/storage"
 	"github.com/acmestack/envcd/internal/envcd"
+	"github.com/acmestack/envcd/internal/pkg/executor"
 )
 
 type Openapi struct {
-	envcd       *envcd.Envcd
-	storage     *storage.Storage
-	pluginChain *plugin.Chain
+	envcd     *envcd.Envcd
+	storage   *storage.Storage
+	executors []executor.Executor
 }
 
 func Start(envcd *envcd.Envcd, storage *storage.Storage) {
 	openapi := &Openapi{
-		envcd:   envcd,
-		storage: storage,
-		// the pluginChain for peer request router
-		// todo sort plugin
-		pluginChain: plugin.New(logging.New(), permission.New(), response.New()),
+		envcd:     envcd,
+		storage:   storage,
+		executors: []executor.Executor{logging.New(), permission.New(), response.New()},
 	}
+	// sort plugin
+	plugin.Sort(openapi.executors)
 	openapi.openRouter()
 }
 
 // todo open Router
 func (openapi *Openapi) openRouter() {
-
+	// fixme: plugin.NewChain(openapi.executors) for peer request
+	// plugin.NewChain(openapi.executors)
 }

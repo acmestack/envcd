@@ -25,7 +25,7 @@ import (
 	"github.com/acmestack/envcd/internal/pkg/executor"
 )
 
-func TestChain(t *testing.T) {
+func TestNewChain(t *testing.T) {
 	type args struct {
 		executors []executor.Executor
 	}
@@ -36,13 +36,13 @@ func TestChain(t *testing.T) {
 	}{
 		{
 			args: args{executors: []executor.Executor{logging.New()}},
-			want: New(logging.New()),
+			want: NewChain([]executor.Executor{logging.New()}),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := New(tt.args.executors...); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("New() = %v, want %v", got, tt.want)
+			if got := NewChain(tt.args.executors); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewChain() = %v, want %v", got, tt.want)
 			}
 		})
 	}
