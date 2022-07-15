@@ -18,19 +18,60 @@
 package envcd
 
 import (
-	"github.com/acmestack/envcd/internal/core/exchanger"
-	"github.com/acmestack/envcd/internal/core/openapi"
-	"github.com/acmestack/envcd/internal/core/storage"
+	"errors"
+
+	"github.com/acmestack/envcd/internal/core/exchanger/etcd"
 	"github.com/acmestack/envcd/internal/pkg/config"
+	"github.com/acmestack/envcd/internal/pkg/exchanger"
 )
 
 // EnvcdConfig the envcd global config
 var EnvcdConfig *config.Config
 
-func Start(envcdConfig *config.Config) {
+type Envcd struct {
+	exchanger   exchanger.Exchanger
+	envcdConfig *config.Config
+}
+
+// Start envcd by envcd config
+//  @param envcdConfig the config for envcd
+func Start(envcdConfig *config.Config) *Envcd {
 	// show start information & parser config
 	envcdConfig.StartInformation()
 	EnvcdConfig = envcdConfig
-	// start openapi with exchanger & storage
-	openapi.Start(exchanger.Start(), storage.Start()).OpenRouter()
+	instance := &Envcd{exchanger: etcd.New()}
+	instance.envcdConfig = envcdConfig
+	return instance
+}
+
+// Put new data to Exchanger by key and value
+func (envcd *Envcd) Put(key interface{}, value interface{}) error {
+	if envcd == nil || envcd.exchanger == nil {
+		return errors.New("IIllegal state for exchanger")
+	}
+	return envcd.exchanger.Put(key, value)
+}
+
+// Get the data from Exchanger by key
+func (envcd *Envcd) Get(key interface{}) (interface{}, error) {
+	if envcd == nil || envcd.exchanger == nil {
+		return nil, errors.New("IIllegal state for exchanger")
+	}
+	return envcd.exchanger.Get(key)
+}
+
+// Find delete the data from Exchanger by key
+func (envcd *Envcd) Find(key interface{}) (interface{}, error) {
+	if envcd == nil || envcd.exchanger == nil {
+		return nil, errors.New("IIllegal state for exchanger")
+	}
+	return envcd.exchanger.Find(key)
+}
+
+// Remove delete the data from Exchanger by key
+func (envcd *Envcd) Remove(key interface{}) error {
+	if envcd == nil || envcd.exchanger == nil {
+		return errors.New("IIllegal state for exchanger")
+	}
+	return envcd.exchanger.Remove(key)
 }

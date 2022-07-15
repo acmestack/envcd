@@ -18,24 +18,24 @@
 package openapi
 
 import (
-	"github.com/acmestack/envcd/internal/core/exchanger"
 	"github.com/acmestack/envcd/internal/core/plugin"
 	"github.com/acmestack/envcd/internal/core/plugin/logging"
 	"github.com/acmestack/envcd/internal/core/plugin/permission"
 	"github.com/acmestack/envcd/internal/core/plugin/response"
 	"github.com/acmestack/envcd/internal/core/storage"
+	"github.com/acmestack/envcd/internal/envcd"
 )
 
 type Openapi struct {
-	exchanger   *exchanger.Exchanger
+	envcd       *envcd.Envcd
 	storage     *storage.Storage
 	pluginChain *plugin.Chain
 }
 
-func Start(exchanger *exchanger.Exchanger, storage *storage.Storage) *Openapi {
+func Start(envcd *envcd.Envcd, storage *storage.Storage) *Openapi {
 	return &Openapi{
-		exchanger: exchanger,
-		storage:   storage,
+		envcd:   envcd,
+		storage: storage,
 		// the pluginChain for peer request router
 		// todo sort plugin
 		pluginChain: plugin.New(logging.New(), permission.New(), response.New()),
