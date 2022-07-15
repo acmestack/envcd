@@ -15,34 +15,8 @@
  * limitations under the License.
  */
 
-package logging
+package context
 
-import (
-	"github.com/acmestack/envcd/internal/pkg/constants"
-	"github.com/acmestack/envcd/internal/pkg/context"
-	"github.com/acmestack/envcd/internal/pkg/executor"
-	"github.com/acmestack/envcd/internal/pkg/plugin"
-)
-
-const (
-	name = "logging"
-)
-
-type Logging struct {
-	plugin.Plugin
-}
-
-func New() *Logging {
-	l := &Logging{}
-	l.Name = name
-	l.Sort = constants.LoggingSorted
-	return l
-}
-
-func (logging *Logging) Execute(context context.Context, chain executor.Chain) (ret interface{}, err error) {
-	return chain.Execute(context)
-}
-
-func (logging *Logging) Skip(context context.Context) bool {
-	return false
+// Context todo context
+type Context struct {
 }

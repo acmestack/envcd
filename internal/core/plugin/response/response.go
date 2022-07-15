@@ -19,32 +19,32 @@ package response
 
 import (
 	"github.com/acmestack/envcd/internal/pkg/constants"
+	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/executor"
+	"github.com/acmestack/envcd/internal/pkg/plugin"
+)
+
+const (
+	name = "response"
 )
 
 type Response struct {
+	plugin.Plugin
 }
 
 func New() *Response {
-	return &Response{}
+	r := &Response{}
+	r.Name = name
+	r.Sort = constants.ResponseSorted
+	return r
 }
 
-func (response *Response) Execute(context interface{}, data interface{}, chain executor.Chain) (ret interface{}, err error) {
-	//TODO implement me
-	panic("implement me")
+func (response *Response) Execute(context context.Context, chain executor.Chain) (ret interface{}, err error) {
+	return chain.Execute(context)
 }
 
-func (response *Response) Skip(context interface{}) bool {
+func (response *Response) Skip(context context.Context) bool {
 	return false
-}
-
-func (response *Response) Order() uint8 {
-	return constants.ResponseOrder
-}
-
-func (response *Response) Named() string {
-	//TODO implement me
-	panic("implement me")
 }
 
 // parse inner method, parse data from openapi

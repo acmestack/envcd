@@ -15,34 +15,25 @@
  * limitations under the License.
  */
 
-package logging
+package plugin
 
 import (
-	"github.com/acmestack/envcd/internal/pkg/constants"
 	"github.com/acmestack/envcd/internal/pkg/context"
-	"github.com/acmestack/envcd/internal/pkg/executor"
-	"github.com/acmestack/envcd/internal/pkg/plugin"
 )
 
-const (
-	name = "logging"
-)
-
-type Logging struct {
-	plugin.Plugin
+type Plugin struct {
+	Name string
+	Sort uint8
 }
 
-func New() *Logging {
-	l := &Logging{}
-	l.Name = name
-	l.Sort = constants.LoggingSorted
-	return l
-}
-
-func (logging *Logging) Execute(context context.Context, chain executor.Chain) (ret interface{}, err error) {
-	return chain.Execute(context)
-}
-
-func (logging *Logging) Skip(context context.Context) bool {
+func (p *Plugin) Skip(context context.Context) bool {
 	return false
+}
+
+func (p *Plugin) Sorted() uint8 {
+	return p.Sort
+}
+
+func (p *Plugin) Named() string {
+	return p.Name
 }

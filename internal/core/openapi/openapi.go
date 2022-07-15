@@ -24,6 +24,7 @@ import (
 	"github.com/acmestack/envcd/internal/core/plugin/response"
 	"github.com/acmestack/envcd/internal/core/storage"
 	"github.com/acmestack/envcd/internal/envcd"
+	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/executor"
 )
 
@@ -48,4 +49,8 @@ func Start(envcd *envcd.Envcd, storage *storage.Storage) {
 func (openapi *Openapi) openRouter() {
 	// fixme: plugin.NewChain(openapi.executors) for peer request
 	// plugin.NewChain(openapi.executors)
+	c := context.Context{}
+	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
+		print(ret)
+	}
 }

@@ -19,29 +19,30 @@ package permission
 
 import (
 	"github.com/acmestack/envcd/internal/pkg/constants"
+	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/executor"
+	"github.com/acmestack/envcd/internal/pkg/plugin"
 )
 
-type Permission struct{}
+const (
+	name = "permission"
+)
+
+type Permission struct {
+	plugin.Plugin
+}
 
 func New() *Permission {
-	return &Permission{}
+	p := &Permission{}
+	p.Name = name
+	p.Sort = constants.PermissionSorted
+	return p
 }
 
-func (permission *Permission) Execute(context interface{}, data interface{}, chain executor.Chain) (ret interface{}, err error) {
-	//TODO implement me
-	panic("implement me")
+func (permission *Permission) Execute(context context.Context, chain executor.Chain) (ret interface{}, err error) {
+	return chain.Execute(context)
 }
 
-func (permission *Permission) Skip(context interface{}) bool {
+func (permission *Permission) Skip(context context.Context) bool {
 	return false
-}
-
-func (permission *Permission) Order() uint8 {
-	return constants.PermissionOrder
-}
-
-func (permission *Permission) Named() string {
-	//TODO implement me
-	panic("implement me")
 }
