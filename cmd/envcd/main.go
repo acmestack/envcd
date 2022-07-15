@@ -30,5 +30,5 @@ func main() {
 	configFile := flag.String("config", "config/envcd.yaml", "envcd -config config/envcd.yaml")
 	flag.Parse()
 	// start openapi with exchanger & storage
-	openapi.Start(envcd.Start(config.NewConfig(configFile)), storage.Start()).OpenRouter()
+	openapi.Start(envcd.Start(config.NewConfig(configFile)), storage.Start())
 }
