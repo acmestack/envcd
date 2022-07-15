@@ -26,22 +26,22 @@ func New() *Response {
 	return &Response{}
 }
 
-func (r Response) Execute(context interface{}, data interface{}, chain executor.Chain) (ret interface{}, err error) {
+func (response *Response) Execute(context interface{}, data interface{}, chain executor.Chain) (ret interface{}, err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (r Response) Skip(context interface{}) bool {
+func (response *Response) Skip(context interface{}) bool {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (r Response) Order() uint8 {
+func (response *Response) Order() uint8 {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (r Response) Named() string {
+func (response *Response) Named() string {
 	//TODO implement me
 	panic("implement me")
 }
