@@ -19,50 +19,50 @@ package exchanger
 
 import (
 	"errors"
+
 	"github.com/acmestack/envcd/internal/core/exchanger/etcd"
 	"github.com/acmestack/envcd/internal/pkg/exchanger"
 )
 
 type Exchanger struct {
-	chain *exchanger.ExchangeChain
+	exchanger exchanger.Exchanger
 }
 
-// New make new Exchanger
-// todo with config exchanger kind
-func New() *Exchanger {
+// Start the Exchanger
+func Start() *Exchanger {
 	return &Exchanger{
-		chain: exchanger.Chain(etcd.New()),
+		exchanger: etcd.New(),
 	}
 }
 
 // Put new data to Exchanger by key and value
 func (exchanger *Exchanger) Put(key interface{}, value interface{}) error {
-	if exchanger == nil || exchanger.chain == nil {
+	if exchanger == nil || exchanger.exchanger == nil {
 		return errors.New("IIllegal state for exchanger")
 	}
-	return exchanger.chain.Put(key, value)
+	return exchanger.exchanger.Put(key, value)
 }
 
 // Get the data from Exchanger by key
 func (exchanger *Exchanger) Get(key interface{}) (interface{}, error) {
-	if exchanger == nil || exchanger.chain == nil {
+	if exchanger == nil || exchanger.exchanger == nil {
 		return nil, errors.New("IIllegal state for exchanger")
 	}
-	return exchanger.chain.Get(key)
+	return exchanger.exchanger.Get(key)
 }
 
 // Find delete the data from Exchanger by key
 func (exchanger *Exchanger) Find(key interface{}) (interface{}, error) {
-	if exchanger == nil || exchanger.chain == nil {
+	if exchanger == nil || exchanger.exchanger == nil {
 		return nil, errors.New("IIllegal state for exchanger")
 	}
-	return exchanger.chain.Find(key)
+	return exchanger.exchanger.Find(key)
 }
 
 // Remove delete the data from Exchanger by key
 func (exchanger *Exchanger) Remove(key interface{}) error {
-	if exchanger == nil || exchanger.chain == nil {
+	if exchanger == nil || exchanger.exchanger == nil {
 		return errors.New("IIllegal state for exchanger")
 	}
-	return exchanger.chain.Remove(key)
+	return exchanger.exchanger.Remove(key)
 }

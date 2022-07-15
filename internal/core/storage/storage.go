@@ -15,13 +15,11 @@
  * limitations under the License.
  */
 
-package plugin
+package storage
 
-// ExecutorChain the plugin executor chain
-// this is openapi chain, when http or client request into openapi, construct this chain
-type ExecutorChain interface {
+type Storage struct {
+}
 
-	// Execute plugin chain executor
-	//  @param context chain context
-	Execute(context interface{})
+func Start() *Storage {
+	return nil
 }

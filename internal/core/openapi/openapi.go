@@ -15,22 +15,33 @@
  * limitations under the License.
  */
 
-package envcd
+package openapi
 
 import (
 	"github.com/acmestack/envcd/internal/core/exchanger"
-	"github.com/acmestack/envcd/internal/core/openapi"
+	"github.com/acmestack/envcd/internal/core/plugin"
+	"github.com/acmestack/envcd/internal/core/plugin/logging"
+	"github.com/acmestack/envcd/internal/core/plugin/permission"
+	"github.com/acmestack/envcd/internal/core/plugin/response"
 	"github.com/acmestack/envcd/internal/core/storage"
-	"github.com/acmestack/envcd/internal/pkg/config"
 )
 
-// EnvcdConfig the envcd global config
-var EnvcdConfig *config.Config
+type Openapi struct {
+	exchanger   *exchanger.Exchanger
+	storage     *storage.Storage
+	pluginChain *plugin.Chain
+}
 
-func Start(envcdConfig *config.Config) {
-	// show start information & parser config
-	envcdConfig.StartInformation()
-	EnvcdConfig = envcdConfig
-	// start openapi with exchanger & storage
-	openapi.Start(exchanger.Start(), storage.Start()).OpenRouter()
+func Start(exchanger *exchanger.Exchanger, storage *storage.Storage) *Openapi {
+	return &Openapi{
+		exchanger: exchanger,
+		storage:   storage,
+		// the pluginChain for peer request router
+		// todo sort plugin
+		pluginChain: plugin.New(logging.New(), permission.New(), response.New()),
+	}
+}
+
+func (openapi *Openapi) OpenRouter() {
+
 }

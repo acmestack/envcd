@@ -15,40 +15,34 @@
  * limitations under the License.
  */
 
-package response
+package permission
 
 import (
-	"github.com/acmestack/envcd/internal/pkg/plugin"
+	"github.com/acmestack/envcd/internal/pkg/executor"
 )
 
-type RespExecutor struct {
+type Permission struct{}
+
+func New() *Permission {
+	return &Permission{}
 }
 
-func (r RespExecutor) Execute(context interface{}, data interface{}, executor plugin.ExecutorChain) {
+func (permission *Permission) Execute(context interface{}, data interface{}, chain executor.Chain) (ret interface{}, err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (r RespExecutor) Skip(context interface{}) bool {
+func (permission *Permission) Skip(context interface{}) bool {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (r RespExecutor) Order() uint8 {
+func (permission *Permission) Order() uint8 {
 	//TODO implement me
 	panic("implement me")
 }
 
-func (r RespExecutor) Named() string {
+func (permission *Permission) Named() string {
 	//TODO implement me
 	panic("implement me")
-}
-
-// parse inner method, parse data from openapi
-//  @param data data
-//  @return result result
-//  @return err error
-func parse(data interface{}) (result map[string]string, err error) {
-	//TODO parse data to map
-	return nil, err
 }

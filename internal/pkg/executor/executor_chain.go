@@ -15,25 +15,11 @@
  * limitations under the License.
  */
 
-package plugin
+package executor
 
-// Executor the plugin executor
-type Executor interface {
+type Chain interface {
 
-	// Execute execute code
-	// Context come from every plugin, data from dashboard
-	//  @param data
-	Execute(context interface{}, data interface{}, executor ExecutorChain)
-
-	// Skip skip current plugin
-	//  @param exist
-	Skip(context interface{}) bool
-
-	// Order plugin execute order
-	//  @param order order
-	Order() uint8
-
-	// Named plugin name
-	//  @param name plugin name
-	Named() string
+	// Execute chain executor
+	//  @param context chain context
+	Execute(context interface{}) (ret interface{}, err error)
 }

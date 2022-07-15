@@ -18,17 +18,61 @@
 package exchanger
 
 import (
+	"errors"
 	"reflect"
 	"testing"
 
-	"github.com/acmestack/envcd/internal/core/storage/memory"
 	"github.com/acmestack/envcd/internal/pkg/exchanger"
 )
 
+type Memory struct {
+	size uint
+	data map[interface{}]interface{}
+}
+
+func New() *Memory {
+	return &Memory{
+		size: 0,
+		data: make(map[interface{}]interface{}, 10),
+	}
+}
+
+func (memory *Memory) Put(key interface{}, value interface{}) error {
+	if memory == nil || memory.data == nil {
+		return errors.New("the illegal state of memory exchanger")
+	}
+	if memory.data[key] == nil {
+		memory.size++
+	}
+	// if key is exist override or put it
+	memory.data[key] = value
+	return nil
+}
+
+func (memory *Memory) Get(key interface{}) (interface{}, error) {
+	if memory == nil || memory.data == nil {
+		return nil, errors.New("the illegal state of memory exchanger")
+	}
+	return memory.data[key], nil
+}
+
+func (memory *Memory) Find(key interface{}) (interface{}, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (memory *Memory) Remove(key interface{}) error {
+	if memory == nil || memory.data == nil {
+		return errors.New("the Dictionary illegal state")
+	}
+	delete(memory.data, key)
+	memory.size--
+	return nil
+}
 func TestNew(t *testing.T) {
 	tests := []struct {
 		name string
-		want *Exchanger
+		want *Memory
 	}{
 		{
 			want: New(),
@@ -37,6 +81,152 @@ func TestNew(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := New(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("New() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_Memory_Get(t *testing.T) {
+	type fields struct {
+		size uint
+		data map[interface{}]interface{}
+	}
+	type args struct {
+		key interface{}
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		want    interface{}
+		wantErr bool
+	}{
+		{
+			fields: fields{
+				size: 1,
+				data: map[interface{}]interface{}{
+					"a": "value",
+				},
+			},
+			args:    args{key: "a"},
+			want:    "value",
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dict := &Memory{
+				size: tt.fields.size,
+				data: tt.fields.data,
+			}
+			got, err := dict.Get(tt.args.key)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Get() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Get() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_Memory_Put(t *testing.T) {
+	type fields struct {
+		size uint
+		data map[interface{}]interface{}
+	}
+	type args struct {
+		key   interface{}
+		value interface{}
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		wantErr bool
+	}{
+		{
+
+			fields: fields{
+				size: 1,
+				data: map[interface{}]interface{}{},
+			},
+			args:    args{key: "a", value: "value"},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dict := &Memory{
+				size: tt.fields.size,
+				data: tt.fields.data,
+			}
+			if err := dict.Put(tt.args.key, tt.args.value); (err != nil) != tt.wantErr {
+				t.Errorf("Put() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if data, err := dict.Get(tt.args.key); (err != nil) || data != tt.args.value {
+				t.Errorf("Get() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func Test_Memory_Remove(t *testing.T) {
+	type fields struct {
+		size uint
+		data map[interface{}]interface{}
+	}
+	type args struct {
+		key interface{}
+	}
+	tests := []struct {
+		name    string
+		fields  fields
+		args    args
+		wantErr bool
+	}{
+		{
+
+			fields: fields{
+				size: 1,
+				data: map[interface{}]interface{}{
+					"a": "value",
+				},
+			},
+			args:    args{key: "a"},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			dict := &Memory{
+				size: tt.fields.size,
+				data: tt.fields.data,
+			}
+			if err := dict.Remove(tt.args.key); (err != nil) != tt.wantErr {
+				t.Errorf("Remove() error = %v, wantErr %v", err, tt.wantErr)
+			}
+			if data, err := dict.Get(tt.args.key); (err != nil) || data == "value" {
+				t.Errorf("Get() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func TestStart(t *testing.T) {
+	tests := []struct {
+		name string
+		want *Exchanger
+	}{
+		{
+			want: Start(),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Start(); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Chain() = %v, want %v", got, tt.want)
 			}
 		})
@@ -45,12 +235,12 @@ func TestNew(t *testing.T) {
 
 func Test_Exchanger_Get(t *testing.T) {
 	type fields struct {
-		chain *exchanger.ExchangeChain
+		exchanger exchanger.Exchanger
 	}
 	type args struct {
 		key interface{}
 	}
-	mem := memory.New()
+	mem := New()
 	_ = mem.Put("a", "value")
 	tests := []struct {
 		name    string
@@ -61,7 +251,7 @@ func Test_Exchanger_Get(t *testing.T) {
 	}{
 		{
 			fields: fields{
-				chain: exchanger.Chain(mem),
+				exchanger: mem,
 			},
 			args:    args{key: "a"},
 			want:    "value",
@@ -71,7 +261,7 @@ func Test_Exchanger_Get(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			dict := &Exchanger{
-				chain: tt.fields.chain,
+				exchanger: tt.fields.exchanger,
 			}
 			got, err := dict.Get(tt.args.key)
 			if (err != nil) != tt.wantErr {
@@ -87,7 +277,7 @@ func Test_Exchanger_Get(t *testing.T) {
 
 func Test_Exchanger_Put(t *testing.T) {
 	type fields struct {
-		chain *exchanger.ExchangeChain
+		exchanger exchanger.Exchanger
 	}
 	type args struct {
 		key   interface{}
@@ -102,7 +292,7 @@ func Test_Exchanger_Put(t *testing.T) {
 		{
 
 			fields: fields{
-				chain: exchanger.Chain(memory.New()),
+				exchanger: New(),
 			},
 			args:    args{key: "a", value: "value"},
 			wantErr: false,
@@ -111,7 +301,7 @@ func Test_Exchanger_Put(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			dict := &Exchanger{
-				chain: tt.fields.chain,
+				exchanger: tt.fields.exchanger,
 			}
 			if err := dict.Put(tt.args.key, tt.args.value); (err != nil) != tt.wantErr {
 				t.Errorf("Put() error = %v, wantErr %v", err, tt.wantErr)
@@ -122,12 +312,12 @@ func Test_Exchanger_Put(t *testing.T) {
 
 func Test_Exchanger_Remove(t *testing.T) {
 	type fields struct {
-		chain *exchanger.ExchangeChain
+		exchanger exchanger.Exchanger
 	}
 	type args struct {
 		key interface{}
 	}
-	mem := memory.New()
+	mem := New()
 	_ = mem.Put("a", "value")
 	tests := []struct {
 		name    string
@@ -137,7 +327,7 @@ func Test_Exchanger_Remove(t *testing.T) {
 	}{
 		{
 			fields: fields{
-				chain: exchanger.Chain(mem),
+				exchanger: mem,
 			},
 			args:    args{key: "a"},
 			wantErr: false,
@@ -146,7 +336,7 @@ func Test_Exchanger_Remove(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			dict := &Exchanger{
-				chain: tt.fields.chain,
+				exchanger: tt.fields.exchanger,
 			}
 			if err := dict.Remove(tt.args.key); (err != nil) != tt.wantErr {
 				t.Errorf("Remove() error = %v, wantErr %v", err, tt.wantErr)

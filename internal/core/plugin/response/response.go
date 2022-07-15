@@ -15,47 +15,42 @@
  * limitations under the License.
  */
 
-package etcd
+package response
 
-// todo memory exchanger
-// todo write logging first, write data second
-// todo logging module, chain
+import "github.com/acmestack/envcd/internal/pkg/executor"
 
-type Etcd struct {
+type Response struct {
 }
 
-func New() *Etcd {
-	return &Etcd{}
+func New() *Response {
+	return &Response{}
 }
 
-// Put put data into exchanger
-//  @param key data identity
-//  @param value data
-func (etcd *Etcd) Put(key interface{}, value interface{}) error {
+func (response *Response) Execute(context interface{}, data interface{}, chain executor.Chain) (ret interface{}, err error) {
 	//TODO implement me
 	panic("implement me")
 }
 
-// Get get data from etcd
-//  @receiver exchanger etcd exchanger
-//  @param o data
-func (etcd *Etcd) Get(key interface{}) (interface{}, error) {
+func (response *Response) Skip(context interface{}) bool {
 	//TODO implement me
 	panic("implement me")
 }
 
-// Find find data from etcd
-//  @receiver exchanger etcd exchanger
-//  @param o data
-func (etcd *Etcd) Find(key interface{}) (interface{}, error) {
+func (response *Response) Order() uint8 {
 	//TODO implement me
 	panic("implement me")
 }
 
-// Remove remove data from etcd
-//  @receiver exchanger etcd exchanger
-//  @param o data
-func (etcd *Etcd) Remove(key interface{}) error {
+func (response *Response) Named() string {
 	//TODO implement me
 	panic("implement me")
+}
+
+// parse inner method, parse data from openapi
+//  @param data data
+//  @return result result
+//  @return err error
+func parse(data interface{}) (result map[string]string, err error) {
+	//TODO parse data to map
+	return nil, err
 }
