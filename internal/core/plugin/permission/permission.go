@@ -18,6 +18,7 @@
 package permission
 
 import (
+	"github.com/acmestack/envcd/internal/pkg/constants"
 	"github.com/acmestack/envcd/internal/pkg/executor"
 )
 
@@ -33,13 +34,11 @@ func (permission *Permission) Execute(context interface{}, data interface{}, cha
 }
 
 func (permission *Permission) Skip(context interface{}) bool {
-	//TODO implement me
-	panic("implement me")
+	return false
 }
 
 func (permission *Permission) Order() uint8 {
-	//TODO implement me
-	panic("implement me")
+	return constants.PermissionOrder
 }
 
 func (permission *Permission) Named() string {
