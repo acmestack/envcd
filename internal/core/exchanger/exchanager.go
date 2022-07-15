@@ -19,7 +19,6 @@ package exchanger
 
 import (
 	"errors"
-
 	"github.com/acmestack/envcd/internal/core/exchanger/etcd"
 	"github.com/acmestack/envcd/internal/pkg/exchanger"
 )

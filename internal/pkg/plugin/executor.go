@@ -21,7 +21,7 @@ package plugin
 type Executor interface {
 
 	// Execute execute code
-	// Context come from every plugins, data from dashboard
+	// Context come from every plugin, data from dashboard
 	//  @param data
 	Execute(context interface{}, data interface{}, executor ExecutorChain)
 
