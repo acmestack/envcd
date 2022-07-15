@@ -18,11 +18,10 @@
 package envcd
 
 import (
-	"errors"
-
 	"github.com/acmestack/envcd/internal/core/exchanger/etcd"
 	"github.com/acmestack/envcd/internal/pkg/config"
 	"github.com/acmestack/envcd/internal/pkg/exchanger"
+	"github.com/acmestack/godkits/gox/errorsx"
 )
 
 // EnvcdConfig the envcd global config
@@ -45,7 +44,7 @@ func Start(envcdConfig *config.Config) *Envcd {
 // Put new data to Exchanger by key and value
 func (envcd *Envcd) Put(key interface{}, value interface{}) error {
 	if envcd == nil || envcd.exchanger == nil {
-		return errors.New("IIllegal state for exchanger")
+		return errorsx.Err("IIllegal state for envcd")
 	}
 	return envcd.exchanger.Put(key, value)
 }
@@ -53,7 +52,7 @@ func (envcd *Envcd) Put(key interface{}, value interface{}) error {
 // Get the data from Exchanger by key
 func (envcd *Envcd) Get(key interface{}) (interface{}, error) {
 	if envcd == nil || envcd.exchanger == nil {
-		return nil, errors.New("IIllegal state for exchanger")
+		return nil, errorsx.Err("IIllegal state for envcd")
 	}
 	return envcd.exchanger.Get(key)
 }
@@ -61,7 +60,7 @@ func (envcd *Envcd) Get(key interface{}) (interface{}, error) {
 // Find delete the data from Exchanger by key
 func (envcd *Envcd) Find(key interface{}) (interface{}, error) {
 	if envcd == nil || envcd.exchanger == nil {
-		return nil, errors.New("IIllegal state for exchanger")
+		return nil, errorsx.Err("IIllegal state for envcd")
 	}
 	return envcd.exchanger.Find(key)
 }
@@ -69,7 +68,7 @@ func (envcd *Envcd) Find(key interface{}) (interface{}, error) {
 // Remove delete the data from Exchanger by key
 func (envcd *Envcd) Remove(key interface{}) error {
 	if envcd == nil || envcd.exchanger == nil {
-		return errors.New("IIllegal state for exchanger")
+		return errorsx.Err("IIllegal state for envcd")
 	}
 	return envcd.exchanger.Remove(key)
 }

@@ -209,7 +209,7 @@ func Test_Memory_Remove(t *testing.T) {
 			if err := dict.Remove(tt.args.key); (err != nil) != tt.wantErr {
 				t.Errorf("Remove() error = %v, wantErr %v", err, tt.wantErr)
 			}
-			if data, err := dict.Get(tt.args.key); (err != nil) || data == "value" {
+			if data, err := dict.Get(tt.args.key); ((err != nil) != tt.wantErr) && data != "" {
 				t.Errorf("Get() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -259,6 +259,14 @@ func Test_Exchanger_Get(t *testing.T) {
 			want:    "value",
 			wantErr: false,
 		},
+		{
+			fields: fields{
+				exchanger: nil,
+			},
+			args:    args{key: "a"},
+			want:    nil,
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -299,6 +307,14 @@ func Test_Exchanger_Put(t *testing.T) {
 			args:    args{key: "a", value: "value"},
 			wantErr: false,
 		},
+		{
+
+			fields: fields{
+				exchanger: nil,
+			},
+			args:    args{key: "a", value: "value"},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -334,6 +350,13 @@ func Test_Exchanger_Remove(t *testing.T) {
 			args:    args{key: "a"},
 			wantErr: false,
 		},
+		{
+			fields: fields{
+				exchanger: nil,
+			},
+			args:    args{key: "a"},
+			wantErr: true,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -343,7 +366,7 @@ func Test_Exchanger_Remove(t *testing.T) {
 			if err := dict.Remove(tt.args.key); (err != nil) != tt.wantErr {
 				t.Errorf("Remove() error = %v, wantErr %v", err, tt.wantErr)
 			}
-			if data, err := dict.Get(tt.args.key); (err != nil) || data == "value" {
+			if data, err := dict.Get(tt.args.key); ((err != nil) != tt.wantErr) && data != "" {
 				t.Errorf("Get() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
