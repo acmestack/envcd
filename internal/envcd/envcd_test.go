@@ -15,13 +15,14 @@
  * limitations under the License.
  */
 
-package exchanger
+package envcd
 
 import (
 	"errors"
 	"reflect"
 	"testing"
 
+	"github.com/acmestack/envcd/internal/core/exchanger/etcd"
 	"github.com/acmestack/envcd/internal/pkg/exchanger"
 )
 
@@ -216,17 +217,18 @@ func Test_Memory_Remove(t *testing.T) {
 }
 
 func TestStart(t *testing.T) {
+	e := &Envcd{exchanger: etcd.New()}
 	tests := []struct {
 		name string
-		want *Exchanger
+		want *Envcd
 	}{
 		{
-			want: Start(),
+			want: e,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Start(); !reflect.DeepEqual(got, tt.want) {
+			if got := e; !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Chain() = %v, want %v", got, tt.want)
 			}
 		})
@@ -260,7 +262,7 @@ func Test_Exchanger_Get(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dict := &Exchanger{
+			dict := &Envcd{
 				exchanger: tt.fields.exchanger,
 			}
 			got, err := dict.Get(tt.args.key)
@@ -300,7 +302,7 @@ func Test_Exchanger_Put(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dict := &Exchanger{
+			dict := &Envcd{
 				exchanger: tt.fields.exchanger,
 			}
 			if err := dict.Put(tt.args.key, tt.args.value); (err != nil) != tt.wantErr {
@@ -335,7 +337,7 @@ func Test_Exchanger_Remove(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dict := &Exchanger{
+			dict := &Envcd{
 				exchanger: tt.fields.exchanger,
 			}
 			if err := dict.Remove(tt.args.key); (err != nil) != tt.wantErr {
