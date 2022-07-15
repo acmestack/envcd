@@ -22,7 +22,6 @@ import (
 )
 
 type RespExecutor struct {
-	responseExecutor *plugin.Executor
 }
 
 func (r RespExecutor) Execute(context interface{}, data interface{}, executor plugin.ExecutorChain) {
