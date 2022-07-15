@@ -17,26 +17,27 @@
 
 package executor
 
+import "github.com/acmestack/envcd/internal/pkg/context"
+
 // Executor the executor
 type Executor interface {
 
 	// Execute execute code
 	// Context come from every exector, data from dashboard
 	//  @param context
-	//  @param data todo data entity?
 	//  @param executor
 	//  @return ret, error
-	Execute(context interface{}, data interface{}, chain Chain) (ret interface{}, err error)
+	Execute(context context.Context, chain Chain) (ret interface{}, err error)
 
 	// Skip current executor
 	//  @return skip current executor or not
-	Skip(context interface{}) bool
+	Skip(context context.Context) bool
 
-	// Order executor execute order
+	// Sorted executor execute order
 	//  @return order
-	Order() uint8
+	Sorted() uint8
 
 	// Named executor name
-	//  @return name for executor
+	//  @return named for executor
 	Named() string
 }

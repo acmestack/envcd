@@ -19,28 +19,30 @@ package logging
 
 import (
 	"github.com/acmestack/envcd/internal/pkg/constants"
+	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/executor"
+	"github.com/acmestack/envcd/internal/pkg/plugin"
 )
 
-type Logging struct{}
+const (
+	name = "logging"
+)
+
+type Logging struct {
+	plugin.Plugin
+}
 
 func New() *Logging {
-	return &Logging{}
+	l := &Logging{}
+	l.Name = name
+	l.Sort = constants.LoggingOrder
+	return l
 }
 
-func (logging *Logging) Execute(context interface{}, data interface{}, chain executor.Chain) (ret interface{}, err error) {
-	return context, nil
+func (logging *Logging) Execute(context context.Context, chain executor.Chain) (ret interface{}, err error) {
+	return chain.Execute(context)
 }
 
-func (logging *Logging) Skip(context interface{}) bool {
+func (logging *Logging) Skip(context context.Context) bool {
 	return false
-}
-
-func (logging *Logging) Order() uint8 {
-	return constants.LoggingOrder
-}
-
-func (logging *Logging) Named() string {
-	//TODO implement me
-	panic("implement me")
 }

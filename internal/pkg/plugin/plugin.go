@@ -15,34 +15,25 @@
  * limitations under the License.
  */
 
-package permission
+package plugin
 
 import (
-	"github.com/acmestack/envcd/internal/pkg/constants"
 	"github.com/acmestack/envcd/internal/pkg/context"
-	"github.com/acmestack/envcd/internal/pkg/executor"
-	"github.com/acmestack/envcd/internal/pkg/plugin"
 )
 
-const (
-	name = "permission"
-)
-
-type Permission struct {
-	plugin.Plugin
+type Plugin struct {
+	Name string
+	Sort uint8
 }
 
-func New() *Permission {
-	p := &Permission{}
-	p.Name = name
-	p.Sort = constants.PermissionOrder
-	return p
-}
-
-func (permission *Permission) Execute(context context.Context, chain executor.Chain) (ret interface{}, err error) {
-	return chain.Execute(context)
-}
-
-func (permission *Permission) Skip(context context.Context) bool {
+func (p *Plugin) Skip(context context.Context) bool {
 	return false
+}
+
+func (p *Plugin) Sorted() uint8 {
+	return p.Sort
+}
+
+func (p *Plugin) Named() string {
+	return p.Name
 }

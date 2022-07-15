@@ -15,13 +15,8 @@
  * limitations under the License.
  */
 
-package executor
+package context
 
-import "github.com/acmestack/envcd/internal/pkg/context"
-
-type Chain interface {
-
-	// Execute chain executor
-	//  @param context chain context
-	Execute(context context.Context) (ret interface{}, err error)
+// Context todo context
+type Context struct {
 }

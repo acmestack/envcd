@@ -18,25 +18,27 @@
 package plugin
 
 import (
+	"fmt"
 	"sort"
 
 	"github.com/acmestack/envcd/internal/core/plugin/response"
+	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/executor"
 	"github.com/acmestack/godkits/gox/errorsx"
 )
 
-type sortedExecutor []executor.Executor
+type executorArray []executor.Executor
 
-func (s sortedExecutor) Len() int {
-	return len(s)
+func (ea executorArray) Len() int {
+	return len(ea)
 }
 
-func (s sortedExecutor) Less(i, j int) bool {
-	return s[i].Order() < s[j].Order()
+func (ea executorArray) Less(i, j int) bool {
+	return ea[i].Sorted() < ea[j].Sorted()
 }
 
-func (s sortedExecutor) Swap(i, j int) {
-	s[i], s[j] = s[j], s[i]
+func (ea executorArray) Swap(i, j int) {
+	ea[i], ea[j] = ea[j], ea[i]
 }
 
 // Chain the executor chain
@@ -47,30 +49,32 @@ type Chain struct {
 }
 
 // Sort the plugins
-func Sort(executors sortedExecutor) {
+func Sort(executors executorArray) {
 	sort.Sort(executors)
 }
 
 // NewChain plugin chain for peer request
-func NewChain(executors sortedExecutor) *Chain {
+func NewChain(executors executorArray) *Chain {
 	return &Chain{executors: executors, index: 0}
 }
 
 // Execute chain executor
 //  @param context chain context
-func (chain *Chain) Execute(context interface{}) (ret interface{}, err error) {
+func (chain *Chain) Execute(context context.Context) (ret interface{}, err error) {
 	if chain == nil || chain.executors == nil || len(chain.executors) == 0 {
-		return nil, errorsx.Err("IIllegal state for plugin chain.")
+		message := "IIllegal state for plugin chain."
+		return response.Failure(message), errorsx.Err(message)
 	}
 	if chain.index < len(chain.executors) {
-		current := chain.executors[chain.index]
+		currentExecutor := chain.executors[chain.index]
 		chain.index++
-		if current.Skip(context) {
+		if currentExecutor.Skip(context) {
 			return chain.Execute(context)
 		}
 		// todo log
+		fmt.Printf("plugin name '%v' sorted at '%v'\n", currentExecutor.Named(), currentExecutor.Sorted())
 		// todo data
-		return current.Execute(context, nil, chain)
+		return currentExecutor.Execute(context, chain)
 	}
 	return response.Success(nil), nil
 }
