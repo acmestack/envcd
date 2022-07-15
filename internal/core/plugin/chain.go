@@ -17,7 +17,11 @@
 
 package plugin
 
-import "github.com/acmestack/envcd/internal/pkg/executor"
+import (
+	"github.com/acmestack/envcd/internal/core/plugin/response"
+	"github.com/acmestack/envcd/internal/pkg/executor"
+	"github.com/acmestack/godkits/gox/errorsx"
+)
 
 // Chain the executor chain
 // this is openapi chain, when http or client request into openapi, construct this chain
@@ -34,7 +38,7 @@ func New(executors ...executor.Executor) *Chain {
 //  @param context chain context
 func (chain *Chain) Execute(context interface{}) (ret interface{}, err error) {
 	if chain == nil || chain.executors == nil || len(chain.executors) == 0 {
-		return
+		return nil, errorsx.Err("IIllegal state for plugin chain.")
 	}
 	if chain.index < len(chain.executors) {
 		current := chain.executors[chain.index]
@@ -46,5 +50,5 @@ func (chain *Chain) Execute(context interface{}) (ret interface{}, err error) {
 		// todo data
 		return current.Execute(context, nil, chain)
 	}
-	return nil, nil
+	return response.Success(nil), nil
 }
