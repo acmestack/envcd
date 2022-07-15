@@ -15,22 +15,32 @@
  * limitations under the License.
  */
 
-package envcd
+package logging
 
 import (
-	"github.com/acmestack/envcd/internal/core/exchanger"
-	"github.com/acmestack/envcd/internal/core/openapi"
-	"github.com/acmestack/envcd/internal/core/storage"
-	"github.com/acmestack/envcd/internal/pkg/config"
+	"github.com/acmestack/envcd/internal/pkg/executor"
 )
 
-// EnvcdConfig the envcd global config
-var EnvcdConfig *config.Config
+type Logging struct{}
 
-func Start(envcdConfig *config.Config) {
-	// show start information & parser config
-	envcdConfig.StartInformation()
-	EnvcdConfig = envcdConfig
-	// start openapi with exchanger & storage
-	openapi.Start(exchanger.Start(), storage.Start()).OpenRouter()
+func New() *Logging {
+	return &Logging{}
+}
+
+func (logging *Logging) Execute(context interface{}, data interface{}, chain executor.Chain) (ret interface{}, err error) {
+	return context, nil
+}
+
+func (logging *Logging) Skip(context interface{}) bool {
+	return false
+}
+
+func (logging *Logging) Order() uint8 {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (logging *Logging) Named() string {
+	//TODO implement me
+	panic("implement me")
 }

@@ -49,7 +49,7 @@ func parser(connection string) *ConnMetadata {
 }
 
 func (connMedata *ConnMetadata) information(t string) {
-	// todo log
+	// todo logging
 	fmt.Println(fmt.Sprintf("ConnectionMetadata For %v", t))
 	fmt.Println(fmt.Sprintf("Type: %v", connMedata.Type))
 	fmt.Println(fmt.Sprintf("UserName: %v", connMedata.UserName))

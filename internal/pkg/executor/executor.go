@@ -15,22 +15,28 @@
  * limitations under the License.
  */
 
-package envcd
+package executor
 
-import (
-	"github.com/acmestack/envcd/internal/core/exchanger"
-	"github.com/acmestack/envcd/internal/core/openapi"
-	"github.com/acmestack/envcd/internal/core/storage"
-	"github.com/acmestack/envcd/internal/pkg/config"
-)
+// Executor the executor
+type Executor interface {
 
-// EnvcdConfig the envcd global config
-var EnvcdConfig *config.Config
+	// Execute execute code
+	// Context come from every exector, data from dashboard
+	//  @param context
+	//  @param data todo data entity?
+	//  @param executor
+	//  @return ret, error
+	Execute(context interface{}, data interface{}, chain Chain) (ret interface{}, err error)
 
-func Start(envcdConfig *config.Config) {
-	// show start information & parser config
-	envcdConfig.StartInformation()
-	EnvcdConfig = envcdConfig
-	// start openapi with exchanger & storage
-	openapi.Start(exchanger.Start(), storage.Start()).OpenRouter()
+	// Skip current executor
+	//  @return skip current executor or not
+	Skip(context interface{}) bool
+
+	// Order executor execute order
+	//  @return order
+	Order() uint8
+
+	// Named executor name
+	//  @return name for executor
+	Named() string
 }
