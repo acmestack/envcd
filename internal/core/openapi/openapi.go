@@ -32,16 +32,18 @@ type Openapi struct {
 	pluginChain *plugin.Chain
 }
 
-func Start(envcd *envcd.Envcd, storage *storage.Storage) *Openapi {
-	return &Openapi{
+func Start(envcd *envcd.Envcd, storage *storage.Storage) {
+	openapi := &Openapi{
 		envcd:   envcd,
 		storage: storage,
 		// the pluginChain for peer request router
 		// todo sort plugin
 		pluginChain: plugin.New(logging.New(), permission.New(), response.New()),
 	}
+	openapi.openRouter()
 }
 
-func (openapi *Openapi) OpenRouter() {
+// todo open Router
+func (openapi *Openapi) openRouter() {
 
 }

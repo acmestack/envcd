@@ -39,9 +39,7 @@ func Start(envcdConfig *config.Config) *Envcd {
 	// show start information & parser config
 	envcdConfig.StartInformation()
 	EnvcdConfig = envcdConfig
-	instance := &Envcd{exchanger: etcd.New()}
-	instance.envcdConfig = envcdConfig
-	return instance
+	return &Envcd{exchanger: etcd.New(), envcdConfig: envcdConfig}
 }
 
 // Put new data to Exchanger by key and value
