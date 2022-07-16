@@ -40,7 +40,7 @@ func New() *Response {
 	return r
 }
 
-func (response *Response) Execute(context *context.Context, chain executor.Chain) (ret *data.EnvcdResult, err error) {
+func (response *Response) Execute(context *context.Context, chain executor.Chain) (*data.EnvcdResult, error) {
 	if context.Action != nil {
 		return context.Action()
 	}

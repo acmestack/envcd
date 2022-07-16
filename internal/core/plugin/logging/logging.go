@@ -40,7 +40,7 @@ func New() *Logging {
 	return l
 }
 
-func (logging *Logging) Execute(context *context.Context, chain executor.Chain) (ret *data.EnvcdResult, err error) {
+func (logging *Logging) Execute(context *context.Context, chain executor.Chain) (*data.EnvcdResult, error) {
 	return chain.Execute(context)
 }
 

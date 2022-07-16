@@ -30,7 +30,7 @@ type Executor interface {
 	//  @param context
 	//  @param executor
 	//  @return ret, error
-	Execute(context *context.Context, chain Chain) (ret *data.EnvcdResult, err error)
+	Execute(context *context.Context, chain Chain) (*data.EnvcdResult, error)
 
 	// Skip current executor
 	//  @return skip current executor or not

@@ -40,7 +40,7 @@ func New() *Permission {
 	return p
 }
 
-func (permission *Permission) Execute(context *context.Context, chain executor.Chain) (ret *data.EnvcdResult, err error) {
+func (permission *Permission) Execute(context *context.Context, chain executor.Chain) (*data.EnvcdResult, error) {
 	return chain.Execute(context)
 }
 

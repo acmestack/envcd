@@ -26,5 +26,5 @@ type Chain interface {
 
 	// Execute chain executor
 	//  @param context chain context
-	Execute(context *context.Context) (ret *data.EnvcdResult, err error)
+	Execute(context *context.Context) (*data.EnvcdResult, error)
 }
