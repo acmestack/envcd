@@ -56,7 +56,7 @@ func TestExecutorChain_Execute(t *testing.T) {
 		index     int
 	}
 	type args struct {
-		context context.Context
+		context *context.Context
 	}
 	tests := []struct {
 		name    string
@@ -70,7 +70,7 @@ func TestExecutorChain_Execute(t *testing.T) {
 				executors: []executor.Executor{logging.New()},
 				index:     0,
 			},
-			args:    args{context: context.Context{}},
+			args:    args{context: &context.Context{}},
 			wantRet: response.Success(nil),
 			wantErr: false,
 		},
