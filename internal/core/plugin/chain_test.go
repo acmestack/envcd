@@ -22,9 +22,9 @@ import (
 	"testing"
 
 	"github.com/acmestack/envcd/internal/core/plugin/logging"
-	"github.com/acmestack/envcd/internal/core/plugin/response"
 	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/executor"
+	"github.com/acmestack/envcd/pkg/entity/data"
 )
 
 func TestNewChain(t *testing.T) {
@@ -71,7 +71,7 @@ func TestExecutorChain_Execute(t *testing.T) {
 				index:     0,
 			},
 			args:    args{context: &context.Context{}},
-			wantRet: response.Success(nil),
+			wantRet: data.Success(nil),
 			wantErr: false,
 		},
 	}

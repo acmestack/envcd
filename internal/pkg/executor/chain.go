@@ -17,11 +17,14 @@
 
 package executor
 
-import "github.com/acmestack/envcd/internal/pkg/context"
+import (
+	"github.com/acmestack/envcd/internal/pkg/context"
+	"github.com/acmestack/envcd/pkg/entity/data"
+)
 
 type Chain interface {
 
 	// Execute chain executor
 	//  @param context chain context
-	Execute(context *context.Context) (ret interface{}, err error)
+	Execute(context *context.Context) (*data.EnvcdResult, error)
 }

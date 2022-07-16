@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package response
+package data
 
 import (
 	"reflect"
@@ -29,7 +29,7 @@ func TestFailure(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want *Data
+		want *EnvcdResult
 	}{
 		{
 			args: args{message: "failure"},
@@ -52,7 +52,7 @@ func TestSuccess(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want *Data
+		want *EnvcdResult
 	}{
 		{
 			args: args{data: "ok"},
@@ -69,7 +69,7 @@ func TestSuccess(t *testing.T) {
 }
 
 func TestKey(t *testing.T) {
-	CodeKey = "a"
+	ResultCodeKey = "a"
 	tests := []struct {
 		name string
 		want string

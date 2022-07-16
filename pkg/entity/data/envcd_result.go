@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package response
+package data
 
 const (
 	successCode = "SUCCESS"
@@ -23,37 +23,34 @@ const (
 )
 
 var (
-	CodeKey    = "code"
-	MessageKey = "message"
-	DataKey    = "data"
+	ResultCodeKey    = "code"
+	ResultMessageKey = "message"
+	ResultDataKey    = "data"
 )
 
-// Data for response
-type Data struct {
-	codeKey    string
-	messageKey string
-	dataKey    string
-	Data       map[interface{}]interface{}
+// EnvcdResult for response
+type EnvcdResult struct {
+	Data map[interface{}]interface{}
 }
 
 // Success response
 //  @param data
-//  @return *Data
-func Success(data interface{}) *Data {
-	return &Data{Data: map[interface{}]interface{}{
-		CodeKey:    successCode,
-		MessageKey: "success",
-		DataKey:    data,
+//  @return *EnvcdResult
+func Success(data interface{}) *EnvcdResult {
+	return &EnvcdResult{Data: map[interface{}]interface{}{
+		ResultCodeKey:    successCode,
+		ResultMessageKey: "success",
+		ResultDataKey:    data,
 	}}
 }
 
 // Failure response
 //  @param message of error reason
-//  @return *Data
-func Failure(message string) *Data {
-	return &Data{Data: map[interface{}]interface{}{
-		CodeKey:    failureCode,
-		MessageKey: message,
-		DataKey:    nil,
+//  @return *EnvcdResult
+func Failure(message string) *EnvcdResult {
+	return &EnvcdResult{Data: map[interface{}]interface{}{
+		ResultCodeKey:    failureCode,
+		ResultMessageKey: message,
+		ResultDataKey:    nil,
 	}}
 }
