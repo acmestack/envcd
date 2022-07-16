@@ -21,9 +21,9 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/acmestack/envcd/internal/core/plugin/response"
 	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/executor"
+	"github.com/acmestack/envcd/pkg/entity/data"
 	"github.com/acmestack/godkits/gox/errorsx"
 )
 
@@ -53,10 +53,10 @@ func NewChain(executors executorArray) *Chain {
 
 // Execute chain executor
 //  @param context chain context
-func (chain *Chain) Execute(context *context.Context) (ret interface{}, err error) {
+func (chain *Chain) Execute(context *context.Context) (ret *data.EnvcdResult, err error) {
 	if chain == nil || chain.executors == nil || len(chain.executors) == 0 {
 		message := "IIllegal state for plugin chain."
-		return response.Failure(message), errorsx.Err(message)
+		return data.Failure(message), errorsx.Err(message)
 	}
 	if chain.index < len(chain.executors) {
 		currentExecutor := chain.executors[chain.index]
@@ -69,5 +69,5 @@ func (chain *Chain) Execute(context *context.Context) (ret interface{}, err erro
 		// todo data
 		return currentExecutor.Execute(context, chain)
 	}
-	return response.Success(nil), nil
+	return data.Success(nil), nil
 }

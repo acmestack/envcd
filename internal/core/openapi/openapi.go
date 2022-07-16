@@ -28,6 +28,7 @@ import (
 	"github.com/acmestack/envcd/internal/envcd"
 	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/executor"
+	"github.com/acmestack/envcd/pkg/entity/data"
 	"github.com/acmestack/godkits/gox/errorsx"
 )
 
@@ -52,7 +53,7 @@ func Start(envcd *envcd.Envcd, storage *storage.Storage) {
 func (openapi *Openapi) openRouter() {
 	// fixme: plugin.NewChain(openapi.executors) for peer request
 	// plugin.NewChain(openapi.executors)
-	c := &context.Context{Action: func() (interface{}, error) {
+	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
 		fmt.Println("hello world")
 		// openapi.envcd.Put("key", "value")
 		return nil, errorsx.Err("test error")

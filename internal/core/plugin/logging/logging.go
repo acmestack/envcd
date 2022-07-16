@@ -22,6 +22,7 @@ import (
 	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/executor"
 	"github.com/acmestack/envcd/internal/pkg/plugin"
+	"github.com/acmestack/envcd/pkg/entity/data"
 )
 
 const (
@@ -39,7 +40,7 @@ func New() *Logging {
 	return l
 }
 
-func (logging *Logging) Execute(context *context.Context, chain executor.Chain) (ret interface{}, err error) {
+func (logging *Logging) Execute(context *context.Context, chain executor.Chain) (ret *data.EnvcdResult, err error) {
 	return chain.Execute(context)
 }
 
