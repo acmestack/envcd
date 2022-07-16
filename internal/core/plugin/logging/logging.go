@@ -25,7 +25,7 @@ import (
 )
 
 const (
-	name = "logging"
+	name = "Logging"
 )
 
 type Logging struct {
@@ -39,10 +39,10 @@ func New() *Logging {
 	return l
 }
 
-func (logging *Logging) Execute(context context.Context, chain executor.Chain) (ret interface{}, err error) {
+func (logging *Logging) Execute(context *context.Context, chain executor.Chain) (ret interface{}, err error) {
 	return chain.Execute(context)
 }
 
-func (logging *Logging) Skip(context context.Context) bool {
+func (logging *Logging) Skip(context *context.Context) bool {
 	return false
 }

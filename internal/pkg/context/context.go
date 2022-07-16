@@ -17,6 +17,18 @@
 
 package context
 
-// Context todo context
+import (
+	"net/http"
+)
+
+// Context for peer request
 type Context struct {
+	Uri         string
+	Method      string
+	Headers     map[interface{}]interface{}
+	ContentType string
+	Parameters  map[interface{}]interface{}
+	Body        interface{}
+	Action      func() (interface{}, error)
+	HttpRequest *http.Request
 }

@@ -25,7 +25,7 @@ import (
 )
 
 const (
-	name = "response"
+	name = "Response"
 )
 
 type Response struct {
@@ -39,11 +39,14 @@ func New() *Response {
 	return r
 }
 
-func (response *Response) Execute(context context.Context, chain executor.Chain) (ret interface{}, err error) {
+func (response *Response) Execute(context *context.Context, chain executor.Chain) (ret interface{}, err error) {
+	if context.Action != nil {
+		return context.Action()
+	}
 	return chain.Execute(context)
 }
 
-func (response *Response) Skip(context context.Context) bool {
+func (response *Response) Skip(context *context.Context) bool {
 	return false
 }
 

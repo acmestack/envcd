@@ -18,6 +18,8 @@
 package openapi
 
 import (
+	"fmt"
+
 	"github.com/acmestack/envcd/internal/core/plugin"
 	"github.com/acmestack/envcd/internal/core/plugin/logging"
 	"github.com/acmestack/envcd/internal/core/plugin/permission"
@@ -26,6 +28,7 @@ import (
 	"github.com/acmestack/envcd/internal/envcd"
 	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/executor"
+	"github.com/acmestack/godkits/gox/errorsx"
 )
 
 type Openapi struct {
@@ -49,8 +52,12 @@ func Start(envcd *envcd.Envcd, storage *storage.Storage) {
 func (openapi *Openapi) openRouter() {
 	// fixme: plugin.NewChain(openapi.executors) for peer request
 	// plugin.NewChain(openapi.executors)
-	c := context.Context{}
+	c := &context.Context{Action: func() (interface{}, error) {
+		fmt.Println("hello world")
+		// openapi.envcd.Put("key", "value")
+		return nil, errorsx.Err("test error")
+	}}
 	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
-		print(ret)
+		fmt.Printf("ret = %v, error = %v", ret, err)
 	}
 }

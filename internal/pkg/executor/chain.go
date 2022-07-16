@@ -23,5 +23,5 @@ type Chain interface {
 
 	// Execute chain executor
 	//  @param context chain context
-	Execute(context context.Context) (ret interface{}, err error)
+	Execute(context *context.Context) (ret interface{}, err error)
 }
