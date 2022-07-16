@@ -27,11 +27,11 @@ type Executor interface {
 	//  @param context
 	//  @param executor
 	//  @return ret, error
-	Execute(context context.Context, chain Chain) (ret interface{}, err error)
+	Execute(context *context.Context, chain Chain) (ret interface{}, err error)
 
 	// Skip current executor
 	//  @return skip current executor or not
-	Skip(context context.Context) bool
+	Skip(context *context.Context) bool
 
 	// Sorted executor execute order
 	//  @return order

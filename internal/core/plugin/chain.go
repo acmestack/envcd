@@ -53,7 +53,7 @@ func NewChain(executors executorArray) *Chain {
 
 // Execute chain executor
 //  @param context chain context
-func (chain *Chain) Execute(context context.Context) (ret interface{}, err error) {
+func (chain *Chain) Execute(context *context.Context) (ret interface{}, err error) {
 	if chain == nil || chain.executors == nil || len(chain.executors) == 0 {
 		message := "IIllegal state for plugin chain."
 		return response.Failure(message), errorsx.Err(message)

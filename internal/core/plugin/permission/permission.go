@@ -25,7 +25,7 @@ import (
 )
 
 const (
-	name = "permission"
+	name = "Permission"
 )
 
 type Permission struct {
@@ -39,10 +39,10 @@ func New() *Permission {
 	return p
 }
 
-func (permission *Permission) Execute(context context.Context, chain executor.Chain) (ret interface{}, err error) {
+func (permission *Permission) Execute(context *context.Context, chain executor.Chain) (ret interface{}, err error) {
 	return chain.Execute(context)
 }
 
-func (permission *Permission) Skip(context context.Context) bool {
+func (permission *Permission) Skip(context *context.Context) bool {
 	return false
 }
