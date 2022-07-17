@@ -22,23 +22,24 @@ import (
 	"testing"
 )
 
-func TestNew(t *testing.T) {
-	config := &config.Config{
-		ExchangerConnMetadata: &config.ConnMetadata{
-			Type:     "etcd",
-			UserName: "root",
-			Password: "root",
-			Host:     "localhost",
-			Port:     "2379",
-		},
+var exchangerConnMetadata = &config.ConnMetadata{
+		Type:     "etcd",
+		UserName: "root",
+		Password: "root",
+		Host:     "localhost",
+		Port:     "2379",
 	}
+
+
+func TestNew(t *testing.T) {
+
 
 	tests := []struct {
 		name string
 		want *Etcd
 	}{
 		{
-			want: New(config),
+			want: New(exchangerConnMetadata),
 		},
 	}
 	for _, tt := range tests {
@@ -51,21 +52,13 @@ func TestNew(t *testing.T) {
 }
 
 func TestEtcd_Put(t *testing.T) {
-	config := &config.Config{
-		ExchangerConnMetadata: &config.ConnMetadata{
-			Type:     "etcd",
-			UserName: "root",
-			Password: "root",
-			Host:     "localhost",
-			Port:     "2379",
-		},
-	}
+
 	tests := []struct {
 		name string
 		want *Etcd
 	}{
 		{
-			want: New(config),
+			want: New(exchangerConnMetadata),
 		},
 	}
 	for _, tt := range tests {
@@ -84,21 +77,13 @@ func TestEtcd_Put(t *testing.T) {
 }
 
 func TestEtcd_Get(t *testing.T) {
-	config := &config.Config{
-		ExchangerConnMetadata: &config.ConnMetadata{
-			Type:     "etcd",
-			UserName: "root",
-			Password: "root",
-			Host:     "localhost",
-			Port:     "2379",
-		},
-	}
+
 	tests := []struct {
 		name string
 		want *Etcd
 	}{
 		{
-			want: New(config),
+			want: New(exchangerConnMetadata),
 		},
 	}
 	for _, tt := range tests {
@@ -118,21 +103,13 @@ func TestEtcd_Get(t *testing.T) {
 
 
 func TestEtcd_Find(t *testing.T) {
-	config := &config.Config{
-		ExchangerConnMetadata: &config.ConnMetadata{
-			Type:     "etcd",
-			UserName: "root",
-			Password: "root",
-			Host:     "localhost",
-			Port:     "2379",
-		},
-	}
+
 	tests := []struct {
 		name string
 		want *Etcd
 	}{
 		{
-			want: New(config),
+			want: New(exchangerConnMetadata),
 		},
 	}
 	for _, tt := range tests {
@@ -150,21 +127,13 @@ func TestEtcd_Find(t *testing.T) {
 }
 
 func TestEtcd_Remove(t *testing.T) {
-	config := &config.Config{
-		ExchangerConnMetadata: &config.ConnMetadata{
-			Type:     "etcd",
-			UserName: "root",
-			Password: "root",
-			Host:     "localhost",
-			Port:     "2379",
-		},
-	}
+
 	tests := []struct {
 		name string
 		want *Etcd
 	}{
 		{
-			want: New(config),
+			want: New(exchangerConnMetadata),
 		},
 	}
 	for _, tt := range tests {
