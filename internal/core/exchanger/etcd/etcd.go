@@ -19,7 +19,7 @@ package etcd
 
 import (
 	"context"
-	"github.com/acmestack/envcd/internal/envcd"
+	"github.com/acmestack/envcd/internal/pkg/config"
 	"github.com/acmestack/godkits/gox/stringsx"
 	"go.etcd.io/etcd/client/v3"
 	"log"
@@ -38,11 +38,11 @@ type Etcd struct {
 
 // New make new etcd client
 //  @return *Etcd
-func New() *Etcd {
+func New(envcdConfig *config.Config) *Etcd {
 
 	ctx := context.Background()
 	// Exchanger metadata
-	metadata := envcd.EnvcdConfig.ExchangerConnMetadata
+	metadata := envcdConfig.ExchangerConnMetadata
 
 	if metadata.Type != "etcd" {
 		log.Printf("Scheme is not eq = %v", metadata.Type)
