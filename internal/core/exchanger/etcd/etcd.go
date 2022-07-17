@@ -39,16 +39,16 @@ type Etcd struct {
 // New make new etcd client
 //  @param etcdConfig
 //  @return *Etcd
-func New(etcdConfig *config.ConnMetadata) *Etcd {
+func New(exchangerConnMetadata *config.ConnMetadata) *Etcd {
 
 	ctx := context.Background()
 
-	if etcdConfig.Type != "etcd" {
-		log.Printf("Scheme is not eq = %v", etcdConfig.Type)
+	if exchangerConnMetadata.Type != "etcd" {
+		log.Printf("Scheme is not eq = %v", exchangerConnMetadata.Type)
 		return nil
 	}
 
-	endpoint := etcdConfig.Host + ":" + etcdConfig.Port
+	endpoint := exchangerConnMetadata.Host + ":" + exchangerConnMetadata.Port
 	if endpoint == "" {
 		log.Printf("failed to get etcd url")
 		return nil
@@ -57,8 +57,8 @@ func New(etcdConfig *config.ConnMetadata) *Etcd {
 	cli, err := clientv3.New(clientv3.Config{
 		Endpoints:   []string{endpoint},
 		DialTimeout: time.Duration(stringsx.ToInt(DefaultEtcdDialTimeout)) * time.Second,
-		Username:    etcdConfig.UserName,
-		Password:    etcdConfig.Password,
+		Username:    exchangerConnMetadata.UserName,
+		Password:    exchangerConnMetadata.Password,
 	})
 
 	if err != nil {
