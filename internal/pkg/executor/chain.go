@@ -15,12 +15,16 @@
  * limitations under the License.
  */
 
-package sync
+package executor
 
-// Synchronizer data synchronizer
-type Synchronizer interface {
+import (
+	"github.com/acmestack/envcd/internal/pkg/context"
+	"github.com/acmestack/envcd/pkg/entity/data"
+)
 
-	// SynchronizeData sync data to envcd client
-	//  @param data need to sync data
-	SynchronizeData(data interface{})
+type Chain interface {
+
+	// Execute chain executor
+	//  @param context chain context
+	Execute(context *context.Context) (*data.EnvcdResult, error)
 }

@@ -20,6 +20,8 @@ package main
 import (
 	"flag"
 
+	"github.com/acmestack/envcd/internal/core/openapi"
+	"github.com/acmestack/envcd/internal/core/storage"
 	"github.com/acmestack/envcd/internal/envcd"
 	"github.com/acmestack/envcd/internal/pkg/config"
 )
@@ -27,5 +29,6 @@ import (
 func main() {
 	configFile := flag.String("config", "config/envcd.yaml", "envcd -config config/envcd.yaml")
 	flag.Parse()
-	envcd.Start(config.NewConfig(configFile))
+	// start openapi with exchanger & storage
+	openapi.Start(envcd.Start(config.NewConfig(configFile)), storage.Start())
 }

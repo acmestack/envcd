@@ -15,25 +15,32 @@
  * limitations under the License.
  */
 
-package plugin
+package executor
 
-// Executor the plugin executor
+import (
+	"github.com/acmestack/envcd/internal/pkg/context"
+	"github.com/acmestack/envcd/pkg/entity/data"
+)
+
+// Executor the executor
 type Executor interface {
 
 	// Execute execute code
-	// Context come from every plugins, data from dashboard
-	//  @param data
-	Execute(context interface{}, data interface{}, executor ExecutorChain)
+	// Context come from every exector, data from dashboard
+	//  @param context
+	//  @param executor
+	//  @return ret, error
+	Execute(context *context.Context, chain Chain) (*data.EnvcdResult, error)
 
-	// Skip skip current plugin
-	//  @param exist
-	Skip(context interface{}) bool
+	// Skip current executor
+	//  @return skip current executor or not
+	Skip(context *context.Context) bool
 
-	// Order plugin execute order
-	//  @param order order
-	Order() uint8
+	// Sorted executor execute order
+	//  @return order
+	Sorted() uint8
 
-	// Named plugin name
-	//  @param name plugin name
+	// Named executor name
+	//  @return named for executor
 	Named() string
 }

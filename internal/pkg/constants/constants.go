@@ -15,12 +15,13 @@
  * limitations under the License.
  */
 
-package sync
+package constants
 
-// Synchronizer data synchronizer
-type Synchronizer interface {
-
-	// SynchronizeData sync data to envcd client
-	//  @param data need to sync data
-	SynchronizeData(data interface{})
-}
+const (
+	// LoggingSorted plugin of logging order
+	LoggingSorted = 0x1
+	// PermissionSorted plugin of logging order
+	PermissionSorted = 0x2
+	// ResponseSorted plugin of logging order
+	ResponseSorted = 0x3
+)

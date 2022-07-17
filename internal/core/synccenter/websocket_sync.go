@@ -15,7 +15,15 @@
  * limitations under the License.
  */
 
-package entity
+package synccenter
 
-type Envcdata struct {
+import "github.com/acmestack/envcd/internal/pkg/sync"
+
+type WebSocketSynchronizer struct {
+	synchronizer sync.Synchronizer
+}
+
+func (wsSync WebSocketSynchronizer) SynchronizeData(data interface{}) {
+	//TODO implement me
+	panic("implement me")
 }

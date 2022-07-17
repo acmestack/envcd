@@ -15,12 +15,22 @@
  * limitations under the License.
  */
 
-package sync
+package context
 
-// Synchronizer data synchronizer
-type Synchronizer interface {
+import (
+	"net/http"
 
-	// SynchronizeData sync data to envcd client
-	//  @param data need to sync data
-	SynchronizeData(data interface{})
+	"github.com/acmestack/envcd/pkg/entity/data"
+)
+
+// Context for peer request
+type Context struct {
+	Uri         string
+	Method      string
+	Headers     map[interface{}]interface{}
+	ContentType string
+	Parameters  map[interface{}]interface{}
+	Body        interface{}
+	Action      func() (*data.EnvcdResult, error)
+	HttpRequest *http.Request
 }
