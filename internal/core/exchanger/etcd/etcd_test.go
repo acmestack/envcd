@@ -22,7 +22,7 @@ import (
 	"testing"
 )
 
-var ExchangerConnMetadata = &config.ConnMetadata{
+var exchangerConnMetadata = &config.ConnMetadata{
 		Type:     "etcd",
 		UserName: "root",
 		Password: "root",
@@ -39,7 +39,7 @@ func TestNew(t *testing.T) {
 		want *Etcd
 	}{
 		{
-			want: New(ExchangerConnMetadata),
+			want: New(exchangerConnMetadata),
 		},
 	}
 	for _, tt := range tests {
@@ -58,7 +58,7 @@ func TestEtcd_Put(t *testing.T) {
 		want *Etcd
 	}{
 		{
-			want: New(ExchangerConnMetadata),
+			want: New(exchangerConnMetadata),
 		},
 	}
 	for _, tt := range tests {
@@ -83,7 +83,7 @@ func TestEtcd_Get(t *testing.T) {
 		want *Etcd
 	}{
 		{
-			want: New(ExchangerConnMetadata),
+			want: New(exchangerConnMetadata),
 		},
 	}
 	for _, tt := range tests {
@@ -109,7 +109,7 @@ func TestEtcd_Find(t *testing.T) {
 		want *Etcd
 	}{
 		{
-			want: New(ExchangerConnMetadata),
+			want: New(exchangerConnMetadata),
 		},
 	}
 	for _, tt := range tests {
@@ -133,7 +133,7 @@ func TestEtcd_Remove(t *testing.T) {
 		want *Etcd
 	}{
 		{
-			want: New(ExchangerConnMetadata),
+			want: New(exchangerConnMetadata),
 		},
 	}
 	for _, tt := range tests {
