@@ -19,6 +19,7 @@ package envcd
 
 import (
 	"errors"
+	"github.com/acmestack/envcd/internal/pkg/config"
 	"reflect"
 	"testing"
 
@@ -217,7 +218,16 @@ func Test_Memory_Remove(t *testing.T) {
 }
 
 func TestStart(t *testing.T) {
-	e := &Envcd{exchanger: etcd.New()}
+	config := &config.Config{
+		ExchangerConnMetadata: &config.ConnMetadata{
+			Type:     "etcd",
+			UserName: "root",
+			Password: "root",
+			Host:     "localhost",
+			Port:     "2379",
+		},
+	}
+	e := &Envcd{exchanger: etcd.New(config)}
 	tests := []struct {
 		name string
 		want *Envcd

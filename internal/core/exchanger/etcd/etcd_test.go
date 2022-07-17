@@ -18,22 +18,27 @@
 package etcd
 
 import (
-	"flag"
 	"github.com/acmestack/envcd/internal/pkg/config"
 	"testing"
 )
 
 func TestNew(t *testing.T) {
-	configFile := flag.String("config", "../../../../config/envcd.yaml", "envcd -config config/envcd.yaml")
-	flag.Parse()
-	newConfig := config.NewConfig(configFile)
-	newConfig.StartInformation()
+	config := &config.Config{
+		ExchangerConnMetadata: &config.ConnMetadata{
+			Type:     "etcd",
+			UserName: "root",
+			Password: "root",
+			Host:     "localhost",
+			Port:     "2379",
+		},
+	}
+
 	tests := []struct {
 		name string
 		want *Etcd
 	}{
 		{
-			want: New(newConfig),
+			want: New(config),
 		},
 	}
 	for _, tt := range tests {
@@ -46,16 +51,21 @@ func TestNew(t *testing.T) {
 }
 
 func TestEtcd_Put(t *testing.T) {
-	configFile := flag.String("config", "../../../../config/envcd.yaml", "envcd -config config/envcd.yaml")
-	flag.Parse()
-	newConfig := config.NewConfig(configFile)
-	newConfig.StartInformation()
+	config := &config.Config{
+		ExchangerConnMetadata: &config.ConnMetadata{
+			Type:     "etcd",
+			UserName: "root",
+			Password: "root",
+			Host:     "localhost",
+			Port:     "2379",
+		},
+	}
 	tests := []struct {
 		name string
 		want *Etcd
 	}{
 		{
-			want: New(newConfig),
+			want: New(config),
 		},
 	}
 	for _, tt := range tests {
@@ -74,16 +84,21 @@ func TestEtcd_Put(t *testing.T) {
 }
 
 func TestEtcd_Get(t *testing.T) {
-	configFile := flag.String("config", "../../../../config/envcd.yaml", "envcd -config config/envcd.yaml")
-	flag.Parse()
-	newConfig := config.NewConfig(configFile)
-	newConfig.StartInformation()
+	config := &config.Config{
+		ExchangerConnMetadata: &config.ConnMetadata{
+			Type:     "etcd",
+			UserName: "root",
+			Password: "root",
+			Host:     "localhost",
+			Port:     "2379",
+		},
+	}
 	tests := []struct {
 		name string
 		want *Etcd
 	}{
 		{
-			want: New(newConfig),
+			want: New(config),
 		},
 	}
 	for _, tt := range tests {
@@ -103,16 +118,21 @@ func TestEtcd_Get(t *testing.T) {
 
 
 func TestEtcd_Find(t *testing.T) {
-	configFile := flag.String("config", "../../../../config/envcd.yaml", "envcd -config config/envcd.yaml")
-	flag.Parse()
-	newConfig := config.NewConfig(configFile)
-	newConfig.StartInformation()
+	config := &config.Config{
+		ExchangerConnMetadata: &config.ConnMetadata{
+			Type:     "etcd",
+			UserName: "root",
+			Password: "root",
+			Host:     "localhost",
+			Port:     "2379",
+		},
+	}
 	tests := []struct {
 		name string
 		want *Etcd
 	}{
 		{
-			want: New(newConfig),
+			want: New(config),
 		},
 	}
 	for _, tt := range tests {
@@ -130,16 +150,21 @@ func TestEtcd_Find(t *testing.T) {
 }
 
 func TestEtcd_Remove(t *testing.T) {
-	configFile := flag.String("config", "../../../../config/envcd.yaml", "envcd -config config/envcd.yaml")
-	flag.Parse()
-	newConfig := config.NewConfig(configFile)
-	newConfig.StartInformation()
+	config := &config.Config{
+		ExchangerConnMetadata: &config.ConnMetadata{
+			Type:     "etcd",
+			UserName: "root",
+			Password: "root",
+			Host:     "localhost",
+			Port:     "2379",
+		},
+	}
 	tests := []struct {
 		name string
 		want *Etcd
 	}{
 		{
-			want: New(newConfig),
+			want: New(config),
 		},
 	}
 	for _, tt := range tests {
