@@ -49,7 +49,7 @@ func New(envcdConfig *config.Config) *Etcd {
 		return nil
 	}
 
-	endpoint := metadata.Host
+	endpoint := metadata.Host + ":" + metadata.Port
 	if endpoint == "" {
 		log.Printf("failed to get etcd url")
 		return nil
