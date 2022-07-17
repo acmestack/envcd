@@ -45,36 +45,8 @@ func TestNew(t *testing.T) {
 	}
 }
 
-func TestEtcd_Get(t *testing.T) {
-	configFile := flag.String("config", "../../../../config/envcd.yaml", "envcd -config config/envcd.yaml")
-	flag.Parse()
-	envcd.Start(config.NewConfig(configFile))
-	tests := []struct {
-		name string
-		want *Etcd
-	}{
-		{
-			want: New(),
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.want == nil || tt.want.client == nil {
-				t.Errorf("failed to create client, want %v", tt.want)
-			}
-			get, err := tt.want.Get("/test/a")
-			if err != nil {
-				t.Errorf("failed to get value,key = /test/a , err = %v", err)
-			}
-			t.Logf("value = %s", get)
-		})
-	}
-}
-
 func TestEtcd_Put(t *testing.T) {
-	configFile := flag.String("config", "../../../../config/envcd.yaml", "envcd -config config/envcd.yaml")
-	flag.Parse()
-	envcd.Start(config.NewConfig(configFile))
+
 	tests := []struct {
 		name string
 		want *Etcd
@@ -98,10 +70,34 @@ func TestEtcd_Put(t *testing.T) {
 	}
 }
 
+func TestEtcd_Get(t *testing.T) {
+
+	tests := []struct {
+		name string
+		want *Etcd
+	}{
+		{
+			want: New(),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.want == nil || tt.want.client == nil {
+				t.Errorf("failed to create client, want %v", tt.want)
+			}
+			get, err := tt.want.Get("/test/a")
+			if err != nil {
+				t.Errorf("failed to get value,key = /test/a , err = %v", err)
+			}
+			t.Logf("value = %s", get)
+		})
+	}
+}
+
+
+
 func TestEtcd_Find(t *testing.T) {
-	configFile := flag.String("config", "../../../../config/envcd.yaml", "envcd -config config/envcd.yaml")
-	flag.Parse()
-	envcd.Start(config.NewConfig(configFile))
+
 	tests := []struct {
 		name string
 		want *Etcd
@@ -125,9 +121,7 @@ func TestEtcd_Find(t *testing.T) {
 }
 
 func TestEtcd_Remove(t *testing.T) {
-	configFile := flag.String("config", "../../../../config/envcd.yaml", "envcd -config config/envcd.yaml")
-	flag.Parse()
-	envcd.Start(config.NewConfig(configFile))
+
 	tests := []struct {
 		name string
 		want *Etcd

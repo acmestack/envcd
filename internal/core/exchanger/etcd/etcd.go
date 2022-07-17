@@ -23,7 +23,6 @@ import (
 	"github.com/acmestack/godkits/gox/stringsx"
 	"go.etcd.io/etcd/client/v3"
 	"log"
-	"net/url"
 	"time"
 )
 
@@ -42,22 +41,15 @@ type Etcd struct {
 func New() *Etcd {
 
 	ctx := context.Background()
-	// Exchanger "etcd://user:@@123@localhost:2379", etcd endpoints  "localhost:2379"
-	uri, err := url.Parse(envcd.EnvcdConfig.Exchanger)
-	if err != nil {
-		log.Printf("parse etcd url error = %v", err)
-		return nil
-	}
-	if uri.Scheme != "etcd" {
-		log.Printf("Scheme is not eq = %v", uri.Scheme)
+	// Exchanger metadata
+	metadata := envcd.EnvcdConfig.ExchangerConnMetadata
+
+	if metadata.Type != "etcd" {
+		log.Printf("Scheme is not eq = %v", metadata.Type)
 		return nil
 	}
 
-	// if etcd auth disable , no need to check username/password
-	username := uri.User.Username()
-	password, _ := uri.User.Password()
-
-	endpoint := uri.Host
+	endpoint := metadata.Host
 	if endpoint == "" {
 		log.Printf("failed to get etcd url")
 		return nil
@@ -66,8 +58,8 @@ func New() *Etcd {
 	cli, err := clientv3.New(clientv3.Config{
 		Endpoints:   []string{endpoint},
 		DialTimeout: time.Duration(stringsx.ToInt(DefaultEtcdDialTimeout)) * time.Second,
-		Username:    username,
-		Password:    password,
+		Username:    metadata.UserName,
+		Password:    metadata.Password,
 	})
 
 	if err != nil {
