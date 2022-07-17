@@ -10,6 +10,17 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    services:
+      etcd:
+        # Docker Hub image
+        image: bitnami/etcd:3.5
+        env:
+          ETCD_ADVERTISE_CLIENT_URLS: http://127.0.0.1:2379
+          ALLOW_NONE_AUTHENTICATION: yes
+        ports:
+          - 2379:2379
+          - 2380:2380
+
     steps:
       - uses: actions/checkout@v3
 
