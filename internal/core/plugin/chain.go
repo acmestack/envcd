@@ -69,5 +69,8 @@ func (chain *Chain) Execute(context *context.Context) (*data.EnvcdResult, error)
 		// todo data
 		return currentExecutor.Execute(context, chain)
 	}
+	if context.Action != nil {
+		return context.Action()
+	}
 	return data.Success(nil), nil
 }

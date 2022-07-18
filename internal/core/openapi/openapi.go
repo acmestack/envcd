@@ -19,11 +19,9 @@ package openapi
 
 import (
 	"fmt"
-
 	"github.com/acmestack/envcd/internal/core/plugin"
 	"github.com/acmestack/envcd/internal/core/plugin/logging"
 	"github.com/acmestack/envcd/internal/core/plugin/permission"
-	"github.com/acmestack/envcd/internal/core/plugin/response"
 	"github.com/acmestack/envcd/internal/core/storage"
 	"github.com/acmestack/envcd/internal/envcd"
 	"github.com/acmestack/envcd/internal/pkg/context"
@@ -42,7 +40,7 @@ func Start(envcd *envcd.Envcd, storage *storage.Storage) {
 	openapi := &Openapi{
 		envcd:     envcd,
 		storage:   storage,
-		executors: []executor.Executor{logging.New(), permission.New(), response.New()},
+		executors: []executor.Executor{logging.New(), permission.New()},
 	}
 	// sort plugin
 	plugin.Sort(openapi.executors)
@@ -53,6 +51,8 @@ func Start(envcd *envcd.Envcd, storage *storage.Storage) {
 func (openapi *Openapi) openRouter() {
 	// fixme: plugin.NewChain(openapi.executors) for peer request
 	// plugin.NewChain(openapi.executors)
+	//util.BuildContext()
+	//routers.InitRouter()
 	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
 		fmt.Println("hello world")
 		// openapi.envcd.Put("key", "value")
