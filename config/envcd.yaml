@@ -1,3 +1,8 @@
 exchanger: "etcd://user:password@localhost:2379"
 mysql:
   url: "mysql://user:password@localhost:3306"
+server:
+  read-timeout: 60
+  write-timeout: 60
+  http-port: 8000
+  run-mode: debug
