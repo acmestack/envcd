@@ -24,9 +24,6 @@ import (
 	"github.com/acmestack/godkits/gox/errorsx"
 )
 
-// EnvcdConfig the envcd global config
-var EnvcdConfig *config.Config
-
 type Envcd struct {
 	exchanger   exchanger.Exchanger
 	envcdConfig *config.Config
@@ -37,8 +34,7 @@ type Envcd struct {
 func Start(envcdConfig *config.Config) *Envcd {
 	// show start information & parser config
 	envcdConfig.StartInformation()
-	EnvcdConfig = envcdConfig
-	return &Envcd{exchanger: etcd.New(), envcdConfig: envcdConfig}
+	return &Envcd{exchanger: etcd.New(envcdConfig.ExchangerConnMetadata), envcdConfig: envcdConfig}
 }
 
 // Put new data to Exchanger by key and value
