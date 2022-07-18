@@ -44,13 +44,13 @@ func New(exchangerConnMetadata *config.ConnMetadata) *Etcd {
 	ctx := context.Background()
 
 	if exchangerConnMetadata.Type != "etcd" {
-		log.Printf("Scheme is not eq = %v", exchangerConnMetadata.Type)
+		log.Fatalf("Scheme is not eq = %v", exchangerConnMetadata.Type)
 		return nil
 	}
 
 	endpoint := exchangerConnMetadata.Host + ":" + exchangerConnMetadata.Port
 	if endpoint == "" {
-		log.Printf("failed to get etcd url")
+		log.Fatalf("failed to get etcd url")
 		return nil
 	}
 
@@ -62,7 +62,7 @@ func New(exchangerConnMetadata *config.ConnMetadata) *Etcd {
 	})
 
 	if err != nil {
-		log.Printf("failed to create etcd client %v", err)
+		log.Fatalf("failed to create etcd client %v", err)
 		return nil
 	}
 
