@@ -23,6 +23,10 @@ import (
 	"github.com/acmestack/envcd/internal/pkg/executor"
 	"github.com/acmestack/envcd/internal/pkg/plugin"
 	"github.com/acmestack/envcd/pkg/entity/data"
+	"github.com/acmestack/godkits/gox/encodingx/jsonx"
+	"github.com/acmestack/godkits/gox/stringsx"
+	"strings"
+	"sync"
 )
 
 const (
@@ -41,9 +45,37 @@ func New() *Logging {
 }
 
 func (logging *Logging) Execute(context *context.Context, chain executor.Chain) (*data.EnvcdResult, error) {
+	// TODO write log
+	// FIXME log.info(printLog(context))
 	return chain.Execute(context)
 }
 
 func (logging *Logging) Skip(context *context.Context) bool {
 	return false
+}
+
+func printLog(ctx *context.Context) (ret string) {
+	var wg sync.WaitGroup
+	wg.Add(1)
+	builder := strings.Builder{}
+	build := &stringsx.Builder{Builder: builder}
+	_, _ = build.JoinString("\n[Request Information]\n")
+	_, _ = build.JoinString("Request Uri:", ctx.Uri, "\n")
+	_, _ = build.JoinString("Request Method:", ctx.Method, "\n")
+	header, _ := jsonx.ToJsonString(ctx.Headers)
+	_, _ = build.JoinString("Request Headers:", header, "\n")
+	_, _ = build.JoinString("Request ContentType:", ctx.ContentType, "\n")
+	params, _ := jsonx.ToJsonString(ctx.Parameters)
+	_, _ = build.JoinString("Request Parameters:", params, "\n\n")
+	_, _ = build.JoinString("[Request Body]\n")
+	requestBody, _ := jsonx.ToJsonString(ctx.Body)
+	_, _ = build.JoinString("Request Boyd:", requestBody, "\n\n")
+	_, _ = build.JoinString("[Response Body]\n")
+
+	//TODO chan accept action complete and return response
+	responseBody, _ := jsonx.ToJsonString(ctx.Action)
+	_, _ = build.JoinString("Response Body:", responseBody, "\n")
+
+	wg.Done()
+	return build.String()
 }
