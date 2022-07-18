@@ -35,13 +35,22 @@ type mysql struct {
 	Url string `yaml:"url"`
 }
 
+// Server the Server config
+type Server struct {
+	RunMode      string `yaml:"run-mode"`
+	HttpPort     int    `yaml:"http-port"`
+	ReadTimeout  int    `yaml:"read-timeout"`
+	WriteTimeout int    `yaml:"write-timeout"`
+}
+
 // Config the envcd config
 type Config struct {
 	// Exchanger with standard Url: etcd://user:123@localhost:123
 	// the schema is the kind of the center
 	Exchanger             string `yaml:"exchanger"`
 	ExchangerConnMetadata *ConnMetadata
-	Mysql                 *mysql `yaml:"mysql"`
+	Mysql                 *mysql  `yaml:"mysql"`
+	ServerSetting         *Server `yaml:"server"`
 	MysqlConnMetadata     *ConnMetadata
 }
 
