@@ -15,23 +15,24 @@
  * limitations under the License.
  */
 
-package main
+package api
 
 import (
-	"flag"
-
-	"github.com/acmestack/envcd/internal/core/openapi"
-	"github.com/acmestack/envcd/internal/core/service"
-	"github.com/acmestack/envcd/internal/core/storage"
-	"github.com/acmestack/envcd/internal/envcd"
-	"github.com/acmestack/envcd/internal/pkg/config"
+	"github.com/gin-gonic/gin"
 )
 
-func main() {
-	configFile := flag.String("config", "config/envcd.yaml", "envcd -config config/envcd.yaml")
-	flag.Parse()
-	configData := config.NewConfig(configFile)
-	// start openapi with exchanger & storage
-	openapi.Start(envcd.Start(configData), storage.Start())
-	service.Start(configData)
+type auth struct {
+	Username string `valid:"Required; MaxSize(50)"`
+	Password string `valid:"Required; MaxSize(50)"`
+}
+
+// GetAuth
+// @Produce  json
+// @Param username query string true "userName"
+// @Param password query string true "password"
+// @Success 200 {object} app.Response
+// @Failure 500 {object} app.Response
+// @Router /auth [get]
+func GetAuth(c *gin.Context) {
+	// todo auth
 }

@@ -15,23 +15,29 @@
  * limitations under the License.
  */
 
-package main
+package routers
 
 import (
-	"flag"
-
-	"github.com/acmestack/envcd/internal/core/openapi"
-	"github.com/acmestack/envcd/internal/core/service"
-	"github.com/acmestack/envcd/internal/core/storage"
-	"github.com/acmestack/envcd/internal/envcd"
-	"github.com/acmestack/envcd/internal/pkg/config"
+	"github.com/acmestack/envcd/internal/core/service/routers/api"
+	"github.com/gin-gonic/gin"
 )
 
-func main() {
-	configFile := flag.String("config", "config/envcd.yaml", "envcd -config config/envcd.yaml")
-	flag.Parse()
-	configData := config.NewConfig(configFile)
-	// start openapi with exchanger & storage
-	openapi.Start(envcd.Start(configData), storage.Start())
-	service.Start(configData)
+// InitRouter initialize routing information
+func InitRouter() *gin.Engine {
+	r := gin.New()
+	r.Use(gin.Logger())
+	r.Use(gin.Recovery())
+
+	// user auth
+	r.POST("/auth", api.GetAuth)
+
+	//apiv1 := r.Group("/api/v1")
+
+	//apiv1.GET("/tags", v1.GetTags)
+	//apiv1.Use(jwt.JWT())
+	//{
+	//	apiv1.GET("/tags", v1.GetTags)
+	//}
+
+	return r
 }
