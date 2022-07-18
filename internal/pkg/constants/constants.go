@@ -19,9 +19,9 @@ package constants
 
 const (
 	// LoggingSorted plugin of logging order
-	LoggingSorted = 0x1
+	LoggingSorted = 0xA
 	// PermissionSorted plugin of logging order
-	PermissionSorted = 0x2
+	PermissionSorted = 0x14
 	// ResponseSorted plugin of logging order
-	ResponseSorted = 0x3
+	ResponseSorted = 0x1E
 )
