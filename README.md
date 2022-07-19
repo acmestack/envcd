@@ -10,7 +10,7 @@ environment configurations detector/discovery/dictionary
 [![lasted release](https://img.shields.io/github/v/release/acmestack/envcd?label=lasted)](https://github.com/acmestack/envcd/releases)
 
 ## Software Architecture
-![Envcd Architecture](envcd.png)
+![Envcd Architecture](envcd.svg)
 
 ## Stargazers over time
 
