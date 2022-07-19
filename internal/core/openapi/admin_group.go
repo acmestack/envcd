@@ -19,6 +19,7 @@ package openapi
 
 import (
 	"fmt"
+
 	"github.com/acmestack/envcd/internal/core/plugin"
 	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/pkg/entity/data"
@@ -35,5 +36,5 @@ func (openapi *Openapi) login(ctx *gin.Context) {
 	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
 		fmt.Printf("ret = %v, error = %v", ret, err)
 	}
-	ctx.JSON(200, data.Success("hello world"))
+	ctx.JSON(200, data.Success("hello world").Data)
 }

@@ -19,28 +19,26 @@ package etcd
 
 import (
 	"context"
-	"github.com/acmestack/envcd/internal/pkg/config"
-	"github.com/acmestack/godkits/gox/stringsx"
-	"go.etcd.io/etcd/client/v3"
 	"log"
 	"time"
+
+	"github.com/acmestack/envcd/internal/pkg/config"
+	"go.etcd.io/etcd/client/v3"
 )
 
 const (
-	DefaultEtcdDialTimeout = "5"
+	defaultEtcdDialTimeout = 5
 )
 
 type Etcd struct {
-	ctx      context.Context
-	client   *clientv3.Client
-	endpoint string
+	ctx    context.Context
+	client *clientv3.Client
 }
 
 // New make new etcd client
 //  @param etcdConfig
 //  @return *Etcd
 func New(exchangerConnMetadata *config.ConnMetadata) *Etcd {
-
 	ctx := context.Background()
 
 	if exchangerConnMetadata.Type != "etcd" {
@@ -56,7 +54,7 @@ func New(exchangerConnMetadata *config.ConnMetadata) *Etcd {
 
 	cli, err := clientv3.New(clientv3.Config{
 		Endpoints:   []string{endpoint},
-		DialTimeout: time.Duration(stringsx.ToInt(DefaultEtcdDialTimeout)) * time.Second,
+		DialTimeout: time.Duration(defaultEtcdDialTimeout) * time.Second,
 		Username:    exchangerConnMetadata.UserName,
 		Password:    exchangerConnMetadata.Password,
 	})
@@ -67,9 +65,8 @@ func New(exchangerConnMetadata *config.ConnMetadata) *Etcd {
 	}
 
 	return &Etcd{
-		ctx:      ctx,
-		client:   cli,
-		endpoint: endpoint,
+		ctx:    ctx,
+		client: cli,
 	}
 }
 
@@ -90,50 +87,6 @@ func (etcd *Etcd) Put(key interface{}, value interface{}) error {
 	}
 	log.Printf("Put etcd key = %s, value = %s", key, value)
 	return nil
-}
-
-// Get get data from etcd
-//  @receiver exchanger etcd exchanger
-//  @param o data
-func (etcd *Etcd) Get(key interface{}) (interface{}, error) {
-	cli := etcd.client
-	getResponse, err := cli.Get(etcd.ctx, key.(string))
-	if err != nil {
-		log.Printf("failed get value,err: %v", err)
-		return "", err
-	}
-
-	if len(getResponse.Kvs) == 0 {
-		log.Printf("key [%s] is not exist", key)
-		return "", nil
-	}
-
-	value := getResponse.Kvs[0].Value
-	return string(value), nil
-}
-
-// Find find data from etcd
-//  @receiver exchanger etcd exchanger
-//  @param o data
-func (etcd *Etcd) Find(key interface{}) (interface{}, error) {
-	cli := etcd.client
-	rangeResponse, err := cli.Get(etcd.ctx, key.(string), clientv3.WithPrefix())
-	result := make(map[string]string)
-	if err != nil {
-		log.Printf("failed get values,err: %v", err)
-		return nil, err
-	}
-	length := len(rangeResponse.Kvs)
-	if length == 0 {
-		log.Printf("key [%s] is not exist", key)
-		return result, nil
-	}
-
-	for _, resp := range rangeResponse.Kvs {
-		result[string(resp.Key)] = string(resp.Value)
-	}
-
-	return result, nil
 }
 
 // Remove remove data from etcd

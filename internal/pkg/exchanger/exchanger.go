@@ -25,14 +25,6 @@ type Exchanger interface {
 	//  @param value data
 	Put(key interface{}, value interface{}) error
 
-	// Get get data from exchanger
-	//  @param o data
-	Get(key interface{}) (interface{}, error)
-
-	// Find find data in exchanger
-	//  @param o data
-	Find(key interface{}) (interface{}, error)
-
 	// Remove remove data from exchanger
 	//  @param o data
 	Remove(key interface{}) error

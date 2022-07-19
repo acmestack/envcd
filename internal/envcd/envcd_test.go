@@ -19,9 +19,10 @@ package envcd
 
 import (
 	"errors"
-	"github.com/acmestack/envcd/internal/pkg/config"
 	"reflect"
 	"testing"
+
+	"github.com/acmestack/envcd/internal/pkg/config"
 
 	"github.com/acmestack/envcd/internal/core/exchanger/etcd"
 	"github.com/acmestack/envcd/internal/pkg/exchanger"
@@ -219,11 +220,11 @@ func Test_Memory_Remove(t *testing.T) {
 
 func TestStart(t *testing.T) {
 	exchangerConnMetadata := &config.ConnMetadata{
-			Type:     "etcd",
-			UserName: "root",
-			Password: "root",
-			Host:     "localhost",
-			Port:     "2379",
+		Type:     "etcd",
+		UserName: "root",
+		Password: "root",
+		Host:     "localhost",
+		Port:     "2379",
 	}
 
 	e := &Envcd{exchanger: etcd.New(exchangerConnMetadata)}
@@ -239,56 +240,6 @@ func TestStart(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := e; !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Chain() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_Exchanger_Get(t *testing.T) {
-	type fields struct {
-		exchanger exchanger.Exchanger
-	}
-	type args struct {
-		key interface{}
-	}
-	mem := New()
-	_ = mem.Put("a", "value")
-	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		want    interface{}
-		wantErr bool
-	}{
-		{
-			fields: fields{
-				exchanger: mem,
-			},
-			args:    args{key: "a"},
-			want:    "value",
-			wantErr: false,
-		},
-		{
-			fields: fields{
-				exchanger: nil,
-			},
-			args:    args{key: "a"},
-			want:    nil,
-			wantErr: true,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			dict := &Envcd{
-				exchanger: tt.fields.exchanger,
-			}
-			got, err := dict.Get(tt.args.key)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Get() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Get() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -374,9 +325,6 @@ func Test_Exchanger_Remove(t *testing.T) {
 			}
 			if err := dict.Remove(tt.args.key); (err != nil) != tt.wantErr {
 				t.Errorf("Remove() error = %v, wantErr %v", err, tt.wantErr)
-			}
-			if data, err := dict.Get(tt.args.key); ((err != nil) != tt.wantErr) && data != "" {
-				t.Errorf("Get() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}

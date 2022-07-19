@@ -19,21 +19,65 @@ package etcd
 
 import (
 	"github.com/acmestack/envcd/internal/pkg/config"
+	clientv3 "go.etcd.io/etcd/client/v3"
+
+	"log"
 	"testing"
 )
 
 var exchangerConnMetadata = &config.ConnMetadata{
-		Type:     "etcd",
-		UserName: "root",
-		Password: "root",
-		Host:     "localhost",
-		Port:     "2379",
+	Type:     "etcd",
+	UserName: "root",
+	Password: "root",
+	Host:     "localhost",
+	Port:     "2379",
+}
+
+// Get get data from etcd
+//  @receiver exchanger etcd exchanger
+//  @param o data
+func (etcd *Etcd) Get(key interface{}) (interface{}, error) {
+	cli := etcd.client
+	getResponse, err := cli.Get(etcd.ctx, key.(string))
+	if err != nil {
+		log.Printf("failed get value,err: %v", err)
+		return "", err
 	}
 
+	if len(getResponse.Kvs) == 0 {
+		log.Printf("key [%s] is not exist", key)
+		return "", nil
+	}
+
+	value := getResponse.Kvs[0].Value
+	return string(value), nil
+}
+
+// Find find data from etcd
+//  @receiver exchanger etcd exchanger
+//  @param o data
+func (etcd *Etcd) Find(key interface{}) (interface{}, error) {
+	cli := etcd.client
+	rangeResponse, err := cli.Get(etcd.ctx, key.(string), clientv3.WithPrefix())
+	result := make(map[string]string)
+	if err != nil {
+		log.Printf("failed get values,err: %v", err)
+		return nil, err
+	}
+	length := len(rangeResponse.Kvs)
+	if length == 0 {
+		log.Printf("key [%s] is not exist", key)
+		return result, nil
+	}
+
+	for _, resp := range rangeResponse.Kvs {
+		result[string(resp.Key)] = string(resp.Value)
+	}
+
+	return result, nil
+}
 
 func TestNew(t *testing.T) {
-
-
 	tests := []struct {
 		name string
 		want *Etcd
@@ -52,7 +96,6 @@ func TestNew(t *testing.T) {
 }
 
 func TestEtcd_Put(t *testing.T) {
-
 	tests := []struct {
 		name string
 		want *Etcd
@@ -77,7 +120,6 @@ func TestEtcd_Put(t *testing.T) {
 }
 
 func TestEtcd_Get(t *testing.T) {
-
 	tests := []struct {
 		name string
 		want *Etcd
@@ -100,10 +142,7 @@ func TestEtcd_Get(t *testing.T) {
 	}
 }
 
-
-
 func TestEtcd_Find(t *testing.T) {
-
 	tests := []struct {
 		name string
 		want *Etcd
@@ -127,7 +166,6 @@ func TestEtcd_Find(t *testing.T) {
 }
 
 func TestEtcd_Remove(t *testing.T) {
-
 	tests := []struct {
 		name string
 		want *Etcd
