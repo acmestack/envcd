@@ -26,13 +26,23 @@ import (
 
 const (
 	exchangerType = "Exchanger"
-	mysqlType     = "MySQL"
+	mysqlType     = "Storage"
 )
 
-// mysql the MySQL config
-type mysql struct {
-	// Url with standard Url: mysql://user:123@localhost:123
-	Url string `yaml:"url"`
+// Exchanger the Exchanger config
+type Exchanger struct {
+	// Exchanger with standard Url: etcd://user:123@localhost:123
+	// the schema is the kind of the center
+	Url          string `yaml:"url"`
+	ConnMetadata *ConnMetadata
+}
+
+// Storage the Storage config
+type Storage struct {
+	// Url with standard Url: MySQL://user:123@localhost:123
+	Url          string `yaml:"url"`
+	Database     string `yaml:"database"`
+	ConnMetadata *ConnMetadata
 }
 
 // Server the Server config
@@ -45,13 +55,9 @@ type Server struct {
 
 // Config the envcd config
 type Config struct {
-	// Exchanger with standard Url: etcd://user:123@localhost:123
-	// the schema is the kind of the center
-	Exchanger             string `yaml:"exchanger"`
-	ExchangerConnMetadata *ConnMetadata
-	Mysql                 *mysql  `yaml:"mysql"`
-	ServerSetting         *Server `yaml:"server"`
-	MysqlConnMetadata     *ConnMetadata
+	Exchanger *Exchanger `yaml:"exchanger"`
+	Storage   *Storage   `yaml:"storage"`
+	Server    *Server    `yaml:"server"`
 }
 
 // NewConfig new envcd config
@@ -72,8 +78,8 @@ func NewConfig(configFile *string) *Config {
 // StartInformation the envcd config information
 //  @receiver cfg
 func (cfg *Config) StartInformation() {
-	cfg.ExchangerConnMetadata = parser(cfg.Exchanger)
-	cfg.ExchangerConnMetadata.information(exchangerType)
-	cfg.MysqlConnMetadata = parser(cfg.Mysql.Url)
-	cfg.MysqlConnMetadata.information(mysqlType)
+	cfg.Exchanger.ConnMetadata = parser(cfg.Exchanger.Url)
+	cfg.Exchanger.ConnMetadata.information(exchangerType)
+	cfg.Storage.ConnMetadata = parser(cfg.Storage.Url)
+	cfg.Storage.ConnMetadata.information(mysqlType)
 }

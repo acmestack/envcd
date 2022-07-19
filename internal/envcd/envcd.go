@@ -30,7 +30,7 @@ func Start(envcdConfig *config.Config) {
 	// show start information & parser config
 	envcdConfig.StartInformation()
 	// start openapi with exchanger & storage
-	openapi.Start(envcdConfig.ServerSetting,
-		exchanger.Start(envcdConfig.ExchangerConnMetadata),
-		storage.Start(envcdConfig.MysqlConnMetadata))
+	openapi.Start(envcdConfig.Server,
+		exchanger.Start(envcdConfig.Exchanger),
+		storage.Start(envcdConfig.Storage))
 }

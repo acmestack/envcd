@@ -20,9 +20,9 @@ package storage
 import "github.com/acmestack/envcd/internal/pkg/config"
 
 type Storage struct {
-	mysql *config.ConnMetadata
+	storage *config.Storage
 }
 
-func Start(mysql *config.ConnMetadata) *Storage {
-	return &Storage{mysql: mysql}
+func Start(mysql *config.Storage) *Storage {
+	return &Storage{storage: mysql}
 }

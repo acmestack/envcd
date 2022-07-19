@@ -29,6 +29,7 @@ type ConnMetadata struct {
 	UserName string
 	Password string
 	Host     string
+	Hostname string
 	Port     string
 }
 
@@ -42,7 +43,8 @@ func parser(connection string) *ConnMetadata {
 	metadata.UserName = u.User.Username()
 	password, _ := u.User.Password()
 	metadata.Password = password
-	metadata.Host = u.Hostname()
+	metadata.Host = u.Host
+	metadata.Hostname = u.Hostname()
 	// todo port to int?
 	metadata.Port = u.Port()
 	return metadata
@@ -54,6 +56,7 @@ func (connMedata *ConnMetadata) information(t string) {
 	fmt.Println(fmt.Sprintf("Type: %v", connMedata.Type))
 	fmt.Println(fmt.Sprintf("UserName: %v", connMedata.UserName))
 	fmt.Println(fmt.Sprintf("Host: %v", connMedata.Host))
+	fmt.Println(fmt.Sprintf("Hostname: %v", connMedata.Hostname))
 	fmt.Println(fmt.Sprintf("Port: %v", connMedata.Port))
 	fmt.Println("--")
 }

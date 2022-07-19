@@ -1,6 +1,8 @@
-exchanger: "etcd://user:password@localhost:2379"
-mysql:
+exchanger:
+  url: "etcd://user:password@localhost:2379"
+storage:
   url: "mysql://user:password@localhost:3306"
+  database: envcd
 server:
   read-timeout: 60
   write-timeout: 60
