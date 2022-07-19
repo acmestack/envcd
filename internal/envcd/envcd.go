@@ -25,16 +25,13 @@ import (
 )
 
 type Envcd struct {
-	exchanger   exchanger.Exchanger
-	envcdConfig *config.Config
+	exchanger exchanger.Exchanger
 }
 
 // Start envcd by envcd config
 //  @param envcdConfig the config for envcd
-func Start(envcdConfig *config.Config) *Envcd {
-	// show start information & parser config
-	envcdConfig.StartInformation()
-	return &Envcd{exchanger: etcd.New(envcdConfig.ExchangerConnMetadata), envcdConfig: envcdConfig}
+func Start(exchangerConnMetadata *config.ConnMetadata) *Envcd {
+	return &Envcd{exchanger: etcd.New(exchangerConnMetadata)}
 }
 
 // Put new data to Exchanger by key and value
