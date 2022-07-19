@@ -18,18 +18,19 @@
 package routers
 
 import (
-	"github.com/acmestack/envcd/internal/core/service/routers/api"
+	"github.com/acmestack/envcd/internal/core/openapi/routers/api"
+	openservice "github.com/acmestack/envcd/internal/core/service"
 	"github.com/gin-gonic/gin"
 )
 
 // InitRouter initialize routing information
-func InitRouter() *gin.Engine {
+func InitRouter(op *openservice.OpenService) *gin.Engine {
 	r := gin.New()
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 
 	// user auth
-	r.POST("/auth", api.GetAuth)
+	r.GET("/auth", api.GetAuth(op))
 
 	//apiv1 := r.Group("/api/v1")
 

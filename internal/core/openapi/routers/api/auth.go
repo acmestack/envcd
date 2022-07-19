@@ -18,6 +18,13 @@
 package api
 
 import (
+	"fmt"
+	"github.com/acmestack/envcd/internal/core/plugin"
+	openservice "github.com/acmestack/envcd/internal/core/service"
+
+	"github.com/acmestack/envcd/internal/pkg/context"
+	"github.com/acmestack/envcd/pkg/entity/data"
+	"github.com/acmestack/godkits/gox/errorsx"
 	"github.com/gin-gonic/gin"
 )
 
@@ -33,6 +40,19 @@ type auth struct {
 // @Success 200 {object} app.Response
 // @Failure 500 {object} app.Response
 // @Router /auth [get]
-func GetAuth(c *gin.Context) {
-	// todo auth
+func GetAuth(op *openservice.OpenService) func(context2 *gin.Context) {
+	return func(context2 *gin.Context) {
+		c := &context.Context{Action: func() (*data.EnvcdResult, error) {
+			fmt.Println("hello world")
+			err := op.Envcd.Put("key", "value")
+			if err != nil {
+				return nil, err
+			}
+			return nil, errorsx.Err("test error")
+		}}
+		if ret, err := plugin.NewChain(op.Executors).Execute(c); err != nil {
+			fmt.Printf("ret = %v, error = %v", ret, err)
+		}
+
+	}
 }

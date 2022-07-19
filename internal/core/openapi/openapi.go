@@ -19,7 +19,7 @@ package openapi
 
 import (
 	"fmt"
-	routers2 "github.com/acmestack/envcd/internal/core/routers"
+	"github.com/acmestack/envcd/internal/core/openapi/routers"
 	openservice "github.com/acmestack/envcd/internal/core/service"
 	"github.com/acmestack/envcd/internal/pkg/config"
 	"github.com/acmestack/godkits/log"
@@ -32,7 +32,7 @@ func Start(serverSetting *config.Server, openService *openservice.OpenService) {
 	gin.SetMode(serverSetting.RunMode)
 	server := &http.Server{
 		Addr:           fmt.Sprintf(":%d", serverSetting.HttpPort),
-		Handler:        routers2.InitRouter(openService),
+		Handler:        routers.InitRouter(openService),
 		ReadTimeout:    time.Duration(serverSetting.ReadTimeout),
 		WriteTimeout:   time.Duration(serverSetting.WriteTimeout),
 		MaxHeaderBytes: 1 << 20,
