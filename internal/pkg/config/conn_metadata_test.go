@@ -80,6 +80,7 @@ func Test_parser(t *testing.T) {
 				Type:     "etcd",
 				UserName: "user",
 				Password: "password",
+				Host:     "localhost:2379",
 				Hostname: "localhost",
 				Port:     "2379",
 			},
