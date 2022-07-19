@@ -19,30 +19,70 @@ package openapi
 
 import (
 	"fmt"
-	"github.com/acmestack/envcd/internal/core/openapi/routers"
-	openservice "github.com/acmestack/envcd/internal/core/service"
+	"github.com/acmestack/envcd/internal/core/plugin"
+	"github.com/acmestack/envcd/internal/core/plugin/logging"
+	"github.com/acmestack/envcd/internal/core/plugin/permission"
+	"github.com/acmestack/envcd/internal/core/storage"
+	"github.com/acmestack/envcd/internal/envcd"
 	"github.com/acmestack/envcd/internal/pkg/config"
+	"github.com/acmestack/envcd/internal/pkg/executor"
 	"github.com/acmestack/godkits/log"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
 )
 
-func Start(serverSetting *config.Server, openService *openservice.OpenService) {
+type Openapi struct {
+	envcd     *envcd.Envcd
+	storage   *storage.Storage
+	executors []executor.Executor
+}
+
+func Start(serverSetting *config.Server, envcd *envcd.Envcd, storage *storage.Storage) {
+	openapi := &Openapi{
+		envcd:     envcd,
+		storage:   storage,
+		executors: []executor.Executor{logging.New(), permission.New()},
+	}
+	// sort plugin
+	plugin.Sort(openapi.executors)
+	openapi.initServer(serverSetting)
+}
+
+// initServer start gin http server
+//  @receiver openapi open api
+//  @param serverSetting server config
+func (openapi *Openapi) initServer(serverSetting *config.Server) {
 	gin.SetMode(serverSetting.RunMode)
 	server := &http.Server{
 		Addr:           fmt.Sprintf(":%d", serverSetting.HttpPort),
-		Handler:        routers.InitRouter(openService),
+		Handler:        openapi.buildRouter(),
 		ReadTimeout:    time.Duration(serverSetting.ReadTimeout),
 		WriteTimeout:   time.Duration(serverSetting.WriteTimeout),
 		MaxHeaderBytes: 1 << 20,
 	}
 
-	log.Info("[info] start http server listening %s", server.Addr)
+	log.Info("start http server listening %s", server.Addr)
 
 	err := server.ListenAndServe()
 	if err != nil {
 		log.Error("service error %v", err)
 		return
 	}
+}
+
+// todo build Router
+func (openapi *Openapi) buildRouter() *gin.Engine {
+	router := gin.Default()
+	// router group
+	adminGroup := router.Group("admin")
+	{
+		// TODO test
+		adminGroup.GET("/login", openapi.login)
+	}
+	envcdGroup := router.Group("envcd")
+	{
+		envcdGroup.POST("/save", openapi.save)
+	}
+	return router
 }
