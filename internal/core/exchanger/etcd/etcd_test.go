@@ -29,7 +29,7 @@ var exchangerConnMetadata = &config.ConnMetadata{
 	Type:     "etcd",
 	UserName: "root",
 	Password: "root",
-	Host:     "localhost",
+	Hostname: "localhost",
 	Port:     "2379",
 }
 

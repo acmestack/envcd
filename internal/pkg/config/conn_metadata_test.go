@@ -57,7 +57,7 @@ func TestConnMetadata_information(t *testing.T) {
 				Type:     tt.fields.Type,
 				UserName: tt.fields.UserName,
 				Password: tt.fields.Password,
-				Host:     tt.fields.Host,
+				Hostname: tt.fields.Host,
 				Port:     tt.fields.Port,
 			}
 			connMedata.information(tt.args.t)
@@ -80,7 +80,7 @@ func Test_parser(t *testing.T) {
 				Type:     "etcd",
 				UserName: "user",
 				Password: "password",
-				Host:     "localhost",
+				Hostname: "localhost",
 				Port:     "2379",
 			},
 		},

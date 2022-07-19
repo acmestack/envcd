@@ -42,8 +42,8 @@ type Exchange struct {
 
 // Start envcd by envcd exchangerConnMetadata config
 //  @param exchangerConnMetadata the config for envcd
-func Start(exchangerConnMetadata *config.ConnMetadata) *Exchange {
-	return &Exchange{exchanger: etcd.New(exchangerConnMetadata)}
+func Start(exchanger *config.Exchanger) *Exchange {
+	return &Exchange{exchanger: etcd.New(exchanger)}
 }
 
 // Put new data to Exchanger by key and value

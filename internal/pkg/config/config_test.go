@@ -47,10 +47,10 @@ func TestURL(t *testing.T) {
 				t.Errorf("Password is not eq = %v", pwd)
 			}
 			if uri.Host != "localhost:123" {
-				t.Errorf("Host is not eq = %v", uri.Host)
+				t.Errorf("Hostname is not eq = %v", uri.Host)
 			}
 			if uri.Hostname() != "localhost" {
-				t.Errorf("Host is not eq = %v", uri.Host)
+				t.Errorf("Hostname is not eq = %v", uri.Host)
 			}
 			if uri.Port() != "123" {
 				t.Errorf("Port is not eq = %v", uri.Port())
@@ -61,10 +61,9 @@ func TestURL(t *testing.T) {
 
 func TestConfig_StartInformation(t *testing.T) {
 	type fields struct {
-		Exchanger                   string
-		ExchangerConnectionMetadata *ConnMetadata
-		Mysql                       *mysql
-		MysqlConnectionMetadata     *ConnMetadata
+		Exchanger *Exchanger
+		Storage   *Storage
+		Server    *Server
 	}
 	tests := []struct {
 		name   string
@@ -72,18 +71,25 @@ func TestConfig_StartInformation(t *testing.T) {
 	}{
 		{
 			fields: fields{
-				Exchanger: "etcd://user:password@localhost:2379",
-				Mysql:     &mysql{Url: "mysql://user:password@localhost:3306"},
+				Exchanger: &Exchanger{
+					Url:          "etcd://user:@@123@localhost:123",
+					ConnMetadata: nil,
+				},
+				Storage: &Storage{
+					Url:          "mysql://user:password@localhost:3306",
+					Database:     "envcd",
+					ConnMetadata: nil,
+				},
+				Server: nil,
 			},
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			cfg := &Config{
-				Exchanger:             tt.fields.Exchanger,
-				ExchangerConnMetadata: tt.fields.ExchangerConnectionMetadata,
-				Mysql:                 tt.fields.Mysql,
-				MysqlConnMetadata:     tt.fields.MysqlConnectionMetadata,
+				Exchanger: tt.fields.Exchanger,
+				Storage:   tt.fields.Storage,
+				Server:    tt.fields.Server,
 			}
 			cfg.StartInformation()
 		})

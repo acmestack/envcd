@@ -28,6 +28,7 @@ import (
 
 const (
 	defaultEtcdDialTimeout = 5
+	etcdExchangerType      = "etcd"
 )
 
 type Etcd struct {
@@ -38,25 +39,24 @@ type Etcd struct {
 // New make new etcd client
 //  @param etcdConfig
 //  @return *Etcd
-func New(exchangerConnMetadata *config.ConnMetadata) *Etcd {
+func New(exchanger *config.Exchanger) *Etcd {
 	ctx := context.Background()
-
-	if exchangerConnMetadata.Type != "etcd" {
-		log.Fatalf("Scheme is not eq = %v", exchangerConnMetadata.Type)
+	metadata := exchanger.ConnMetadata
+	if metadata.Type != etcdExchangerType {
+		log.Fatalf("invalid schema: %v", metadata.Type)
 		return nil
 	}
-
-	endpoint := exchangerConnMetadata.Host + ":" + exchangerConnMetadata.Port
+	endpoint := metadata.Host
 	if endpoint == "" {
-		log.Fatalf("failed to get etcd url")
+		log.Fatalf("failed to get etcd endpoint")
 		return nil
 	}
 
-	cli, err := clientv3.New(clientv3.Config{
+	client, err := clientv3.New(clientv3.Config{
 		Endpoints:   []string{endpoint},
 		DialTimeout: time.Duration(defaultEtcdDialTimeout) * time.Second,
-		Username:    exchangerConnMetadata.UserName,
-		Password:    exchangerConnMetadata.Password,
+		Username:    metadata.UserName,
+		Password:    metadata.Password,
 	})
 
 	if err != nil {
@@ -66,7 +66,7 @@ func New(exchangerConnMetadata *config.ConnMetadata) *Etcd {
 
 	return &Etcd{
 		ctx:    ctx,
-		client: cli,
+		client: client,
 	}
 }
 
@@ -74,15 +74,14 @@ func New(exchangerConnMetadata *config.ConnMetadata) *Etcd {
 //  @param key data identity
 //  @param value data
 func (etcd *Etcd) Put(key interface{}, value interface{}) error {
-	cli := etcd.client
-	putResponse, err := cli.Put(etcd.ctx, key.(string), value.(string), clientv3.WithPrevKV())
+	response, err := etcd.client.Put(etcd.ctx, key.(string), value.(string), clientv3.WithPrevKV())
 	if err != nil {
 		log.Printf("failed put key/value [%s]/[%s],err: %v", key, value, err)
 		return err
 	}
 	// if the key cover pre value, printf the pre value
-	if putResponse.PrevKv != nil {
-		log.Printf("Put etcd key = %s,pre value = %s", key, string(putResponse.PrevKv.Value))
+	if response.PrevKv != nil {
+		log.Printf("Put etcd key = %s,pre value = %s", key, string(response.PrevKv.Value))
 		return nil
 	}
 	log.Printf("Put etcd key = %s, value = %s", key, value)
@@ -93,21 +92,17 @@ func (etcd *Etcd) Put(key interface{}, value interface{}) error {
 //  @receiver exchanger etcd exchanger
 //  @param o data
 func (etcd *Etcd) Remove(key interface{}) error {
-	cli := etcd.client
-	delResponse, err := cli.Delete(etcd.ctx, key.(string), clientv3.WithPrevKV())
-
+	response, err := etcd.client.Delete(etcd.ctx, key.(string), clientv3.WithPrevKV())
 	if err != nil {
 		log.Printf("failed delete key: %s,err: %v", key, err)
 		return err
 	}
-
-	if delResponse.PrevKvs == nil {
+	if response.PrevKvs == nil {
 		return nil
 	}
 	// printf the delete key/value
-	for _, kvPair := range delResponse.PrevKvs {
+	for _, kvPair := range response.PrevKvs {
 		log.Printf("Delete key: %s,value: %s", kvPair.Key, kvPair.Value)
 	}
-
 	return nil
 }
