@@ -19,28 +19,29 @@ package openapi
 
 import (
 	"fmt"
+	"net/http"
+	"time"
+
+	"github.com/acmestack/envcd/internal/core/exchanger"
 	"github.com/acmestack/envcd/internal/core/plugin"
 	"github.com/acmestack/envcd/internal/core/plugin/logging"
 	"github.com/acmestack/envcd/internal/core/plugin/permission"
 	"github.com/acmestack/envcd/internal/core/storage"
-	"github.com/acmestack/envcd/internal/envcd"
 	"github.com/acmestack/envcd/internal/pkg/config"
 	"github.com/acmestack/envcd/internal/pkg/executor"
 	"github.com/acmestack/godkits/log"
 	"github.com/gin-gonic/gin"
-	"net/http"
-	"time"
 )
 
 type Openapi struct {
-	envcd     *envcd.Envcd
+	exchange  *exchanger.Exchange
 	storage   *storage.Storage
 	executors []executor.Executor
 }
 
-func Start(serverSetting *config.Server, envcd *envcd.Envcd, storage *storage.Storage) {
+func Start(serverSetting *config.Server, exchange *exchanger.Exchange, storage *storage.Storage) {
 	openapi := &Openapi{
-		envcd:     envcd,
+		exchange:  exchange,
 		storage:   storage,
 		executors: []executor.Executor{logging.New(), permission.New()},
 	}
@@ -80,7 +81,7 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 		// TODO test
 		adminGroup.GET("/login", openapi.login)
 	}
-	envcdGroup := router.Group("envcd")
+	envcdGroup := router.Group("exchange")
 	{
 		envcdGroup.POST("/save", openapi.save)
 	}

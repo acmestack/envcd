@@ -30,7 +30,7 @@ import (
 func (openapi *Openapi) login(ctx *gin.Context) {
 	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
 		fmt.Println("hello world")
-		// storage.Put()
+		openapi.exchange.Put("a", "ada")
 		return nil, errorsx.Err("test error")
 	}}
 	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {

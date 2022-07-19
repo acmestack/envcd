@@ -18,34 +18,19 @@
 package envcd
 
 import (
-	"github.com/acmestack/envcd/internal/core/exchanger/etcd"
+	"github.com/acmestack/envcd/internal/core/exchanger"
+	"github.com/acmestack/envcd/internal/core/openapi"
+	"github.com/acmestack/envcd/internal/core/storage"
 	"github.com/acmestack/envcd/internal/pkg/config"
-	"github.com/acmestack/envcd/internal/pkg/exchanger"
-	"github.com/acmestack/godkits/gox/errorsx"
 )
-
-type Envcd struct {
-	exchanger exchanger.Exchanger
-}
 
 // Start envcd by envcd exchangerConnMetadata config
 //  @param exchangerConnMetadata the config for envcd
-func Start(exchangerConnMetadata *config.ConnMetadata) *Envcd {
-	return &Envcd{exchanger: etcd.New(exchangerConnMetadata)}
-}
-
-// Put new data to Exchanger by key and value
-func (envcd *Envcd) Put(key interface{}, value interface{}) error {
-	if envcd == nil || envcd.exchanger == nil {
-		return errorsx.Err("IIllegal state for envcd")
-	}
-	return envcd.exchanger.Put(key, value)
-}
-
-// Remove delete the data from Exchanger by key
-func (envcd *Envcd) Remove(key interface{}) error {
-	if envcd == nil || envcd.exchanger == nil {
-		return errorsx.Err("IIllegal state for envcd")
-	}
-	return envcd.exchanger.Remove(key)
+func Start(envcdConfig *config.Config) {
+	// show start information & parser config
+	envcdConfig.StartInformation()
+	// start openapi with exchanger & storage
+	openapi.Start(envcdConfig.ServerSetting,
+		exchanger.Start(envcdConfig.ExchangerConnMetadata),
+		storage.Start(envcdConfig.MysqlConnMetadata))
 }
