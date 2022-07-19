@@ -248,7 +248,19 @@ func TestStart(t *testing.T) {
 	}
 }
 
-func Test_Exchanger_Put(t *testing.T) {
+var metadata = &config.Exchanger{
+	Url: "",
+	ConnMetadata: &config.ConnMetadata{
+		Type:     "etcd",
+		UserName: "root",
+		Password: "root",
+		Host:     "localhost:2379",
+		Hostname: "localhost",
+		Port:     "2379",
+	},
+}
+
+func TestExchange_Put(t *testing.T) {
 	type fields struct {
 		exchanger Exchanger
 	}
@@ -263,43 +275,30 @@ func Test_Exchanger_Put(t *testing.T) {
 		wantErr bool
 	}{
 		{
-
-			fields: fields{
-				exchanger: New(),
-			},
-			args:    args{key: "a", value: "value"},
+			fields:  fields{exchanger: etcd.New(metadata)},
+			args:    args{key: "a", value: "abc"},
 			wantErr: false,
-		},
-		{
-
-			fields: fields{
-				exchanger: nil,
-			},
-			args:    args{key: "a", value: "value"},
-			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dict := &Exchange{
+			exchange := &Exchange{
 				exchanger: tt.fields.exchanger,
 			}
-			if err := dict.Put(tt.args.key, tt.args.value); !isNil(tt.fields.exchanger) && (err != nil) != tt.wantErr {
+			if err := exchange.Put(tt.args.key, tt.args.value); (err != nil) != tt.wantErr {
 				t.Errorf("Put() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
 }
 
-func Test_Exchanger_Remove(t *testing.T) {
+func TestExchange_Remove(t *testing.T) {
 	type fields struct {
 		exchanger Exchanger
 	}
 	type args struct {
 		key interface{}
 	}
-	mem := New()
-	_ = mem.Put("a", "value")
 	tests := []struct {
 		name    string
 		fields  fields
@@ -307,26 +306,17 @@ func Test_Exchanger_Remove(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			fields: fields{
-				exchanger: mem,
-			},
+			fields:  fields{exchanger: etcd.New(metadata)},
 			args:    args{key: "a"},
 			wantErr: false,
-		},
-		{
-			fields: fields{
-				exchanger: nil,
-			},
-			args:    args{key: "a"},
-			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dict := &Exchange{
+			exchange := &Exchange{
 				exchanger: tt.fields.exchanger,
 			}
-			if err := dict.Remove(tt.args.key); !isNil(tt.fields.exchanger) && (err != nil) != tt.wantErr {
+			if err := exchange.Remove(tt.args.key); (err != nil) != tt.wantErr {
 				t.Errorf("Remove() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
