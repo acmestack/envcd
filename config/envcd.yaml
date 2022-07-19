@@ -6,5 +6,5 @@ storage:
 server:
   read-timeout: 60
   write-timeout: 60
-  http-port: 8000
+  port: 8080
   run-mode: debug

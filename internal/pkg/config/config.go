@@ -48,7 +48,7 @@ type Storage struct {
 // Server the Server config
 type Server struct {
 	RunMode      string `yaml:"run-mode"`
-	HttpPort     int    `yaml:"http-port"`
+	Port         int    `yaml:"port"`
 	ReadTimeout  int    `yaml:"read-timeout"`
 	WriteTimeout int    `yaml:"write-timeout"`
 }

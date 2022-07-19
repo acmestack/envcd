@@ -36,6 +36,7 @@ type Exchanger interface {
 	Remove(key interface{}) error
 }
 
+// Exchange the envcd data exchange
 type Exchange struct {
 	exchanger Exchanger
 }
