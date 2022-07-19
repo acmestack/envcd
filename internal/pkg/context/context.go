@@ -27,7 +27,7 @@ import (
 type Context struct {
 	Uri         string
 	Method      string
-	Headers     map[interface{}]interface{}
+	Headers     map[string][]string
 	ContentType string
 	Parameters  map[interface{}]interface{}
 	Body        interface{}

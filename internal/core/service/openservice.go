@@ -15,25 +15,31 @@
  * limitations under the License.
  */
 
-package main
+package openservice
 
 import (
-	"flag"
-	"github.com/acmestack/envcd/internal/core/openapi"
-	openservice "github.com/acmestack/envcd/internal/core/service"
+	"github.com/acmestack/envcd/internal/core/plugin"
+	"github.com/acmestack/envcd/internal/core/plugin/logging"
+	"github.com/acmestack/envcd/internal/core/plugin/permission"
+	"github.com/acmestack/envcd/internal/core/plugin/response"
 	"github.com/acmestack/envcd/internal/core/storage"
 	"github.com/acmestack/envcd/internal/envcd"
-	"github.com/acmestack/envcd/internal/pkg/config"
+	"github.com/acmestack/envcd/internal/pkg/executor"
 )
 
-func main() {
-	configFile := flag.String("config", "config/envcd.yaml", "envcd -config config/envcd.yaml")
-	flag.Parse()
-	configData := config.NewConfig(configFile)
-	// show start information & parser config
-	configData.StartInformation()
-	service := openservice.InitService(envcd.Start(configData.ExchangerConnMetadata),
-		storage.Start(configData.MysqlConnMetadata))
-	// start openapi with exchanger & storage
-	openapi.Start(configData.ServerSetting, service)
+type OpenService struct {
+	Envcd     *envcd.Envcd
+	storage   *storage.Storage
+	Executors []executor.Executor
+}
+
+func InitService(envcd *envcd.Envcd, storage *storage.Storage) *OpenService {
+	openservice := &OpenService{
+		Envcd:     envcd,
+		storage:   storage,
+		Executors: []executor.Executor{logging.New(), permission.New(), response.New()},
+	}
+	// sort plugin
+	plugin.Sort(openservice.Executors)
+	return openservice
 }

@@ -19,46 +19,30 @@ package openapi
 
 import (
 	"fmt"
-
-	"github.com/acmestack/envcd/internal/core/plugin"
-	"github.com/acmestack/envcd/internal/core/plugin/logging"
-	"github.com/acmestack/envcd/internal/core/plugin/permission"
-	"github.com/acmestack/envcd/internal/core/plugin/response"
-	"github.com/acmestack/envcd/internal/core/storage"
-	"github.com/acmestack/envcd/internal/envcd"
-	"github.com/acmestack/envcd/internal/pkg/context"
-	"github.com/acmestack/envcd/internal/pkg/executor"
-	"github.com/acmestack/envcd/pkg/entity/data"
-	"github.com/acmestack/godkits/gox/errorsx"
+	routers2 "github.com/acmestack/envcd/internal/core/routers"
+	openservice "github.com/acmestack/envcd/internal/core/service"
+	"github.com/acmestack/envcd/internal/pkg/config"
+	"github.com/acmestack/godkits/log"
+	"github.com/gin-gonic/gin"
+	"net/http"
+	"time"
 )
 
-type Openapi struct {
-	envcd     *envcd.Envcd
-	storage   *storage.Storage
-	executors []executor.Executor
-}
-
-func Start(envcd *envcd.Envcd, storage *storage.Storage) {
-	openapi := &Openapi{
-		envcd:     envcd,
-		storage:   storage,
-		executors: []executor.Executor{logging.New(), permission.New(), response.New()},
+func Start(serverSetting *config.Server, openService *openservice.OpenService) {
+	gin.SetMode(serverSetting.RunMode)
+	server := &http.Server{
+		Addr:           fmt.Sprintf(":%d", serverSetting.HttpPort),
+		Handler:        routers2.InitRouter(openService),
+		ReadTimeout:    time.Duration(serverSetting.ReadTimeout),
+		WriteTimeout:   time.Duration(serverSetting.WriteTimeout),
+		MaxHeaderBytes: 1 << 20,
 	}
-	// sort plugin
-	plugin.Sort(openapi.executors)
-	openapi.openRouter()
-}
 
-// todo open Router
-func (openapi *Openapi) openRouter() {
-	// fixme: plugin.NewChain(openapi.executors) for peer request
-	// plugin.NewChain(openapi.executors)
-	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
-		fmt.Println("hello world")
-		// openapi.envcd.Put("key", "value")
-		return nil, errorsx.Err("test error")
-	}}
-	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
-		fmt.Printf("ret = %v, error = %v", ret, err)
+	log.Info("[info] start http server listening %s", server.Addr)
+
+	err := server.ListenAndServe()
+	if err != nil {
+		log.Error("service error %v", err)
+		return
 	}
 }
