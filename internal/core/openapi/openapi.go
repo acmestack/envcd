@@ -56,7 +56,7 @@ func Start(serverSetting *config.Server, exchange *exchanger.Exchange, storage *
 func (openapi *Openapi) initServer(serverSetting *config.Server) {
 	gin.SetMode(serverSetting.RunMode)
 	server := &http.Server{
-		Addr:           fmt.Sprintf(":%d", serverSetting.HttpPort),
+		Addr:           fmt.Sprintf(":%d", serverSetting.Port),
 		Handler:        openapi.buildRouter(),
 		ReadTimeout:    time.Duration(serverSetting.ReadTimeout),
 		WriteTimeout:   time.Duration(serverSetting.WriteTimeout),
@@ -64,11 +64,9 @@ func (openapi *Openapi) initServer(serverSetting *config.Server) {
 	}
 
 	log.Info("start http server listening %s", server.Addr)
-
 	err := server.ListenAndServe()
 	if err != nil {
-		log.Error("service error %v", err)
-		return
+		log.Error("start http server error %v", err)
 	}
 }
 
