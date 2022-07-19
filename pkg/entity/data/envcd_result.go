@@ -30,14 +30,14 @@ var (
 
 // EnvcdResult for response
 type EnvcdResult struct {
-	Data map[interface{}]interface{}
+	Data map[string]interface{}
 }
 
 // Success response
 //  @param data
 //  @return *EnvcdResult
 func Success(data interface{}) *EnvcdResult {
-	return &EnvcdResult{Data: map[interface{}]interface{}{
+	return &EnvcdResult{Data: map[string]interface{}{
 		ResultCodeKey:    successCode,
 		ResultMessageKey: "success",
 		ResultDataKey:    data,
@@ -48,7 +48,7 @@ func Success(data interface{}) *EnvcdResult {
 //  @param message of error reason
 //  @return *EnvcdResult
 func Failure(message string) *EnvcdResult {
-	return &EnvcdResult{Data: map[interface{}]interface{}{
+	return &EnvcdResult{Data: map[string]interface{}{
 		ResultCodeKey:    failureCode,
 		ResultMessageKey: message,
 		ResultDataKey:    nil,
