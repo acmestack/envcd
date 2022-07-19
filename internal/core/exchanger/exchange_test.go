@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package envcd
+package exchanger
 
 import (
 	"errors"
@@ -25,7 +25,6 @@ import (
 	"github.com/acmestack/envcd/internal/pkg/config"
 
 	"github.com/acmestack/envcd/internal/core/exchanger/etcd"
-	"github.com/acmestack/envcd/internal/pkg/exchanger"
 )
 
 type Memory struct {
@@ -227,10 +226,10 @@ func TestStart(t *testing.T) {
 		Port:     "2379",
 	}
 
-	e := &Envcd{exchanger: etcd.New(exchangerConnMetadata)}
+	e := &Exchange{exchanger: etcd.New(exchangerConnMetadata)}
 	tests := []struct {
 		name string
-		want *Envcd
+		want *Exchange
 	}{
 		{
 			want: e,
@@ -247,7 +246,7 @@ func TestStart(t *testing.T) {
 
 func Test_Exchanger_Put(t *testing.T) {
 	type fields struct {
-		exchanger exchanger.Exchanger
+		exchanger Exchanger
 	}
 	type args struct {
 		key   interface{}
@@ -278,10 +277,10 @@ func Test_Exchanger_Put(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dict := &Envcd{
+			dict := &Exchange{
 				exchanger: tt.fields.exchanger,
 			}
-			if err := dict.Put(tt.args.key, tt.args.value); (err != nil) != tt.wantErr {
+			if err := dict.Put(tt.args.key, tt.args.value); !isNil(tt.fields.exchanger) && (err != nil) != tt.wantErr {
 				t.Errorf("Put() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
@@ -290,7 +289,7 @@ func Test_Exchanger_Put(t *testing.T) {
 
 func Test_Exchanger_Remove(t *testing.T) {
 	type fields struct {
-		exchanger exchanger.Exchanger
+		exchanger Exchanger
 	}
 	type args struct {
 		key interface{}
@@ -320,10 +319,10 @@ func Test_Exchanger_Remove(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			dict := &Envcd{
+			dict := &Exchange{
 				exchanger: tt.fields.exchanger,
 			}
-			if err := dict.Remove(tt.args.key); (err != nil) != tt.wantErr {
+			if err := dict.Remove(tt.args.key); !isNil(tt.fields.exchanger) && (err != nil) != tt.wantErr {
 				t.Errorf("Remove() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
