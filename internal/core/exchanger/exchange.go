@@ -49,7 +49,7 @@ func Start(exchanger *config.Exchanger) *Exchange {
 
 // Put new data to Exchanger by key and value
 func (exchange *Exchange) Put(key interface{}, value interface{}) error {
-	if exchange == nil || isNil(exchange.exchanger) {
+	if exchange == nil || exchange.exchanger.(*etcd.Etcd) == nil {
 		return errorsx.Err("IIllegal state for exchange")
 	}
 	return exchange.exchanger.Put(key, value)
@@ -57,13 +57,8 @@ func (exchange *Exchange) Put(key interface{}, value interface{}) error {
 
 // Remove delete the data from Exchanger by key
 func (exchange *Exchange) Remove(key interface{}) error {
-	if exchange == nil || isNil(exchange.exchanger) {
+	if exchange == nil || exchange.exchanger.(*etcd.Etcd) == nil {
 		return errorsx.Err("IIllegal state for exchange")
 	}
 	return exchange.exchanger.Remove(key)
-}
-
-func isNil(exchanger Exchanger) bool {
-	v, _ := exchanger.(*etcd.Etcd)
-	return v == nil
 }
