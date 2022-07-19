@@ -15,23 +15,29 @@
  * limitations under the License.
  */
 
-package context
+package routers
 
 import (
-	"net/http"
-
-	"github.com/acmestack/envcd/pkg/entity/data"
+	"github.com/acmestack/envcd/internal/core/service/routers/api"
+	"github.com/gin-gonic/gin"
 )
 
-// Context for peer request
-type Context struct {
-	Uri         string
-	Method      string
-	Headers     map[string]interface{}
-	ContentType string
-	Parameters  map[string]interface{}
-	Cookies     map[string]interface{}
-	Body        interface{}
-	Action      func() (*data.EnvcdResult, error)
-	HttpRequest *http.Request
+// InitRouter initialize routing information
+func InitRouter() *gin.Engine {
+	r := gin.New()
+	r.Use(gin.Logger())
+	r.Use(gin.Recovery())
+
+	// user auth
+	r.POST("/auth", api.GetAuth)
+
+	//apiv1 := r.Group("/api/v1")
+
+	//apiv1.GET("/tags", v1.GetTags)
+	//apiv1.Use(jwt.JWT())
+	//{
+	//	apiv1.GET("/tags", v1.GetTags)
+	//}
+
+	return r
 }

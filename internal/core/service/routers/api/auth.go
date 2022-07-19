@@ -15,23 +15,24 @@
  * limitations under the License.
  */
 
-package context
+package api
 
 import (
-	"net/http"
-
-	"github.com/acmestack/envcd/pkg/entity/data"
+	"github.com/gin-gonic/gin"
 )
 
-// Context for peer request
-type Context struct {
-	Uri         string
-	Method      string
-	Headers     map[string]interface{}
-	ContentType string
-	Parameters  map[string]interface{}
-	Cookies     map[string]interface{}
-	Body        interface{}
-	Action      func() (*data.EnvcdResult, error)
-	HttpRequest *http.Request
+type auth struct {
+	Username string `valid:"Required; MaxSize(50)"`
+	Password string `valid:"Required; MaxSize(50)"`
+}
+
+// GetAuth
+// @Produce  json
+// @Param username query string true "userName"
+// @Param password query string true "password"
+// @Success 200 {object} app.Response
+// @Failure 500 {object} app.Response
+// @Router /auth [get]
+func GetAuth(c *gin.Context) {
+	// todo auth
 }

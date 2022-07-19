@@ -15,23 +15,25 @@
  * limitations under the License.
  */
 
-package context
+package logging
 
 import (
-	"net/http"
-
-	"github.com/acmestack/envcd/pkg/entity/data"
+	"github.com/acmestack/envcd/internal/pkg/context"
+	"testing"
 )
 
-// Context for peer request
-type Context struct {
-	Uri         string
-	Method      string
-	Headers     map[string]interface{}
-	ContentType string
-	Parameters  map[string]interface{}
-	Cookies     map[string]interface{}
-	Body        interface{}
-	Action      func() (*data.EnvcdResult, error)
-	HttpRequest *http.Request
+func TestPrintLog(t *testing.T) {
+	header := make(map[string]interface{})
+	header["name"] = "envcd"
+	body := make(map[string]interface{})
+	body["id"] = "1"
+	body["name"] = "envcd"
+	c := context.Context{
+		Uri:         "/test/uri",
+		Method:      "POST",
+		Headers:     header,
+		ContentType: "application/json",
+		Body:        body,
+	}
+	printLog(&c)
 }
