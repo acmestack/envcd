@@ -224,6 +224,7 @@ func TestStart(t *testing.T) {
 			Type:     "etcd",
 			UserName: "root",
 			Password: "root",
+			Host:     "localhost:2379",
 			Hostname: "localhost",
 			Port:     "2379",
 		},
