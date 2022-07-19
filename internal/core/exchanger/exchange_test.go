@@ -218,15 +218,18 @@ func Test_Memory_Remove(t *testing.T) {
 }
 
 func TestStart(t *testing.T) {
-	exchangerConnMetadata := &config.ConnMetadata{
-		Type:     "etcd",
-		UserName: "root",
-		Password: "root",
-		Hostname: "localhost",
-		Port:     "2379",
+	metadata := &config.Exchanger{
+		Url: "",
+		ConnMetadata: &config.ConnMetadata{
+			Type:     "etcd",
+			UserName: "root",
+			Password: "root",
+			Hostname: "localhost",
+			Port:     "2379",
+		},
 	}
 
-	e := &Exchange{exchanger: etcd.New(exchangerConnMetadata)}
+	e := &Exchange{exchanger: etcd.New(metadata)}
 	tests := []struct {
 		name string
 		want *Exchange

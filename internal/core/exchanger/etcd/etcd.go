@@ -40,7 +40,6 @@ type Etcd struct {
 //  @param etcdConfig
 //  @return *Etcd
 func New(exchanger *config.Exchanger) *Etcd {
-	ctx := context.Background()
 	metadata := exchanger.ConnMetadata
 	if metadata.Type != etcdExchangerType {
 		log.Fatalf("invalid schema: %v", metadata.Type)
@@ -65,7 +64,7 @@ func New(exchanger *config.Exchanger) *Etcd {
 	}
 
 	return &Etcd{
-		ctx:    ctx,
+		ctx:    context.Background(),
 		client: client,
 	}
 }
