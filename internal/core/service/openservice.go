@@ -21,7 +21,6 @@ import (
 	"github.com/acmestack/envcd/internal/core/plugin"
 	"github.com/acmestack/envcd/internal/core/plugin/logging"
 	"github.com/acmestack/envcd/internal/core/plugin/permission"
-	"github.com/acmestack/envcd/internal/core/plugin/response"
 	"github.com/acmestack/envcd/internal/core/storage"
 	"github.com/acmestack/envcd/internal/envcd"
 	"github.com/acmestack/envcd/internal/pkg/executor"
@@ -37,7 +36,7 @@ func InitService(envcd *envcd.Envcd, storage *storage.Storage) *OpenService {
 	openservice := &OpenService{
 		Envcd:     envcd,
 		storage:   storage,
-		Executors: []executor.Executor{logging.New(), permission.New(), response.New()},
+		Executors: []executor.Executor{logging.New(), permission.New()},
 	}
 	// sort plugin
 	plugin.Sort(openservice.Executors)
