@@ -28,8 +28,8 @@ type Envcd struct {
 	exchanger exchanger.Exchanger
 }
 
-// Start envcd by envcd config
-//  @param envcdConfig the config for envcd
+// Start envcd by envcd exchangerConnMetadata config
+//  @param exchangerConnMetadata the config for envcd
 func Start(exchangerConnMetadata *config.ConnMetadata) *Envcd {
 	return &Envcd{exchanger: etcd.New(exchangerConnMetadata)}
 }
@@ -40,22 +40,6 @@ func (envcd *Envcd) Put(key interface{}, value interface{}) error {
 		return errorsx.Err("IIllegal state for envcd")
 	}
 	return envcd.exchanger.Put(key, value)
-}
-
-// Get the data from Exchanger by key
-func (envcd *Envcd) Get(key interface{}) (interface{}, error) {
-	if envcd == nil || envcd.exchanger == nil {
-		return nil, errorsx.Err("IIllegal state for envcd")
-	}
-	return envcd.exchanger.Get(key)
-}
-
-// Find delete the data from Exchanger by key
-func (envcd *Envcd) Find(key interface{}) (interface{}, error) {
-	if envcd == nil || envcd.exchanger == nil {
-		return nil, errorsx.Err("IIllegal state for envcd")
-	}
-	return envcd.exchanger.Find(key)
 }
 
 // Remove delete the data from Exchanger by key
