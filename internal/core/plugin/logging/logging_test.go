@@ -19,8 +19,6 @@ package logging
 
 import (
 	"github.com/acmestack/envcd/internal/pkg/context"
-	"github.com/acmestack/godkits/assert"
-	"strings"
 	"testing"
 )
 
@@ -37,7 +35,5 @@ func TestPrintLog(t *testing.T) {
 		ContentType: "application/json",
 		Body:        body,
 	}
-	s := printLog(&c)
-	assert.IsTrue(t, strings.Contains(s, "POST"))
-	assert.IsTrue(t, strings.Contains(s, "application/json"))
+	printLog(&c)
 }
