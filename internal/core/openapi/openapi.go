@@ -58,8 +58,8 @@ func (openapi *Openapi) initServer(serverSetting *config.Server) {
 	server := &http.Server{
 		Addr:           fmt.Sprintf(":%d", serverSetting.Port),
 		Handler:        openapi.buildRouter(),
-		ReadTimeout:    time.Duration(serverSetting.ReadTimeout),
-		WriteTimeout:   time.Duration(serverSetting.WriteTimeout),
+		ReadTimeout:    time.Duration(serverSetting.ReadTimeout) * time.Millisecond,
+		WriteTimeout:   time.Duration(serverSetting.WriteTimeout) * time.Millisecond,
 		MaxHeaderBytes: 1 << 20,
 	}
 

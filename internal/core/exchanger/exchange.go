@@ -64,6 +64,6 @@ func (exchange *Exchange) Remove(key interface{}) error {
 }
 
 func isNil(exchanger Exchanger) bool {
-	v, _ := exchanger.(*Exchange)
+	v, _ := exchanger.(*etcd.Etcd)
 	return v == nil
 }
