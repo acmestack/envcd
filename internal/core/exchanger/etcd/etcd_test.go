@@ -82,12 +82,54 @@ func (etcd *Etcd) Find(key interface{}) (interface{}, error) {
 }
 
 func TestNew(t *testing.T) {
+	errorMetadata1 := &config.Exchanger{
+		Url: "",
+		ConnMetadata: &config.ConnMetadata{
+			Type:     "etcdd",
+			UserName: "root",
+			Password: "root",
+			Host:     "localhost:2379",
+			Hostname: "localhost",
+			Port:     "2379",
+		},
+	}
+	errorMetadata2 := &config.Exchanger{
+		Url: "",
+		ConnMetadata: &config.ConnMetadata{
+			Type:     "etcd",
+			UserName: "root",
+			Password: "root",
+			Host:     "",
+			Hostname: "localhost",
+			Port:     "2379",
+		},
+	}
+	errorMetadata3 := &config.Exchanger{
+		Url: "",
+		ConnMetadata: &config.ConnMetadata{
+			Type:     "etcd",
+			UserName: "root",
+			Password: "root",
+			Host:     "localhost:2339",
+			Hostname: "localhost",
+			Port:     "2379",
+		},
+	}
 	tests := []struct {
 		name string
 		want *Etcd
 	}{
 		{
 			want: New(metadata),
+		},
+		{
+			want: New(errorMetadata1),
+		},
+		{
+			want: New(errorMetadata2),
+		},
+		{
+			want: New(errorMetadata3),
 		},
 	}
 	for _, tt := range tests {

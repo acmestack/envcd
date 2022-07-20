@@ -73,6 +73,7 @@ func New(exchanger *config.Exchanger) *Etcd {
 //  @param key data identity
 //  @param value data
 func (etcd *Etcd) Put(key interface{}, value interface{}) error {
+	// fixme value convert to string?
 	response, err := etcd.client.Put(etcd.ctx, key.(string), value.(string), clientv3.WithPrevKV())
 	if err != nil {
 		log.Printf("failed put key/value [%s]/[%s],err: %v", key, value, err)
