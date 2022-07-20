@@ -18,7 +18,7 @@
 package plugin
 
 import (
-	"fmt"
+	"github.com/acmestack/godkits/log"
 	"sort"
 
 	"github.com/acmestack/envcd/internal/pkg/context"
@@ -65,7 +65,7 @@ func (chain *Chain) Execute(context *context.Context) (*data.EnvcdResult, error)
 			return chain.Execute(context)
 		}
 		// todo log
-		fmt.Printf("plugin name '%v' sorted at '%v'\n", currentExecutor.Named(), currentExecutor.Sorted())
+		log.Info("plugin name '%s' sorted at '%s'\n", currentExecutor.Named(), currentExecutor.Sorted())
 		// todo data
 		return currentExecutor.Execute(context, chain)
 	}

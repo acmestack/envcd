@@ -19,7 +19,7 @@ package etcd
 
 import (
 	"context"
-	"log"
+	"github.com/acmestack/godkits/log"
 	"time"
 
 	"github.com/acmestack/envcd/internal/pkg/config"
@@ -42,12 +42,12 @@ type Etcd struct {
 func New(exchanger *config.Exchanger) *Etcd {
 	metadata := exchanger.ConnMetadata
 	if metadata.Type != etcdExchangerType {
-		log.Fatalf("invalid schema: %v", metadata.Type)
+		log.Error("invalid schema: %s", metadata.Type)
 		return nil
 	}
 	endpoint := metadata.Host
 	if endpoint == "" {
-		log.Fatalf("failed to get etcd endpoint")
+		log.Error("failed to get etcd endpoint")
 		return nil
 	}
 
@@ -59,8 +59,7 @@ func New(exchanger *config.Exchanger) *Etcd {
 	})
 
 	if err != nil {
-		log.Fatalf("failed to create etcd client %v", err)
-		return nil
+		log.Error("failed to create etcd client %s", err)
 	}
 
 	return &Etcd{
@@ -75,15 +74,15 @@ func New(exchanger *config.Exchanger) *Etcd {
 func (etcd *Etcd) Put(key interface{}, value interface{}) error {
 	response, err := etcd.client.Put(etcd.ctx, key.(string), value.(string), clientv3.WithPrevKV())
 	if err != nil {
-		log.Printf("failed put key/value [%s]/[%s],err: %v", key, value, err)
+		log.Error("failed put key/value [%s]/[%s],err: %s", key, value, err)
 		return err
 	}
 	// if the key cover pre value, printf the pre value
 	if response.PrevKv != nil {
-		log.Printf("Put etcd key = %s,pre value = %s", key, string(response.PrevKv.Value))
+		log.Error("Put etcd key = %s,pre value = %s", key, string(response.PrevKv.Value))
 		return nil
 	}
-	log.Printf("Put etcd key = %s, value = %s", key, value)
+	log.Info("Put etcd key = %s, value = %s", key, value)
 	return nil
 }
 
@@ -93,7 +92,7 @@ func (etcd *Etcd) Put(key interface{}, value interface{}) error {
 func (etcd *Etcd) Remove(key interface{}) error {
 	response, err := etcd.client.Delete(etcd.ctx, key.(string), clientv3.WithPrevKV())
 	if err != nil {
-		log.Printf("failed delete key: %s,err: %v", key, err)
+		log.Error("failed delete key: %s,err: %s", key, err)
 		return err
 	}
 	if response.PrevKvs == nil {
@@ -101,7 +100,7 @@ func (etcd *Etcd) Remove(key interface{}) error {
 	}
 	// printf the delete key/value
 	for _, kvPair := range response.PrevKvs {
-		log.Printf("Delete key: %s,value: %s", kvPair.Key, kvPair.Value)
+		log.Error("Delete key: %s,value: %s", kvPair.Key, kvPair.Value)
 	}
 	return nil
 }

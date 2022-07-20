@@ -18,7 +18,7 @@
 package openapi
 
 import (
-	"fmt"
+	"github.com/acmestack/godkits/log"
 
 	"github.com/acmestack/envcd/internal/core/plugin"
 	"github.com/acmestack/envcd/internal/pkg/context"
@@ -29,11 +29,14 @@ import (
 
 func (openapi *Openapi) save(ctx *gin.Context) {
 	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
-		fmt.Println("hello world")
-		openapi.exchange.Put("key", "value")
+		log.Info("hello world")
+		err := openapi.exchange.Put("key", "value")
+		if err != nil {
+			return nil, err
+		}
 		return nil, errorsx.Err("test error")
 	}}
 	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
-		fmt.Printf("ret = %v, error = %v", ret, err)
+		log.Info("ret = %s, error = %s", ret, err)
 	}
 }

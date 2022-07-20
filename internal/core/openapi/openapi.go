@@ -66,7 +66,7 @@ func (openapi *Openapi) initServer(serverSetting *config.Server) {
 	log.Info("start http server listening %s", server.Addr)
 	err := server.ListenAndServe()
 	if err != nil {
-		log.Error("start http server error %v", err)
+		log.Error("start http server error %s", err)
 	}
 }
 
