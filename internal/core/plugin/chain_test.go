@@ -22,6 +22,7 @@ import (
 	"testing"
 
 	"github.com/acmestack/envcd/internal/core/plugin/logging"
+	"github.com/acmestack/envcd/internal/core/plugin/permission"
 	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/executor"
 	"github.com/acmestack/envcd/pkg/entity/data"
@@ -74,6 +75,24 @@ func TestExecutorChain_Execute(t *testing.T) {
 			wantRet: data.Success(nil),
 			wantErr: false,
 		},
+		{
+			fields: fields{
+				executors: nil,
+				index:     0,
+			},
+			args:    args{context: &context.Context{}},
+			wantRet: data.Failure("IIllegal state for plugin chain."),
+			wantErr: true,
+		},
+		{
+			fields: fields{
+				executors: []executor.Executor{logging.New()},
+				index:     0,
+			},
+			args:    args{context: &context.Context{Action: nil}},
+			wantRet: data.Success(nil),
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -89,6 +108,111 @@ func TestExecutorChain_Execute(t *testing.T) {
 			if !reflect.DeepEqual(gotRet, tt.wantRet) {
 				t.Errorf("Execute() gotRet = %v, want %v", gotRet, tt.wantRet)
 			}
+		})
+	}
+}
+
+func TestSort(t *testing.T) {
+	type args struct {
+		executors executorArray
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		{
+			args: args{executors: []executor.Executor{logging.New()}},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			Sort(tt.args.executors)
+		})
+	}
+}
+
+func Test_executorArray_Len(t *testing.T) {
+	tests := []struct {
+		name string
+		ea   executorArray
+		want int
+	}{
+		{
+			ea:   executorArray{logging.New()},
+			want: 1,
+		},
+		{
+			ea:   executorArray{},
+			want: 0,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.ea.Len(); got != tt.want {
+				t.Errorf("Len() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_executorArray_Less(t *testing.T) {
+	type args struct {
+		i int
+		j int
+	}
+	tests := []struct {
+		name string
+		ea   executorArray
+		args args
+		want bool
+	}{
+		{
+			ea: executorArray{logging.New(), permission.New()},
+			args: args{
+				i: 0,
+				j: 1,
+			},
+			want: true,
+		},
+		{
+			ea: executorArray{logging.New(), permission.New()},
+			args: args{
+				i: 1,
+				j: 0,
+			},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.ea.Less(tt.args.i, tt.args.j); got != tt.want {
+				t.Errorf("Less() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_executorArray_Swap(t *testing.T) {
+	type args struct {
+		i int
+		j int
+	}
+	tests := []struct {
+		name string
+		ea   executorArray
+		args args
+	}{
+		{
+			ea: executorArray{logging.New(), permission.New()},
+			args: args{
+				i: 0,
+				j: 1,
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.ea.Swap(tt.args.i, tt.args.j)
 		})
 	}
 }

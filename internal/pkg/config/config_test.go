@@ -18,7 +18,9 @@
 package config
 
 import (
+	"flag"
 	"net/url"
+	"reflect"
 	"testing"
 )
 
@@ -92,6 +94,31 @@ func TestConfig_StartInformation(t *testing.T) {
 				Server:    tt.fields.Server,
 			}
 			cfg.StartInformation()
+		})
+	}
+}
+
+func TestNewConfig(t *testing.T) {
+	configFile := flag.String("config", "../../../config/envcd.yaml", "envcd -config config/envcd.yaml")
+	flag.Parse()
+	type args struct {
+		configFile *string
+	}
+	tests := []struct {
+		name string
+		args args
+		want *Config
+	}{
+		{
+			args: args{configFile: configFile},
+			want: NewConfig(configFile),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := NewConfig(tt.args.configFile); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("NewConfig() = %v, want %v", got, tt.want)
+			}
 		})
 	}
 }
