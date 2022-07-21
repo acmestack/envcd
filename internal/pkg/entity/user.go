@@ -15,15 +15,20 @@
  * limitations under the License.
  */
 
-package modules
+package entity
 
-import "time"
+import (
+	"github.com/acmestack/gobatis"
+)
 
 type User struct {
-	Id        uint32
-	Name      string
-	Password  string
-	Salt      string
-	createdAt time.Time
-	updatedAt time.Time
+	UserTable gobatis.TableName "logging"
+	//Id        uint32
+	Name     string `column:"name"`
+	Password string `column:"password"`
+	Salt     string `column:"salt"`
+	Identity int8   `column:"identity"`
+	State    bool   `column:"state"`
+	//createdAt time.Time
+	//updatedAt time.Time
 }

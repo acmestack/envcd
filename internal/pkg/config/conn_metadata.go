@@ -19,6 +19,7 @@ package config
 
 import (
 	"fmt"
+	"github.com/acmestack/godkits/gox/stringsx"
 	"log"
 	"net/url"
 )
@@ -30,7 +31,7 @@ type ConnMetadata struct {
 	Password string
 	Host     string
 	Hostname string
-	Port     string
+	Port     int
 }
 
 func parser(connection string) *ConnMetadata {
@@ -45,8 +46,7 @@ func parser(connection string) *ConnMetadata {
 	metadata.Password = password
 	metadata.Host = u.Host
 	metadata.Hostname = u.Hostname()
-	// todo port to int?
-	metadata.Port = u.Port()
+	metadata.Port = stringsx.ToInt(u.Port())
 	return metadata
 }
 
