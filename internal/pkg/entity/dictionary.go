@@ -15,16 +15,19 @@
  * limitations under the License.
  */
 
-package modules
+package entity
 
-import "time"
+import "github.com/acmestack/gobatis"
 
 type Dictionary struct {
-	Id            uint32
-	UserId        uint32
-	ApplicationId uint32
-	DictKey       string
-	DictValue     string
-	createdAt     time.Time
-	updatedAt     time.Time
+	DictionaryTable gobatis.TableName "dictionary"
+	*Base
+	//Id            uint32 `column:"id"`
+	UserId        uint32 `column:"user_id"`
+	ApplicationId uint32 `column:"application_id"`
+	DictKey       string `column:"dict_key"`
+	DictValue     string `column:"dict_value"`
+	State         bool   `column:"state"`
+	//createdAt     time.Time
+	//updatedAt     time.Time
 }

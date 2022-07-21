@@ -17,7 +17,11 @@
 
 package storage
 
-import "github.com/acmestack/envcd/internal/pkg/config"
+import (
+	"github.com/acmestack/envcd/internal/pkg/config"
+	"github.com/acmestack/gobatis"
+	"github.com/acmestack/gobatis/datasource"
+)
 
 type Storage struct {
 	storage *config.Storage
@@ -25,4 +29,22 @@ type Storage struct {
 
 func Start(mysql *config.Storage) *Storage {
 	return &Storage{storage: mysql}
+}
+
+// InitDB init sql session manager
+//  @param mysql config
+//  @return *gobatis.SessionManager sessionManager
+func InitDB(mysql *config.Storage) *gobatis.SessionManager {
+	fac := gobatis.NewFactory(
+		gobatis.SetMaxConn(100),
+		gobatis.SetMaxIdleConn(50),
+		gobatis.SetDataSource(&datasource.MysqlDataSource{
+			Host:     mysql.ConnMetadata.Host,
+			Port:     mysql.ConnMetadata.Port,
+			DBName:   mysql.Database,
+			Username: mysql.ConnMetadata.UserName,
+			Password: mysql.ConnMetadata.Password,
+			Charset:  "utf8",
+		}))
+	return gobatis.NewSessionManager(fac)
 }

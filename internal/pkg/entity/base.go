@@ -15,13 +15,12 @@
  * limitations under the License.
  */
 
-package modules
+package entity
 
 import "time"
 
-type Logging struct {
-	Id        uint32
-	UserId    uint32
-	Logging   string
-	createdAt time.Time
+type Base struct {
+	Id        uint32    `column:"id"`
+	createdAt time.Time `column:"created_at"`
+	updatedAt time.Time `column:"updated_at"`
 }

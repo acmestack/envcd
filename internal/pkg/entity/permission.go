@@ -15,14 +15,21 @@
  * limitations under the License.
  */
 
-package modules
+package entity
 
-import "time"
+import (
+	"github.com/acmestack/gobatis"
+)
 
-type Application struct {
-	Id        uint32
-	Name      string
-	Descr     string
-	createdAt time.Time
-	updatedAt time.Time
+type Permission struct {
+	PermissionTable gobatis.TableName "logging"
+	*Base
+	//Id        uint32
+	UserId   uint32 `column:"user_id"`
+	DataType uint8  `column:"data_type"`
+	DataId   uint32 `column:"data_id"`
+	Note     string `column:"note"`
+	State    bool   `column:"state"`
+	//createdAt time.Time
+	//updatedAt time.Time
 }
