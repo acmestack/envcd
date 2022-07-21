@@ -41,7 +41,7 @@ CREATE TABLE `dictionary` (
   `user_id` int(10) unsigned NOT NULL,
   `application_id` int(10) unsigned NOT NULL,
   `dict_key` varchar(200) NOT NULL,
-  `dict_value` text NOT NULL DEFAULT '',
+  `dict_value` text NOT NULL,
   `state` tinyint(4) unsigned NOT NULL DEFAULT 1 COMMENT '1:enable;2:disable',
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
@@ -56,7 +56,7 @@ DROP TABLE IF EXISTS `logging`;
 CREATE TABLE `logging` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL,
-  `logging` text NOT NULL DEFAULT '' COMMENT 'json data',
+  `logging` text NOT NULL COMMENT 'json data',
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`user_id`)
