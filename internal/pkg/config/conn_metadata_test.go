@@ -18,6 +18,7 @@
 package config
 
 import (
+	"github.com/acmestack/godkits/gox/stringsx"
 	"reflect"
 	"testing"
 )
@@ -58,7 +59,7 @@ func TestConnMetadata_information(t *testing.T) {
 				UserName: tt.fields.UserName,
 				Password: tt.fields.Password,
 				Hostname: tt.fields.Host,
-				Port:     tt.fields.Port,
+				Port:     stringsx.ToInt(tt.fields.Port),
 			}
 			connMedata.information(tt.args.t)
 		})
@@ -82,7 +83,7 @@ func Test_parser(t *testing.T) {
 				Password: "password",
 				Host:     "localhost:2379",
 				Hostname: "localhost",
-				Port:     "2379",
+				Port:     2379,
 			},
 		},
 	}
