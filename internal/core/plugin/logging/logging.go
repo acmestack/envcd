@@ -25,6 +25,7 @@ import (
 	"github.com/acmestack/envcd/pkg/entity/data"
 	"github.com/acmestack/godkits/gox/encodingx/jsonx"
 	"github.com/acmestack/godkits/gox/stringsx"
+	"github.com/acmestack/godkits/log"
 )
 
 const (
@@ -70,6 +71,6 @@ func printLog(ctx *context.Context) {
 	)
 	if err == nil {
 		s := build.String()
-		println(s)
+		log.Error(s)
 	}
 }

@@ -18,23 +18,22 @@
 package openapi
 
 import (
-	"fmt"
-
 	"github.com/acmestack/envcd/internal/core/plugin"
 	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/pkg/entity/data"
 	"github.com/acmestack/godkits/gox/errorsx"
+	"github.com/acmestack/godkits/log"
 	"github.com/gin-gonic/gin"
 )
 
 func (openapi *Openapi) login(ctx *gin.Context) {
 	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
-		fmt.Println("hello world")
+		log.Info("hello world")
 		openapi.exchange.Put("a", "ada")
 		return nil, errorsx.Err("test error")
 	}}
 	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
-		fmt.Printf("ret = %v, error = %v", ret, err)
+		log.Error("ret = %s, error = %s", ret, err)
 	}
 	ctx.JSON(200, data.Success("hello world").Data)
 }

@@ -18,8 +18,8 @@
 package config
 
 import (
+	"github.com/acmestack/godkits/log"
 	"io/ioutil"
-	"log"
 
 	"gopkg.in/yaml.v3"
 )
@@ -66,11 +66,11 @@ type Config struct {
 func NewConfig(configFile *string) *Config {
 	data, err := ioutil.ReadFile(*configFile)
 	if err != nil {
-		log.Fatalf("error %v", err)
+		log.Error("error %s", err)
 	}
 	envcdConfig := &Config{}
 	if e := yaml.Unmarshal(data, envcdConfig); e != nil {
-		log.Fatalf("error %v", err)
+		log.Error("error %s", err)
 	}
 	return envcdConfig
 }

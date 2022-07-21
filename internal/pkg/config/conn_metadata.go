@@ -19,8 +19,9 @@ package config
 
 import (
 	"fmt"
-	"log"
 	"net/url"
+
+	"github.com/acmestack/godkits/log"
 )
 
 // ConnMetadata with standard Url: etcd://user:123@localhost:123 metadata
@@ -36,7 +37,7 @@ type ConnMetadata struct {
 func parser(connection string) *ConnMetadata {
 	u, err := url.Parse(connection)
 	if err != nil {
-		log.Fatalf(" parser connection metadata error %v\n", err)
+		log.Error(" parser connection metadata error %s\n", err)
 	}
 	metadata := &ConnMetadata{}
 	metadata.Type = u.Scheme
@@ -52,11 +53,11 @@ func parser(connection string) *ConnMetadata {
 
 func (connMedata *ConnMetadata) information(t string) {
 	// todo logging
-	fmt.Println(fmt.Sprintf("ConnectionMetadata For %v", t))
-	fmt.Println(fmt.Sprintf("Type: %v", connMedata.Type))
-	fmt.Println(fmt.Sprintf("UserName: %v", connMedata.UserName))
-	fmt.Println(fmt.Sprintf("Host: %v", connMedata.Host))
-	fmt.Println(fmt.Sprintf("Hostname: %v", connMedata.Hostname))
-	fmt.Println(fmt.Sprintf("Port: %v", connMedata.Port))
-	fmt.Println("--")
+	log.Info(fmt.Sprintf("ConnectionMetadata For %v", t))
+	log.Info(fmt.Sprintf("Type: %v", connMedata.Type))
+	log.Info(fmt.Sprintf("UserName: %v", connMedata.UserName))
+	log.Info(fmt.Sprintf("Host: %v", connMedata.Host))
+	log.Info(fmt.Sprintf("Hostname: %v", connMedata.Hostname))
+	log.Info(fmt.Sprintf("Port: %v", connMedata.Port))
+	log.Info("--")
 }

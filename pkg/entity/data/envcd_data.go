@@ -19,7 +19,7 @@ package data
 
 import (
 	"encoding/json"
-	"log"
+	"github.com/acmestack/godkits/log"
 )
 
 const (
@@ -75,7 +75,7 @@ func Properties(data interface{}) EnvcdData {
 func ToJson(envcdData EnvcdData) string {
 	marshal, err := json.Marshal(envcdData)
 	if err != nil {
-		log.Fatalln(err)
+		log.Error("err %s ", err)
 	}
 	return string(marshal)
 }
@@ -85,7 +85,7 @@ func ToEnvcdData(jsonString string) EnvcdData {
 	data := EnvcdData{}
 	err := json.Unmarshal([]byte(jsonString), &data)
 	if err != nil {
-		log.Fatalln(err)
+		log.Error("err %s", err)
 	}
 	return data
 }
