@@ -33,7 +33,7 @@ var metadata = &config.Exchanger{
 		Password: "root",
 		Host:     "localhost:2379",
 		Hostname: "localhost",
-		Port:     "2379",
+		Port:     2379,
 	},
 }
 
