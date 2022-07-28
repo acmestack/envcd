@@ -27,10 +27,74 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (openapi *Openapi) save(ctx *gin.Context) {
+func (openapi *Openapi) getApp(ctx *gin.Context) {
+	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
+		fmt.Println("hello world")
+		return nil, errorsx.Err("test error")
+	}}
+	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
+		fmt.Printf("ret = %v, error = %v", ret, err)
+	}
+}
+
+func (openapi *Openapi) createApp(ctx *gin.Context) {
+	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
+		fmt.Println("hello world")
+		// create App
+		// ApplicationDao.save();
+		// go LogDao.save()
+		return nil, errorsx.Err("test error")
+	}}
+	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
+		fmt.Printf("ret = %v, error = %v", ret, err)
+	}
+}
+
+func (openapi *Openapi) DeleteApp(ctx *gin.Context) {
+	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
+		fmt.Println("hello world")
+		// delete App
+		// ApplicationDao.delete();
+		// go LogDao.save()
+		return nil, errorsx.Err("test error")
+	}}
+	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
+		fmt.Printf("ret = %v, error = %v", ret, err)
+	}
+}
+
+func (openapi *Openapi) getConfig(ctx *gin.Context) {
 	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
 		fmt.Println("hello world")
 		openapi.exchange.Put("key", "value")
+		return nil, errorsx.Err("test error")
+	}}
+	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
+		fmt.Printf("ret = %v, error = %v", ret, err)
+	}
+}
+
+func (openapi *Openapi) createConfig(ctx *gin.Context) {
+	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
+		fmt.Println("hello world")
+		// create config
+		// ConfigDao.save();
+		// go LogDao.save()
+		// openapi.exchange.Put("key", "value")
+		return nil, errorsx.Err("test error")
+	}}
+	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
+		fmt.Printf("ret = %v, error = %v", ret, err)
+	}
+}
+
+func (openapi *Openapi) deleteConfig(ctx *gin.Context) {
+	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
+		fmt.Println("hello world")
+		// delete config
+		// ConfigDao.delete();
+		// go LogDao.save()
+		// openapi.exchange.Remove("key")
 		return nil, errorsx.Err("test error")
 	}}
 	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
