@@ -30,7 +30,52 @@ import (
 func (openapi *Openapi) login(ctx *gin.Context) {
 	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
 		fmt.Println("hello world")
-		openapi.exchange.Put("a", "ada")
+		return nil, errorsx.Err("test error")
+	}}
+	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
+		fmt.Printf("ret = %v, error = %v", ret, err)
+	}
+	ctx.JSON(200, data.Success("hello world").Data)
+}
+
+func (openapi *Openapi) logout(ctx *gin.Context) {
+	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
+		fmt.Println("hello world")
+		// UserDao.save(),
+		// LogDao.save()
+		return nil, errorsx.Err("test error")
+	}}
+	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
+		fmt.Printf("ret = %v, error = %v", ret, err)
+	}
+	ctx.JSON(200, data.Success("hello world").Data)
+}
+
+func (openapi *Openapi) createUser(ctx *gin.Context) {
+	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
+		fmt.Println("hello world")
+		return nil, errorsx.Err("test error")
+	}}
+	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
+		fmt.Printf("ret = %v, error = %v", ret, err)
+	}
+	ctx.JSON(200, data.Success("hello world").Data)
+}
+
+func (openapi *Openapi) getUserById(ctx *gin.Context) {
+	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
+		fmt.Println("hello world")
+		return nil, errorsx.Err("test error")
+	}}
+	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
+		fmt.Printf("ret = %v, error = %v", ret, err)
+	}
+	ctx.JSON(200, data.Success("hello world").Data)
+}
+
+func (openapi *Openapi) deleteUser(ctx *gin.Context) {
+	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
+		fmt.Println("hello world")
 		return nil, errorsx.Err("test error")
 	}}
 	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {

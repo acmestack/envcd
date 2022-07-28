@@ -77,11 +77,23 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 	adminGroup := router.Group("admin")
 	{
 		// TODO test
-		adminGroup.GET("/login", openapi.login)
+		adminGroup.POST("/login", openapi.login)
+		adminGroup.GET("/logout", openapi.logout)
+		adminGroup.POST("/user", openapi.createUser)
+		adminGroup.GET("/user/:id", openapi.getUserById)
+		adminGroup.DELETE("/user/:id", openapi.deleteUser)
 	}
-	envcdGroup := router.Group("exchange")
+	envcdApplication := router.Group("/v1/envcd")
 	{
-		envcdGroup.POST("/save", openapi.save)
+		// TODO evncd application
+		envcdApplication.GET("/user/:userId/application/:appId", openapi.getApp)
+		envcdApplication.PUT("/user/:userId/application/:appId", openapi.createApp)
+		envcdApplication.DELETE("/user/:userId/application/:appId", openapi.DeleteApp)
+
+		// TODO envcd config
+		envcdApplication.GET("/user/:userId/application/:appId/config/:configId", openapi.getConfig)
+		envcdApplication.PUT("/user/:userId/application/:appId/config/:configId", openapi.createConfig)
+		envcdApplication.DELETE("/user/:userId/application/:appId/config/:configId", openapi.deleteConfig)
 	}
 	return router
 }
