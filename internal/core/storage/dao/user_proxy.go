@@ -33,36 +33,36 @@ func (dao *Dao) SelectUser(model entity.User) ([]entity.User, error) {
 	return dataList, err
 }
 
-func SelectUserCount(sess *gobatis.Session, model entity.User) (int64, error) {
+func (dao *Dao) SelectUserCount(model entity.User) (int64, error) {
 	var ret int64
-	err := sess.Select("dao.selectUserCount").Param(model).Result(&ret)
+	err := dao.storage.NewSession().Select("dao.selectUserCount").Param(model).Result(&ret)
 	return ret, err
 }
 
-func InsertUser(sess *gobatis.Session, model entity.User) (int64, int64, error) {
+func (dao *Dao) InsertUser(model entity.User) (int64, int64, error) {
 	var ret int64
-	runner := sess.Insert("dao.insertUser").Param(model)
+	runner := dao.storage.NewSession().Insert("dao.insertUser").Param(model)
 	err := runner.Result(&ret)
 	id := runner.LastInsertId()
 	return ret, id, err
 }
 
-func InsertBatchUser(sess *gobatis.Session, models []entity.User) (int64, int64, error) {
+func (dao *Dao) InsertBatchUser(models []entity.User) (int64, int64, error) {
 	var ret int64
-	runner := sess.Insert("dao.insertBatchUser").Param(models)
+	runner := dao.storage.NewSession().Insert("dao.insertBatchUser").Param(models)
 	err := runner.Result(&ret)
 	id := runner.LastInsertId()
 	return ret, id, err
 }
 
-func UpdateUser(sess *gobatis.Session, model entity.User) (int64, error) {
+func (dao *Dao) UpdateUser(model entity.User) (int64, error) {
 	var ret int64
-	err := sess.Update("dao.updateUser").Param(model).Result(&ret)
+	err := dao.storage.NewSession().Update("dao.updateUser").Param(model).Result(&ret)
 	return ret, err
 }
 
-func DeleteUser(sess *gobatis.Session, model entity.User) (int64, error) {
+func (dao *Dao) DeleteUser(model entity.User) (int64, error) {
 	var ret int64
-	err := sess.Delete("dao.deleteUser").Param(model).Result(&ret)
+	err := dao.storage.NewSession().Delete("dao.deleteUser").Param(model).Result(&ret)
 	return ret, err
 }

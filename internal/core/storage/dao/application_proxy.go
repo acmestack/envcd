@@ -27,42 +27,42 @@ func init() {
 	gobatis.RegisterModel(&modelV)
 }
 
-func SelectApplication(sess *gobatis.Session, model entity.Application) ([]entity.Application, error) {
+func (dao *Dao) SelectApplication(model entity.Application) ([]entity.Application, error) {
 	var dataList []entity.Application
-	err := sess.Select("dao.selectApplication").Param(model).Result(&dataList)
+	err := dao.storage.NewSession().Select("dao.selectApplication").Param(model).Result(&dataList)
 	return dataList, err
 }
 
-func SelectApplicationCount(sess *gobatis.Session, model entity.Application) (int64, error) {
+func (dao *Dao) SelectApplicationCount(model entity.Application) (int64, error) {
 	var ret int64
-	err := sess.Select("dao.selectApplicationCount").Param(model).Result(&ret)
+	err := dao.storage.NewSession().Select("dao.selectApplicationCount").Param(model).Result(&ret)
 	return ret, err
 }
 
-func InsertApplication(sess *gobatis.Session, model entity.Application) (int64, int64, error) {
+func (dao *Dao) InsertApplication(model entity.Application) (int64, int64, error) {
 	var ret int64
-	runner := sess.Insert("dao.insertApplication").Param(model)
+	runner := dao.storage.NewSession().Insert("dao.insertApplication").Param(model)
 	err := runner.Result(&ret)
 	id := runner.LastInsertId()
 	return ret, id, err
 }
 
-func InsertBatchApplication(sess *gobatis.Session, models []entity.Application) (int64, int64, error) {
+func (dao *Dao) InsertBatchApplication(models []entity.Application) (int64, int64, error) {
 	var ret int64
-	runner := sess.Insert("dao.insertBatchApplication").Param(models)
+	runner := dao.storage.NewSession().Insert("dao.insertBatchApplication").Param(models)
 	err := runner.Result(&ret)
 	id := runner.LastInsertId()
 	return ret, id, err
 }
 
-func UpdateApplication(sess *gobatis.Session, model entity.Application) (int64, error) {
+func (dao *Dao) UpdateApplication(model entity.Application) (int64, error) {
 	var ret int64
-	err := sess.Update("dao.updateApplication").Param(model).Result(&ret)
+	err := dao.storage.NewSession().Update("dao.updateApplication").Param(model).Result(&ret)
 	return ret, err
 }
 
-func DeleteApplication(sess *gobatis.Session, model entity.Application) (int64, error) {
+func (dao *Dao) DeleteApplication(model entity.Application) (int64, error) {
 	var ret int64
-	err := sess.Delete("dao.deleteApplication").Param(model).Result(&ret)
+	err := dao.storage.NewSession().Delete("dao.deleteApplication").Param(model).Result(&ret)
 	return ret, err
 }

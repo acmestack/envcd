@@ -27,42 +27,42 @@ func init() {
 	gobatis.RegisterModel(&modelV)
 }
 
-func SelectLogging(sess *gobatis.Session, model entity.Logging) ([]entity.Logging, error) {
+func (dao *Dao) SelectLogging(model entity.Logging) ([]entity.Logging, error) {
 	var dataList []entity.Logging
-	err := sess.Select("dao.selectLogging").Param(model).Result(&dataList)
+	err := dao.storage.NewSession().Select("dao.selectLogging").Param(model).Result(&dataList)
 	return dataList, err
 }
 
-func SelectLoggingCount(sess *gobatis.Session, model entity.Logging) (int64, error) {
+func (dao *Dao) SelectLoggingCount(model entity.Logging) (int64, error) {
 	var ret int64
-	err := sess.Select("dao.selectLoggingCount").Param(model).Result(&ret)
+	err := dao.storage.NewSession().Select("dao.selectLoggingCount").Param(model).Result(&ret)
 	return ret, err
 }
 
-func InsertLogging(sess *gobatis.Session, model entity.Logging) (int64, int64, error) {
+func (dao *Dao) InsertLogging(model entity.Logging) (int64, int64, error) {
 	var ret int64
-	runner := sess.Insert("dao.insertLogging").Param(model)
+	runner := dao.storage.NewSession().Insert("dao.insertLogging").Param(model)
 	err := runner.Result(&ret)
 	id := runner.LastInsertId()
 	return ret, id, err
 }
 
-func InsertBatchLogging(sess *gobatis.Session, models []entity.Logging) (int64, int64, error) {
+func (dao *Dao) InsertBatchLogging(models []entity.Logging) (int64, int64, error) {
 	var ret int64
-	runner := sess.Insert("dao.insertBatchLogging").Param(models)
+	runner := dao.storage.NewSession().Insert("dao.insertBatchLogging").Param(models)
 	err := runner.Result(&ret)
 	id := runner.LastInsertId()
 	return ret, id, err
 }
 
-func UpdateLogging(sess *gobatis.Session, model entity.Logging) (int64, error) {
+func (dao *Dao) UpdateLogging(model entity.Logging) (int64, error) {
 	var ret int64
-	err := sess.Update("dao.updateLogging").Param(model).Result(&ret)
+	err := dao.storage.NewSession().Update("dao.updateLogging").Param(model).Result(&ret)
 	return ret, err
 }
 
-func DeleteLogging(sess *gobatis.Session, model entity.Logging) (int64, error) {
+func (dao *Dao) DeleteLogging(model entity.Logging) (int64, error) {
 	var ret int64
-	err := sess.Delete("dao.deleteLogging").Param(model).Result(&ret)
+	err := dao.storage.NewSession().Delete("dao.deleteLogging").Param(model).Result(&ret)
 	return ret, err
 }

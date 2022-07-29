@@ -27,42 +27,42 @@ func init() {
 	gobatis.RegisterModel(&modelV)
 }
 
-func SelectDictionary(sess *gobatis.Session, model entity.Dictionary) ([]entity.Dictionary, error) {
+func (dao *Dao) SelectDictionary(model entity.Dictionary) ([]entity.Dictionary, error) {
 	var dataList []entity.Dictionary
-	err := sess.Select("dao.selectDictionary").Param(model).Result(&dataList)
+	err := dao.storage.NewSession().Select("dao.selectDictionary").Param(model).Result(&dataList)
 	return dataList, err
 }
 
-func SelectDictionaryCount(sess *gobatis.Session, model entity.Dictionary) (int64, error) {
+func (dao *Dao) SelectDictionaryCount(model entity.Dictionary) (int64, error) {
 	var ret int64
-	err := sess.Select("dao.selectDictionaryCount").Param(model).Result(&ret)
+	err := dao.storage.NewSession().Select("dao.selectDictionaryCount").Param(model).Result(&ret)
 	return ret, err
 }
 
-func InsertDictionary(sess *gobatis.Session, model entity.Dictionary) (int64, int64, error) {
+func (dao *Dao) InsertDictionary(model entity.Dictionary) (int64, int64, error) {
 	var ret int64
-	runner := sess.Insert("dao.insertDictionary").Param(model)
+	runner := dao.storage.NewSession().Insert("dao.insertDictionary").Param(model)
 	err := runner.Result(&ret)
 	id := runner.LastInsertId()
 	return ret, id, err
 }
 
-func InsertBatchDictionary(sess *gobatis.Session, models []entity.Dictionary) (int64, int64, error) {
+func (dao *Dao) InsertBatchDictionary(models []entity.Dictionary) (int64, int64, error) {
 	var ret int64
-	runner := sess.Insert("dao.insertBatchDictionary").Param(models)
+	runner := dao.storage.NewSession().Insert("dao.insertBatchDictionary").Param(models)
 	err := runner.Result(&ret)
 	id := runner.LastInsertId()
 	return ret, id, err
 }
 
-func UpdateDictionary(sess *gobatis.Session, model entity.Dictionary) (int64, error) {
+func (dao *Dao) UpdateDictionary(model entity.Dictionary) (int64, error) {
 	var ret int64
-	err := sess.Update("dao.updateDictionary").Param(model).Result(&ret)
+	err := dao.storage.NewSession().Update("dao.updateDictionary").Param(model).Result(&ret)
 	return ret, err
 }
 
-func DeleteDictionary(sess *gobatis.Session, model entity.Dictionary) (int64, error) {
+func (dao *Dao) DeleteDictionary(model entity.Dictionary) (int64, error) {
 	var ret int64
-	err := sess.Delete("dao.deleteDictionary").Param(model).Result(&ret)
+	err := dao.storage.NewSession().Delete("dao.deleteDictionary").Param(model).Result(&ret)
 	return ret, err
 }

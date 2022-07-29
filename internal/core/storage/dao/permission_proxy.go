@@ -27,42 +27,42 @@ func init() {
 	gobatis.RegisterModel(&modelV)
 }
 
-func SelectPermission(sess *gobatis.Session, model entity.Permission) ([]entity.Permission, error) {
+func (dao *Dao) SelectPermission(model entity.Permission) ([]entity.Permission, error) {
 	var dataList []entity.Permission
-	err := sess.Select("dao.selectPermission").Param(model).Result(&dataList)
+	err := dao.storage.NewSession().Select("dao.selectPermission").Param(model).Result(&dataList)
 	return dataList, err
 }
 
-func SelectPermissionCount(sess *gobatis.Session, model entity.Permission) (int64, error) {
+func (dao *Dao) SelectPermissionCount(model entity.Permission) (int64, error) {
 	var ret int64
-	err := sess.Select("dao.selectPermissionCount").Param(model).Result(&ret)
+	err := dao.storage.NewSession().Select("dao.selectPermissionCount").Param(model).Result(&ret)
 	return ret, err
 }
 
-func InsertPermission(sess *gobatis.Session, model entity.Permission) (int64, int64, error) {
+func (dao *Dao) InsertPermission(model entity.Permission) (int64, int64, error) {
 	var ret int64
-	runner := sess.Insert("dao.insertPermission").Param(model)
+	runner := dao.storage.NewSession().Insert("dao.insertPermission").Param(model)
 	err := runner.Result(&ret)
 	id := runner.LastInsertId()
 	return ret, id, err
 }
 
-func InsertBatchPermission(sess *gobatis.Session, models []entity.Permission) (int64, int64, error) {
+func (dao *Dao) InsertBatchPermission(models []entity.Permission) (int64, int64, error) {
 	var ret int64
-	runner := sess.Insert("dao.insertBatchPermission").Param(models)
+	runner := dao.storage.NewSession().Insert("dao.insertBatchPermission").Param(models)
 	err := runner.Result(&ret)
 	id := runner.LastInsertId()
 	return ret, id, err
 }
 
-func UpdatePermission(sess *gobatis.Session, model entity.Permission) (int64, error) {
+func (dao *Dao) UpdatePermission(model entity.Permission) (int64, error) {
 	var ret int64
-	err := sess.Update("dao.updatePermission").Param(model).Result(&ret)
+	err := dao.storage.NewSession().Update("dao.updatePermission").Param(model).Result(&ret)
 	return ret, err
 }
 
-func DeletePermission(sess *gobatis.Session, model entity.Permission) (int64, error) {
+func (dao *Dao) DeletePermission(model entity.Permission) (int64, error) {
 	var ret int64
-	err := sess.Delete("dao.deletePermission").Param(model).Result(&ret)
+	err := dao.storage.NewSession().Delete("dao.deletePermission").Param(model).Result(&ret)
 	return ret, err
 }
