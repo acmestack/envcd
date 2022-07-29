@@ -17,5 +17,5 @@
 
 package entity
 
-type User struct {
+type UserInfo struct {
 }

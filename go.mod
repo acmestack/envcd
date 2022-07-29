@@ -7,6 +7,7 @@ require github.com/acmestack/godkits v0.0.8
 require (
 	github.com/acmestack/gobatis v0.2.8
 	github.com/gin-gonic/gin v1.8.1
+	github.com/go-sql-driver/mysql v1.6.0
 	go.etcd.io/etcd/client/v3 v3.5.4
 	gopkg.in/yaml.v3 v3.0.1
 )

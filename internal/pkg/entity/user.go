@@ -17,18 +17,16 @@
 
 package entity
 
-import (
-	"github.com/acmestack/gobatis"
-)
+import "time"
 
 type User struct {
-	UserTable gobatis.TableName "logging"
-	//Id        uint32
-	Name     string `column:"name"`
-	Password string `column:"password"`
-	Salt     string `column:"salt"`
-	Identity int8   `column:"identity"`
-	State    bool   `column:"state"`
-	//createdAt time.Time
-	//updatedAt time.Time
+	//TableName gobatis.TableName `user`
+	Id        int       `column:"id"`
+	Name      string    `column:"name"`
+	Password  string    `column:"password"`
+	Salt      string    `column:"salt"`
+	Identity  int       `column:"identity"`
+	State     int       `column:"state"`
+	CreatedAt time.Time `column:"created_at"`
+	UpdatedAt time.Time `column:"updated_at"`
 }

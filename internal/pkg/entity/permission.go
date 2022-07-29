@@ -18,18 +18,17 @@
 package entity
 
 import (
-	"github.com/acmestack/gobatis"
+	"time"
 )
 
 type Permission struct {
-	PermissionTable gobatis.TableName "logging"
-	*Base
-	//Id        uint32
-	UserId   uint32 `column:"user_id"`
-	DataType uint8  `column:"data_type"`
-	DataId   uint32 `column:"data_id"`
-	Note     string `column:"note"`
-	State    bool   `column:"state"`
-	//createdAt time.Time
-	//updatedAt time.Time
+	//TableName gobatis.TableName `permission`
+	Id        int       `column:"id"`
+	UserId    int       `column:"user_id"`
+	DataType  int       `column:"data_type"`
+	DataId    int       `column:"data_id"`
+	Note      string    `column:"note"`
+	State     int       `column:"state"`
+	CreatedAt time.Time `column:"created_at"`
+	UpdatedAt time.Time `column:"updated_at"`
 }
