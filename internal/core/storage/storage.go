@@ -19,16 +19,19 @@ package storage
 
 import (
 	"fmt"
+	"log"
+
 	"github.com/acmestack/envcd/internal/pkg/config"
 	"github.com/acmestack/gobatis"
 	"github.com/acmestack/gobatis/datasource"
 	"github.com/acmestack/gobatis/factory"
+	"github.com/acmestack/godkits/gox/errorsx"
 	_ "github.com/go-sql-driver/mysql"
 )
 
 type Storage struct {
 	storage        *config.Storage
-	SessionManager *gobatis.SessionManager
+	sessionManager *gobatis.SessionManager
 }
 
 func Start(mysql *config.Storage) *Storage {
@@ -36,7 +39,17 @@ func Start(mysql *config.Storage) *Storage {
 	loadSqlMap()
 	// create SessionManager
 	db := initDB(mysql)
-	return &Storage{storage: mysql, SessionManager: gobatis.NewSessionManager(db)}
+	return &Storage{storage: mysql, sessionManager: gobatis.NewSessionManager(db)}
+}
+
+// NewSession new session
+//  @return *gobatis.Session
+func (storage *Storage) NewSession() *gobatis.Session {
+	// todo storage check
+	if storage == nil {
+		log.Fatalln(errorsx.Err("IIllegal state for storage"))
+	}
+	return storage.sessionManager.NewSession()
 }
 
 // InitDB init sql session manager

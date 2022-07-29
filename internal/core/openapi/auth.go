@@ -19,6 +19,7 @@ package openapi
 
 import (
 	"fmt"
+
 	"github.com/acmestack/envcd/internal/core/plugin"
 	"github.com/acmestack/envcd/internal/core/storage/dao"
 	"github.com/acmestack/envcd/internal/pkg/context"
@@ -71,7 +72,7 @@ func (openapi *Openapi) getUserById(ctx *gin.Context) {
 	}}
 	id := stringsx.ToInt(ctx.Param("id"))
 	user := entity.User{Id: id}
-	dao.SelectUser(openapi.storage.SessionManager.NewSession(), user)
+	dao.New(openapi.storage).SelectUser(user)
 	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
 		fmt.Printf("ret = %v, error = %v", ret, err)
 	}
