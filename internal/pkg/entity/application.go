@@ -18,17 +18,15 @@
 package entity
 
 import (
-	"github.com/acmestack/gobatis"
+	"time"
 )
 
 type Application struct {
-	// ApplicationTable declare application table
-	ApplicationTable gobatis.TableName "application"
-	*Base
-	//Id        uint32    `column:"id"`
-	Name  string `column:"name"`
-	Note  string `column:"note"`
-	state bool   `column:"state"`
-	//createdAt time.Time `column:"created_at"`
-	//updatedAt time.Time `column:"updated_at"`
+	//TableName gobatis.TableName `application`
+	Id        int       `column:"id"`
+	Name      string    `column:"name"`
+	Note      string    `column:"note"`
+	State     int       `column:"state"`
+	CreatedAt time.Time `column:"created_at"`
+	UpdatedAt time.Time `column:"updated_at"`
 }

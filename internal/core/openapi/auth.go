@@ -19,11 +19,13 @@ package openapi
 
 import (
 	"fmt"
-
 	"github.com/acmestack/envcd/internal/core/plugin"
+	"github.com/acmestack/envcd/internal/core/storage/dao"
 	"github.com/acmestack/envcd/internal/pkg/context"
+	"github.com/acmestack/envcd/internal/pkg/entity"
 	"github.com/acmestack/envcd/pkg/entity/data"
 	"github.com/acmestack/godkits/gox/errorsx"
+	"github.com/acmestack/godkits/gox/stringsx"
 	"github.com/gin-gonic/gin"
 )
 
@@ -67,6 +69,9 @@ func (openapi *Openapi) getUserById(ctx *gin.Context) {
 		fmt.Println("hello world")
 		return nil, errorsx.Err("test error")
 	}}
+	id := stringsx.ToInt(ctx.Param("id"))
+	user := entity.User{Id: id}
+	dao.SelectUser(openapi.storage.SessionManager.NewSession(), user)
 	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
 		fmt.Printf("ret = %v, error = %v", ret, err)
 	}

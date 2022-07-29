@@ -23,7 +23,7 @@ import (
 )
 
 type Configuration struct {
-	user  *entity.User
+	user  *entity.UserInfo
 	space *entity.ScopeSpace
 	data  *data.EnvcdData
 }
@@ -33,7 +33,7 @@ type Configuration struct {
 //  @param space the Configuration space
 //  @param data the Configuration data
 //  @return *Configuration
-func NewConfiguration(user *entity.User, space *entity.ScopeSpace, data *data.EnvcdData) *Configuration {
+func NewConfiguration(user *entity.UserInfo, space *entity.ScopeSpace, data *data.EnvcdData) *Configuration {
 	return &Configuration{
 		user:  user,
 		space: space,

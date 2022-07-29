@@ -18,14 +18,13 @@
 package entity
 
 import (
-	"github.com/acmestack/gobatis"
 	"time"
 )
 
 type Logging struct {
-	LoggingTable gobatis.TableName "logging"
-	Id           uint32            `column:"id"`
-	UserId       uint32            `column:"user_id"`
-	Logging      string            `column:"logging"`
-	createdAt    time.Time         `column:"created_at"`
+	//TableName gobatis.TableName `logging`
+	Id        int       `column:"id"`
+	UserId    int       `column:"user_id"`
+	Logging   string    `column:"logging"`
+	CreatedAt time.Time `column:"created_at"`
 }

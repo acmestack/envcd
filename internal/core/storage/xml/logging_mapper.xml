@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2022, AcmeStack
+  ~ All rights reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+-->
+
+<mapper namespace="dao">
+    <sql id="columns_id">id,user_id,logging,created_at</sql>
+
+    <select id="selectLogging">
+        SELECT <include refid="columns_id"> </include> FROM logging
+        <where>
+            <if test="{Logging.id} != nil and {Logging.id} != 0">AND id = #{Logging.id} </if>
+            <if test="{Logging.user_id} != nil and {Logging.user_id} != 0">AND user_id = #{Logging.user_id} </if>
+            <if test="{Logging.logging} != nil">AND logging = #{Logging.logging} </if>
+            <if test="{Logging.created_at} != nil">AND created_at = #{Logging.created_at} </if>
+        </where>
+    </select>
+
+    <select id="selectLoggingCount">
+        SELECT COUNT(*) FROM logging
+        <where>
+            <if test="{Logging.id} != nil and {Logging.id} != 0">AND id = #{Logging.id} </if>
+            <if test="{Logging.user_id} != nil and {Logging.user_id} != 0">AND user_id = #{Logging.user_id} </if>
+            <if test="{Logging.logging} != nil">AND logging = #{Logging.logging} </if>
+            <if test="{Logging.created_at} != nil">AND created_at = #{Logging.created_at} </if>
+        </where>
+    </select>
+
+    <insert id="insertLogging">
+        INSERT INTO logging (id,user_id,logging,created_at)
+        VALUES(
+        #{Logging.id},
+        #{Logging.user_id},
+        #{Logging.logging},
+        #{Logging.created_at}
+        )
+    </insert>
+
+    <insert id="insertBatchLogging">
+        INSERT INTO logging (id,user_id,logging,created_at)
+        VALUES
+        <foreach item="item" index="index" collection="{0}" open="" separator="," close="">
+            (#{item.Logging.id},#{item.Logging.user_id},#{item.Logging.logging},#{item.Logging.created_at})
+        </foreach>
+    </insert>
+
+    <update id="updateLogging">
+        UPDATE logging
+        <set>
+            <if test="{Logging.user_id} != nil and {Logging.user_id} != 0"> user_id = #{Logging.user_id} </if>
+            <if test="{Logging.logging} != nil"> logging = #{Logging.logging} </if>
+            <if test="{Logging.created_at} != nil"> created_at = #{Logging.created_at} </if>
+        </set>
+        WHERE id = #{Logging.id}
+    </update>
+
+    <delete id="deleteLogging">
+        DELETE FROM logging
+        <where>
+            <if test="{Logging.id} != nil and {Logging.id} != 0">AND id = #{Logging.id} </if>
+            <if test="{Logging.user_id} != nil and {Logging.user_id} != 0">AND user_id = #{Logging.user_id} </if>
+            <if test="{Logging.logging} != nil">AND logging = #{Logging.logging} </if>
+            <if test="{Logging.created_at} != nil">AND created_at = #{Logging.created_at} </if>
+        </where>
+    </delete>
+</mapper>

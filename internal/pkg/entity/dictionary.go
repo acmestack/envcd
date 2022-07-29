@@ -17,17 +17,16 @@
 
 package entity
 
-import "github.com/acmestack/gobatis"
+import "time"
 
 type Dictionary struct {
-	DictionaryTable gobatis.TableName "dictionary"
-	*Base
-	//Id            uint32 `column:"id"`
-	UserId        uint32 `column:"user_id"`
-	ApplicationId uint32 `column:"application_id"`
-	DictKey       string `column:"dict_key"`
-	DictValue     string `column:"dict_value"`
-	State         bool   `column:"state"`
-	//createdAt     time.Time
-	//updatedAt     time.Time
+	//TableName gobatis.TableName `dictionary`
+	Id            int       `column:"id"`
+	UserId        int       `column:"user_id"`
+	ApplicationId int       `column:"application_id"`
+	DictKey       string    `column:"dict_key"`
+	DictValue     string    `column:"dict_value"`
+	State         int       `column:"state"`
+	CreatedAt     time.Time `column:"created_at"`
+	UpdatedAt     time.Time `column:"updated_at"`
 }

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2022, AcmeStack
+  ~ All rights reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+-->
+
+<mapper namespace="dao">
+    <sql id="columns_id">id,name,password,salt,identity,state,created_at,updated_at</sql>
+
+    <select id="selectUser">
+        SELECT <include refid="columns_id"> </include> FROM user
+        <where>
+            <if test="{User.id} != nil and {User.id} != 0">AND id = #{User.id} </if>
+            <if test="{User.name} != nil">AND name = #{User.name} </if>
+            <if test="{User.password} != nil">AND password = #{User.password} </if>
+            <if test="{User.salt} != nil">AND salt = #{User.salt} </if>
+            <if test="{User.identity} != nil and {User.identity} != 0">AND identity = #{User.identity} </if>
+            <if test="{User.state} != nil and {User.state} != 0">AND state = #{User.state} </if>
+            <if test="{User.created_at} != nil">AND created_at = #{User.created_at} </if>
+            <if test="{User.updated_at} != nil">AND updated_at = #{User.updated_at} </if>
+        </where>
+    </select>
+
+    <select id="selectUserCount">
+        SELECT COUNT(*) FROM user
+        <where>
+            <if test="{User.id} != nil and {User.id} != 0">AND id = #{User.id} </if>
+            <if test="{User.name} != nil">AND name = #{User.name} </if>
+            <if test="{User.password} != nil">AND password = #{User.password} </if>
+            <if test="{User.salt} != nil">AND salt = #{User.salt} </if>
+            <if test="{User.identity} != nil and {User.identity} != 0">AND identity = #{User.identity} </if>
+            <if test="{User.state} != nil and {User.state} != 0">AND state = #{User.state} </if>
+            <if test="{User.created_at} != nil">AND created_at = #{User.created_at} </if>
+            <if test="{User.updated_at} != nil">AND updated_at = #{User.updated_at} </if>
+        </where>
+    </select>
+
+    <insert id="insertUser">
+        INSERT INTO user (id,name,password,salt,identity,state,created_at,updated_at)
+        VALUES(
+        #{User.id},
+        #{User.name},
+        #{User.password},
+        #{User.salt},
+        #{User.identity},
+        #{User.state},
+        #{User.created_at},
+        #{User.updated_at}
+        )
+    </insert>
+
+    <insert id="insertBatchUser">
+        INSERT INTO user (id,name,password,salt,identity,state,created_at,updated_at)
+        VALUES
+        <foreach item="item" index="index" collection="{0}" open="" separator="," close="">
+            (#{item.User.id},#{item.User.name},#{item.User.password},#{item.User.salt},#{item.User.identity},#{item.User.state},#{item.User.created_at},#{item.User.updated_at})
+        </foreach>
+    </insert>
+
+    <update id="updateUser">
+        UPDATE user
+        <set>
+            <if test="{User.name} != nil"> name = #{User.name} </if>
+            <if test="{User.password} != nil"> password = #{User.password} </if>
+            <if test="{User.salt} != nil"> salt = #{User.salt} </if>
+            <if test="{User.identity} != nil and {User.identity} != 0"> identity = #{User.identity} </if>
+            <if test="{User.state} != nil and {User.state} != 0"> state = #{User.state} </if>
+            <if test="{User.created_at} != nil"> created_at = #{User.created_at} </if>
+            <if test="{User.updated_at} != nil"> updated_at = #{User.updated_at} </if>
+        </set>
+        WHERE id = #{User.id}
+    </update>
+
+    <delete id="deleteUser">
+        DELETE FROM user
+        <where>
+            <if test="{User.id} != nil and {User.id} != 0">AND id = #{User.id} </if>
+            <if test="{User.name} != nil">AND name = #{User.name} </if>
+            <if test="{User.password} != nil">AND password = #{User.password} </if>
+            <if test="{User.salt} != nil">AND salt = #{User.salt} </if>
+            <if test="{User.identity} != nil and {User.identity} != 0">AND identity = #{User.identity} </if>
+            <if test="{User.state} != nil and {User.state} != 0">AND state = #{User.state} </if>
+            <if test="{User.created_at} != nil">AND created_at = #{User.created_at} </if>
+            <if test="{User.updated_at} != nil">AND updated_at = #{User.updated_at} </if>
+        </where>
+    </delete>
+</mapper>
