@@ -20,6 +20,7 @@ package storage
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/acmestack/envcd/internal/pkg/config"
 	"github.com/acmestack/gobatis"
@@ -71,8 +72,11 @@ func initDB(mysql *config.Storage) factory.Factory {
 
 // loadSqlMap load sql map from directory
 func loadSqlMap() {
-	err := gobatis.ScanMapperFile("D:/opensource/go/envcd/internal/core/storage/xml")
-	//err := gobatis.ScanMapperFile("xml")
+	envcdPath, err := os.Getwd()
+	if err != nil {
+		fmt.Println("get envcd path is error:", err.Error())
+	}
+	err = gobatis.ScanMapperFile(envcdPath + "/internal/core/storage/xml")
 	if err != nil {
 		fmt.Println("parse mappers is error:", err.Error())
 	}
