@@ -18,6 +18,7 @@
 package storage
 
 import (
+	"embed"
 	"fmt"
 	"log"
 
@@ -69,11 +70,25 @@ func initDB(mysql *config.Storage) factory.Factory {
 		}))
 }
 
+//go:embed xml/*.xml
+var locationFS embed.FS
+
 // loadSqlMap load sql map from directory
 func loadSqlMap() {
-	err := gobatis.ScanMapperFile("D:/opensource/go/envcd/internal/core/storage/xml")
-	//err := gobatis.ScanMapperFile("xml")
+	locationFiles, err := locationFS.ReadDir("xml")
 	if err != nil {
-		fmt.Println("parse mappers is error:", err.Error())
+		fmt.Println("read xml dir is error:", err.Error())
+		return
+	}
+	for _, location := range locationFiles {
+		file, err := locationFS.ReadFile("xml/" + location.Name())
+		if err != nil {
+			fmt.Println("reade file is error:", err.Error())
+			continue
+		}
+		err = gobatis.RegisterMapperData(file)
+		if err != nil {
+			fmt.Println("parse mappers is error:", err.Error())
+		}
 	}
 }
