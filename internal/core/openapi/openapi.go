@@ -79,21 +79,21 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 		// TODO test
 		adminGroup.POST("/login", openapi.login)
 		adminGroup.GET("/logout", openapi.logout)
-		adminGroup.POST("/user", openapi.createUser)
-		adminGroup.GET("/user/:id", openapi.getUserById)
-		adminGroup.DELETE("/user/:id", openapi.deleteUser)
+		adminGroup.PUT("/user", openapi.user)
+		adminGroup.GET("/user/:id", openapi.userById)
+		adminGroup.DELETE("/user/:id", openapi.removeUser)
 	}
 	envcdApplication := router.Group("/v1/envcd")
 	{
 		// TODO evncd application
-		envcdApplication.GET("/user/:userId/application/:appId", openapi.getApp)
-		envcdApplication.PUT("/user/:userId/application/:appId", openapi.putApp)
-		envcdApplication.DELETE("/user/:userId/application/:appId", openapi.DeleteApp)
+		envcdApplication.GET("/user/:userId/application/:appId", openapi.application)
+		envcdApplication.PUT("/user/:userId/application/:appId", openapi.putApplication)
+		envcdApplication.DELETE("/user/:userId/application/:appId", openapi.removeApplication)
 
 		// TODO envcd config
-		envcdApplication.GET("/user/:userId/application/:appId/dict/:dictId", openapi.getDict)
-		envcdApplication.PUT("/user/:userId/application/:appId/dict/:dictId", openapi.putDict)
-		envcdApplication.DELETE("/user/:userId/application/:appId/dict/:dictId", openapi.deleteDict)
+		envcdApplication.GET("/user/:userId/application/:appId/dict/:dictId", openapi.dictionary)
+		envcdApplication.PUT("/user/:userId/application/:appId/dict/:dictId", openapi.putDictionary)
+		envcdApplication.DELETE("/user/:userId/application/:appId/dict/:dictId", openapi.removeDictionary)
 	}
 	return router
 }

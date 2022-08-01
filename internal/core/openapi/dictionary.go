@@ -31,43 +31,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (openapi *Openapi) getApp(ctx *gin.Context) {
-	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
-		fmt.Println("hello world")
-		return nil, errorsx.Err("test error")
-	}}
-	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
-		fmt.Printf("ret = %v, error = %v", ret, err)
-	}
-}
-
-func (openapi *Openapi) putApp(ctx *gin.Context) {
-	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
-		fmt.Println("hello world")
-		// create App
-		// ApplicationDao.save();
-		// go LogDao.save()
-		return nil, errorsx.Err("test error")
-	}}
-	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
-		fmt.Printf("ret = %v, error = %v", ret, err)
-	}
-}
-
-func (openapi *Openapi) DeleteApp(ctx *gin.Context) {
-	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
-		fmt.Println("hello world")
-		// delete App
-		// ApplicationDao.delete();
-		// go LogDao.save()
-		return nil, errorsx.Err("test error")
-	}}
-	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
-		fmt.Printf("ret = %v, error = %v", ret, err)
-	}
-}
-
-func (openapi *Openapi) getDict(ctx *gin.Context) {
+func (openapi *Openapi) dictionary(ctx *gin.Context) {
 	c, _ := buildContext(ctx)
 	c.Action = func() (*data.EnvcdResult, error) {
 		// get user id from gin context
@@ -90,7 +54,7 @@ func (openapi *Openapi) getDict(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, ret.Data)
 }
 
-func (openapi *Openapi) putDict(ctx *gin.Context) {
+func (openapi *Openapi) putDictionary(ctx *gin.Context) {
 	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
 		fmt.Println("hello world")
 		// create config
@@ -104,7 +68,7 @@ func (openapi *Openapi) putDict(ctx *gin.Context) {
 	}
 }
 
-func (openapi *Openapi) deleteDict(ctx *gin.Context) {
+func (openapi *Openapi) removeDictionary(ctx *gin.Context) {
 	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
 		fmt.Println("hello world")
 		// delete config
