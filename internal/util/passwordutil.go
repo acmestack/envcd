@@ -7,7 +7,7 @@ import (
 // EncryptPassword Password generation Policy
 //  @param password  string
 //  @param salt string
-// return string
+//  @return string
 func EncryptPassword(password, salt string) string {
 	return md5x.Md5x(password + salt)
 }
