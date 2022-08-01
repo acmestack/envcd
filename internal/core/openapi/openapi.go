@@ -91,9 +91,9 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 		envcdApplication.DELETE("/user/:userId/application/:appId", openapi.DeleteApp)
 
 		// TODO envcd config
-		envcdApplication.GET("/user/:userId/application/:appId/config/:dictId", openapi.getDict)
-		envcdApplication.PUT("/user/:userId/application/:appId/config/:dictId", openapi.putDict)
-		envcdApplication.DELETE("/user/:userId/application/:appId/config/:dictId", openapi.deleteDict)
+		envcdApplication.GET("/user/:userId/application/:appId/dict/:dictId", openapi.getDict)
+		envcdApplication.PUT("/user/:userId/application/:appId/dict/:dictId", openapi.putDict)
+		envcdApplication.DELETE("/user/:userId/application/:appId/dict/:dictId", openapi.deleteDict)
 	}
 	return router
 }
