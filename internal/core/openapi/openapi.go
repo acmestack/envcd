@@ -74,7 +74,7 @@ func (openapi *Openapi) initServer(serverSetting *config.Server) {
 func (openapi *Openapi) buildRouter() *gin.Engine {
 	router := gin.Default()
 	// router group
-	adminGroup := router.Group("user")
+	adminGroup := router.Group("admin")
 	{
 		// TODO test
 		adminGroup.POST("/login", openapi.login)
