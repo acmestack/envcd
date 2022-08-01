@@ -1,17 +1,35 @@
-package util
+/*
+ * Copyright (c) 2022, AcmeStack
+ * All rights reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package openapi
 
 import (
+	"io/ioutil"
+
 	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/pkg/entity/data"
 	"github.com/gin-gonic/gin"
-	"io/ioutil"
 )
 
-// BuildContext build plugin context
+// buildContext build plugin context
 //  @param params params
 //  @return *context.Context context
 //  @return error error
-func BuildContext(ginCtx *gin.Context) (*context.Context, error) {
+func buildContext(ginCtx *gin.Context) (*context.Context, error) {
 	ctx := &context.Context{
 		Uri:         ginCtx.Request.RequestURI,
 		Method:      ginCtx.Request.Method,
@@ -27,11 +45,11 @@ func BuildContext(ginCtx *gin.Context) (*context.Context, error) {
 	return nil, nil
 }
 
-// ParseContext parse context to envcd data
+// parseContext parse context to envcd data
 //  @param ctx context
 //  @return *data.EnvcdData data
 //  @return error error
-func ParseContext(ctx *context.Context) (*data.EnvcdData, error) {
+func parseContext(ctx *context.Context) (*data.EnvcdData, error) {
 	// TODO parse context to envcd data
 	return nil, nil
 }
