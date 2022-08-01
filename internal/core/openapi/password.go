@@ -15,16 +15,17 @@
  * limitations under the License.
  */
 
-package util
+package openapi
 
 import (
 	"github.com/acmestack/godkits/gox/cryptox/md5x"
 )
 
-// EncryptPassword Password generation Policy
-//  @param password  string
+// saltPassword the password with slat, the password generation Policy
+//  @param plain saltPassword string
 //  @param salt string
 //  @return string
-func EncryptPassword(password, salt string) string {
-	return md5x.Md5x(password + salt)
+func saltPassword(plain string, salt string) string {
+	// todo using sha crypto, maybe the saltPassword = md5( md5(salt) + plain + salt + plain + salt + md5(plain) )
+	return md5x.Md5x(plain + salt)
 }
