@@ -19,11 +19,15 @@ package openapi
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/acmestack/envcd/internal/core/plugin"
+	"github.com/acmestack/envcd/internal/core/storage/dao"
 	"github.com/acmestack/envcd/internal/pkg/context"
+	"github.com/acmestack/envcd/internal/pkg/entity"
 	"github.com/acmestack/envcd/pkg/entity/data"
 	"github.com/acmestack/godkits/gox/errorsx"
+	"github.com/acmestack/godkits/gox/stringsx"
 	"github.com/gin-gonic/gin"
 )
 
@@ -37,7 +41,7 @@ func (openapi *Openapi) getApp(ctx *gin.Context) {
 	}
 }
 
-func (openapi *Openapi) createApp(ctx *gin.Context) {
+func (openapi *Openapi) putApp(ctx *gin.Context) {
 	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
 		fmt.Println("hello world")
 		// create App
@@ -63,18 +67,30 @@ func (openapi *Openapi) DeleteApp(ctx *gin.Context) {
 	}
 }
 
-func (openapi *Openapi) getConfig(ctx *gin.Context) {
-	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
-		fmt.Println("hello world")
-		openapi.exchange.Put("key", "value")
-		return nil, errorsx.Err("test error")
-	}}
-	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
-		fmt.Printf("ret = %v, error = %v", ret, err)
+func (openapi *Openapi) getDict(ctx *gin.Context) {
+	c, _ := buildContext(ctx)
+	c.Action = func() (*data.EnvcdResult, error) {
+		// get user id from gin context
+		userId := stringsx.ToInt(ctx.Param("userId"))
+		appId := stringsx.ToInt(ctx.Param("appId"))
+		configId := stringsx.ToInt(ctx.Param("configId"))
+		dict := entity.Dictionary{Id: configId, UserId: userId, ApplicationId: appId}
+		dictionary, err := dao.New(openapi.storage).SelectDictionary(dict)
+		if err != nil {
+			return data.Failure(err.Error()), err
+		}
+		return data.Success(dictionary), nil
 	}
+	ret, err := plugin.NewChain(openapi.executors).Execute(c)
+	if err != nil {
+		// FIXME log.error("ret = %v, error = %v", ret, err)
+		fmt.Printf("ret = %v, error = %v", ret, err)
+		ctx.JSON(http.StatusBadRequest, ret.Data)
+	}
+	ctx.JSON(http.StatusOK, ret.Data)
 }
 
-func (openapi *Openapi) createConfig(ctx *gin.Context) {
+func (openapi *Openapi) putDict(ctx *gin.Context) {
 	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
 		fmt.Println("hello world")
 		// create config
@@ -88,7 +104,7 @@ func (openapi *Openapi) createConfig(ctx *gin.Context) {
 	}
 }
 
-func (openapi *Openapi) deleteConfig(ctx *gin.Context) {
+func (openapi *Openapi) deleteDict(ctx *gin.Context) {
 	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
 		fmt.Println("hello world")
 		// delete config
