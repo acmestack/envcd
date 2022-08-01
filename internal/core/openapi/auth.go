@@ -19,11 +19,11 @@ package openapi
 
 import (
 	"fmt"
-
 	"github.com/acmestack/envcd/internal/core/plugin"
 	"github.com/acmestack/envcd/internal/core/storage/dao"
 	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/entity"
+	"github.com/acmestack/envcd/internal/util"
 	"github.com/acmestack/envcd/pkg/entity/data"
 	"github.com/acmestack/godkits/gox/errorsx"
 	"github.com/acmestack/godkits/gox/stringsx"
@@ -42,12 +42,13 @@ func (openapi *Openapi) login(ctx *gin.Context) {
 }
 
 func (openapi *Openapi) logout(ctx *gin.Context) {
-	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
+	c, _ := util.BuildContext(ctx)
+	c.Action = func() (*data.EnvcdResult, error) {
 		fmt.Println("hello world")
 		// UserDao.save(),
 		// LogDao.save()
 		return nil, errorsx.Err("test error")
-	}}
+	}
 	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
 		fmt.Printf("ret = %v, error = %v", ret, err)
 	}
