@@ -19,7 +19,6 @@ package openapi
 
 import (
 	"fmt"
-	"net/http"
 
 	"github.com/acmestack/envcd/internal/core/plugin"
 	"github.com/acmestack/envcd/internal/core/storage/dao"
@@ -31,53 +30,63 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (openapi *Openapi) dictionary(ctx *gin.Context) {
+func (openapi *Openapi) login(ctx *gin.Context) {
+	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
+		fmt.Println("hello world")
+		return nil, errorsx.Err("test error")
+	}}
+	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
+		fmt.Printf("ret = %v, error = %v", ret, err)
+	}
+	ctx.JSON(200, data.Success("hello world").Data)
+}
+
+func (openapi *Openapi) logout(ctx *gin.Context) {
 	c, _ := buildContext(ctx)
 	c.Action = func() (*data.EnvcdResult, error) {
-		// get user id from gin context
-		userId := stringsx.ToInt(ctx.Param("userId"))
-		appId := stringsx.ToInt(ctx.Param("appId"))
-		configId := stringsx.ToInt(ctx.Param("configId"))
-		dict := entity.Dictionary{Id: configId, UserId: userId, ApplicationId: appId}
-		dictionary, err := dao.New(openapi.storage).SelectDictionary(dict)
-		if err != nil {
-			return data.Failure(err.Error()), err
-		}
-		return data.Success(dictionary), nil
+		fmt.Println("hello world")
+		// UserDao.save(),
+		// LogDao.save()
+		return nil, errorsx.Err("test error")
 	}
-	ret, err := plugin.NewChain(openapi.executors).Execute(c)
-	if err != nil {
-		// FIXME log.error("ret = %v, error = %v", ret, err)
+	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
 		fmt.Printf("ret = %v, error = %v", ret, err)
-		ctx.JSON(http.StatusBadRequest, ret.Data)
 	}
-	ctx.JSON(http.StatusOK, ret.Data)
+	ctx.JSON(200, data.Success("hello world").Data)
 }
 
-func (openapi *Openapi) putDictionary(ctx *gin.Context) {
+func (openapi *Openapi) user(ctx *gin.Context) {
 	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
 		fmt.Println("hello world")
-		// create config
-		// ConfigDao.save();
-		// go LogDao.save()
-		// openapi.exchange.Put("key", "value")
 		return nil, errorsx.Err("test error")
 	}}
 	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
 		fmt.Printf("ret = %v, error = %v", ret, err)
 	}
+	ctx.JSON(200, data.Success("hello world").Data)
 }
 
-func (openapi *Openapi) removeDictionary(ctx *gin.Context) {
+func (openapi *Openapi) userById(ctx *gin.Context) {
 	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
 		fmt.Println("hello world")
-		// delete config
-		// ConfigDao.delete();
-		// go LogDao.save()
-		// openapi.exchange.Remove("key")
+		return nil, errorsx.Err("test error")
+	}}
+	id := stringsx.ToInt(ctx.Param("id"))
+	user := entity.User{Id: id}
+	dao.New(openapi.storage).SelectUser(user)
+	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
+		fmt.Printf("ret = %v, error = %v", ret, err)
+	}
+	ctx.JSON(200, data.Success("hello world").Data)
+}
+
+func (openapi *Openapi) removeUser(ctx *gin.Context) {
+	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
+		fmt.Println("hello world")
 		return nil, errorsx.Err("test error")
 	}}
 	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
 		fmt.Printf("ret = %v, error = %v", ret, err)
 	}
+	ctx.JSON(200, data.Success("hello world").Data)
 }
