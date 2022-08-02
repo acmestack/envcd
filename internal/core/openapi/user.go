@@ -58,6 +58,14 @@ func (openapi *Openapi) logout(ctx *gin.Context) {
 	ctx.JSON(200, data.Success("hello world").Data)
 }
 
+// userParam Create User Param
+type userParam struct {
+	Name     string `json:"name"`
+	Password string `json:"password"`
+	Identity int    `json:"identity"`
+	State    bool   `json:"state"`
+}
+
 func (openapi *Openapi) user(ctx *gin.Context) {
 	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
 		fmt.Println("hello world")
@@ -67,7 +75,7 @@ func (openapi *Openapi) user(ctx *gin.Context) {
 		fmt.Printf("ret = %v, error = %v \n", ret, err)
 	}
 	// receive params from request
-	param := UserParam{}
+	param := userParam{}
 	if er := ctx.ShouldBindJSON(&param); er != nil {
 		log.Error("Bind error, %v", er)
 		ctx.JSON(http.StatusInternalServerError, data.Failure("Illegal params !").Data)
