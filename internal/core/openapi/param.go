@@ -17,22 +17,10 @@
 
 package openapi
 
-import (
-	"github.com/acmestack/godkits/core"
-	"github.com/acmestack/godkits/gox/cryptox/md5x"
-)
-
-// saltPassword the password with slat, the password generation Policy
-//  @param plain saltPassword string
-//  @param salt string
-//  @return string
-func saltPassword(plain string, salt string) string {
-	// todo using sha crypto, maybe the saltPassword = md5( md5(salt) + plain + salt + plain + salt + md5(plain) )
-	return md5x.Md5x(plain + salt)
-}
-
-// randomSalt generate random salt
-// @return string
-func randomSalt() string {
-	return core.SimpleRandomUUID()
+// UserParam Create User Param
+type UserParam struct {
+	Name     string `json:"name"`
+	Password string `json:"password"`
+	Identity int    `json:"identity"`
+	State    bool   `json:"state"`
 }

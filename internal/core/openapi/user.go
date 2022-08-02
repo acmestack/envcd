@@ -19,6 +19,8 @@ package openapi
 
 import (
 	"fmt"
+	"net/http"
+	"time"
 
 	"github.com/acmestack/envcd/internal/core/plugin"
 	"github.com/acmestack/envcd/internal/core/storage/dao"
@@ -27,6 +29,7 @@ import (
 	"github.com/acmestack/envcd/pkg/entity/data"
 	"github.com/acmestack/godkits/gox/errorsx"
 	"github.com/acmestack/godkits/gox/stringsx"
+	"github.com/acmestack/godkits/log"
 	"github.com/gin-gonic/gin"
 )
 
@@ -61,9 +64,53 @@ func (openapi *Openapi) user(ctx *gin.Context) {
 		return nil, errorsx.Err("test error")
 	}}
 	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
-		fmt.Printf("ret = %v, error = %v", ret, err)
+		fmt.Printf("ret = %v, error = %v \n", ret, err)
 	}
-	ctx.JSON(200, data.Success("hello world").Data)
+	// receive params from request
+	param := UserParam{}
+	if er := ctx.ShouldBindJSON(&param); er != nil {
+		log.Error("Bind error, %v", er)
+		ctx.JSON(http.StatusInternalServerError, data.Failure("Illegal params !").Data)
+		return
+	}
+	daoApi := dao.New(openapi.storage)
+	// check if the user already exists in the database
+	users, er := daoApi.SelectUser(entity.User{
+		Name: param.Name,
+	})
+	if er != nil {
+		log.Error("Query User error: %v", er)
+		ctx.JSON(http.StatusInternalServerError, data.Failure("System Error!").Data)
+		return
+	}
+	if len(users) > 0 {
+		log.Error("User Has exists: %v", users)
+		ctx.JSON(http.StatusInternalServerError, data.Failure("User Has Exists!").Data)
+		return
+	}
+	// generate database password by salt
+	salt := randomSalt()
+	password := saltPassword(param.Password, salt)
+	state := 1
+	if !param.State {
+		state = 2
+	}
+	user := entity.User{
+		Name:      param.Name,
+		Password:  password,
+		Salt:      salt,
+		Identity:  param.Identity,
+		State:     state,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	// save user
+	if _, _, err := daoApi.InsertUser(user); err != nil {
+		log.Error("insert error=%v", err)
+		ctx.JSON(http.StatusInternalServerError, data.Failure("Save User Error!").Data)
+		return
+	}
+	ctx.JSON(http.StatusOK, data.Success(nil).Data)
 }
 
 func (openapi *Openapi) userById(ctx *gin.Context) {
