@@ -11,8 +11,6 @@ github.com/acmestack/gobatis v0.2.8 h1:dYA3AUVXLQvHcuGA9bscqq4xw6tEC1E9dlyx4ebCH
 github.com/acmestack/gobatis v0.2.8/go.mod h1:vEEXPWzVzeDoFpYD2FoOfGfCyEuLtSiMIbP6jqO44Xg=
 github.com/acmestack/godkits v0.0.8 h1:On9Dv71MBnZXioP7p9PfpvdDPYIKYyfM/GoZJ4N62P8=
 github.com/acmestack/godkits v0.0.8/go.mod h1:d5kiqEvQl/LpXd8VTy7PZvQ5DDiasCX+QKA3+q8fWos=
-github.com/acmestack/godkits v0.0.9 h1:T09t/IMfVYt9y2O1AMVNYlIlaGeJJxrNcBmwQczALwc=
-github.com/acmestack/godkits v0.0.9/go.mod h1:d5kiqEvQl/LpXd8VTy7PZvQ5DDiasCX+QKA3+q8fWos=
 github.com/alecthomas/template v0.0.0-20160405071501-a0175ee3bccc/go.mod h1:LOuyumcjzFXgccqObfd/Ljyb9UuFJ6TxHnclSeseNhc=
 github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751/go.mod h1:LOuyumcjzFXgccqObfd/Ljyb9UuFJ6TxHnclSeseNhc=
 github.com/alecthomas/units v0.0.0-20151022065526-2efee857e7cf/go.mod h1:ybxpYRFXyAe+OPACYpWeL0wqObRcbAqCMya13uyzqw0=
@@ -69,6 +67,8 @@ github.com/godbus/dbus/v5 v5.0.4/go.mod h1:xhWf0FNVPg57R7Z0UbKHbJfkEywrmjJnf7w5x
 github.com/gogo/protobuf v1.1.1/go.mod h1:r8qH/GZQm5c6nD/R0oafs1akxWv10x8SbQlK7atdtwQ=
 github.com/gogo/protobuf v1.3.2 h1:Ov1cvc58UF3b5XjBnZv7+opcTcQFZebYjWzi34vdm4Q=
 github.com/gogo/protobuf v1.3.2/go.mod h1:P1XiOD3dCwIKUDQYPy72D8LYyHL2YPYrpS2s69NZV8Q=
+github.com/golang-jwt/jwt/v4 v4.4.2 h1:rcc4lwaZgFMCZ5jxF9ABolDcIHdBytAFgqFPbSJQAYs=
+github.com/golang-jwt/jwt/v4 v4.4.2/go.mod h1:m21LjoU+eqJr34lmDMbreY2eSTRJ1cv77w39/MY0Ch0=
 github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b/go.mod h1:SBH7ygxi8pfUlaOkMMuAQtPIUF8ecWP5IEl/CR7VP2Q=
 github.com/golang/mock v1.1.1/go.mod h1:oTYuIxOrZwtPieC+H1uAHpcLFnEyAGVDL/k47Jfbm0A=
 github.com/golang/protobuf v1.2.0/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=

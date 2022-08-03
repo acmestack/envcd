@@ -19,6 +19,8 @@ package openapi
 
 import (
 	"fmt"
+	authjwt "github.com/acmestack/envcd/internal/core/jwt"
+	"github.com/golang-jwt/jwt/v4"
 	"net/http"
 	"time"
 
@@ -33,15 +35,50 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// loginParam Login
+type loginParam struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
 func (openapi *Openapi) login(ctx *gin.Context) {
-	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
-		fmt.Println("hello world")
-		return nil, errorsx.Err("test error")
-	}}
-	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
-		fmt.Printf("ret = %v, error = %v", ret, err)
+	// receive params from request
+	param := loginParam{}
+	if er := ctx.ShouldBindJSON(&param); er != nil {
+		log.Error("Bind error, %v", er)
+		ctx.JSON(http.StatusInternalServerError, data.Failure("Illegal params !").Data)
+		return
 	}
-	ctx.JSON(200, data.Success("hello world").Data)
+	daoApi := dao.New(openapi.storage)
+	users, er := daoApi.SelectUser(entity.User{
+		Name: param.Username,
+	})
+	if er != nil {
+		log.Error("Query User error: %v", er)
+		ctx.JSON(http.StatusBadRequest, data.Failure("System Error!").Data)
+		return
+	}
+	if len(users) == 0 {
+		log.Error("User does not exist : %v", param)
+		ctx.JSON(http.StatusOK, data.Failure("User does not exist!").Data)
+		return
+	}
+	user := users[0]
+	if saltPassword(param.Password, user.Salt) != user.Password {
+		ctx.JSON(http.StatusOK, data.Failure("password error!").Data)
+		return
+	}
+	token := authjwt.NewJWTToken(authjwt.AuthClaims{
+		RegisteredClaims: &jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Second)),
+		},
+		UserId:   user.Id,
+		UserName: user.Name,
+	})
+	ctx.JSON(200, data.Success(map[string]interface{}{
+		"userId": user.Id,
+		"token":  token,
+	}).Data)
 }
 
 func (openapi *Openapi) logout(ctx *gin.Context) {
