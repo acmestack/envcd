@@ -55,7 +55,7 @@ func (openapi *Openapi) login(ctx *gin.Context) {
 	})
 	if er != nil {
 		log.Error("Query User error: %v", er)
-		ctx.JSON(http.StatusInternalServerError, data.Failure("System Error!").Data)
+		ctx.JSON(http.StatusBadRequest, data.Failure("System Error!").Data)
 		return
 	}
 	if len(users) == 0 {
