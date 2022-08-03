@@ -8,6 +8,7 @@ require (
 	github.com/acmestack/gobatis v0.2.8
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-sql-driver/mysql v1.6.0
+	github.com/golang-jwt/jwt/v4 v4.4.2
 	go.etcd.io/etcd/client/v3 v3.5.4
 	gopkg.in/yaml.v3 v3.0.1
 )
