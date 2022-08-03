@@ -42,22 +42,28 @@ type EnvcdResult struct {
 //  @param data
 //  @return *EnvcdResult
 func Success(data interface{}) *EnvcdResult {
-	return &EnvcdResult{Data: map[string]interface{}{
-		CodeKey:    successCode,
-		MessageKey: "success",
-		DataKey:    data,
-	}, HttpStatusCode: http.StatusOK}
+	return &EnvcdResult{
+		Data: map[string]interface{}{
+			CodeKey:    successCode,
+			MessageKey: "success",
+			DataKey:    data,
+		},
+		HttpStatusCode: http.StatusOK,
+	}
 }
 
 // InternalServerErrorFailure response
 //  @param message of error reason
 //  @return *EnvcdResult
 func InternalServerErrorFailure(message string) *EnvcdResult {
-	return &EnvcdResult{Data: map[string]interface{}{
-		CodeKey:    failureCode,
-		MessageKey: message,
-		DataKey:    nil,
-	}, HttpStatusCode: http.StatusInternalServerError}
+	return &EnvcdResult{
+		Data: map[string]interface{}{
+			CodeKey:    failureCode,
+			MessageKey: message,
+			DataKey:    nil,
+		},
+		HttpStatusCode: http.StatusInternalServerError,
+	}
 }
 
 // Failure response
@@ -65,9 +71,12 @@ func InternalServerErrorFailure(message string) *EnvcdResult {
 //  @param httpStatusCode of response http status code
 //  @return *EnvcdResult
 func Failure(message string, httpStatusCode int) *EnvcdResult {
-	return &EnvcdResult{Data: map[string]interface{}{
-		CodeKey:    failureCode,
-		MessageKey: message,
-		DataKey:    nil,
-	}, HttpStatusCode: httpStatusCode}
+	return &EnvcdResult{
+		Data: map[string]interface{}{
+			CodeKey:    failureCode,
+			MessageKey: message,
+			DataKey:    nil,
+		},
+		HttpStatusCode: httpStatusCode,
+	}
 }
