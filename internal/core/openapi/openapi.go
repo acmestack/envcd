@@ -102,5 +102,9 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 // response to caller
 func (openapi *Openapi) response(ginCtx *gin.Context, ctx *context.Context) {
 	ret := plugin.NewChain(openapi.executors).Execute(ctx)
+	if ret == nil {
+		// todo invalid state
+		return
+	}
 	ginCtx.JSON(ret.HttpStatusCode, ret.Data)
 }
