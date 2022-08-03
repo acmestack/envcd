@@ -18,13 +18,15 @@
 package logging
 
 import (
-	"github.com/acmestack/envcd/internal/pkg/context"
+	"net/http"
 	"testing"
+
+	"github.com/acmestack/envcd/internal/pkg/context"
 )
 
 func TestPrintLog(t *testing.T) {
-	header := make(map[string]interface{})
-	header["name"] = "envcd"
+	header := http.Header{}
+	header["name"] = []string{"envcd"}
 	body := make(map[string]interface{})
 	body["id"] = "1"
 	body["name"] = "envcd"

@@ -1,7 +1,7 @@
 /*
- * Licensed to the AcmeStack under one or more contributor license
- * agreements. See the NOTICE file distributed with this work for
- * additional information regarding copyright ownership.
+ * Copyright (c) 2022, AcmeStack
+ * All rights reserved.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package data
+package result
 
 import (
 	"reflect"
@@ -33,13 +33,13 @@ func TestFailure(t *testing.T) {
 	}{
 		{
 			args: args{message: "failure"},
-			want: Failure("failure"),
+			want: InternalServerErrorFailure("failure"),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Failure(tt.args.message); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Failure() = %v, want %v", got, tt.want)
+			if got := InternalServerErrorFailure(tt.args.message); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("InternalServerErrorFailure() = %v, want %v", got, tt.want)
 			}
 		})
 	}

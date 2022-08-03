@@ -19,7 +19,7 @@ package executor
 
 import (
 	"github.com/acmestack/envcd/internal/pkg/context"
-	"github.com/acmestack/envcd/pkg/entity/data"
+	"github.com/acmestack/envcd/pkg/entity/result"
 )
 
 // Executor the executor
@@ -30,7 +30,7 @@ type Executor interface {
 	//  @param context
 	//  @param executor
 	//  @return ret, error
-	Execute(context *context.Context, chain Chain) (*data.EnvcdResult, error)
+	Execute(context *context.Context, chain Chain) *result.EnvcdResult
 
 	// Skip current executor
 	//  @return skip current executor or not

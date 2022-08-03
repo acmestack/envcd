@@ -1,7 +1,7 @@
 /*
- * Licensed to the AcmeStack under one or more contributor license
- * agreements. See the NOTICE file distributed with this work for
- * additional information regarding copyright ownership.
+ * Copyright (c) 2022, AcmeStack
+ * All rights reserved.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-package data
+package result
+
+import "net/http"
 
 const (
 	successCode = "SUCCESS"
@@ -30,7 +32,10 @@ var (
 
 // EnvcdResult for response
 type EnvcdResult struct {
+	// response data
 	Data map[string]interface{}
+	// response http status code
+	HttpStatusCode int
 }
 
 // Success response
@@ -41,16 +46,28 @@ func Success(data interface{}) *EnvcdResult {
 		ResultCodeKey:    successCode,
 		ResultMessageKey: "success",
 		ResultDataKey:    data,
-	}}
+	}, HttpStatusCode: http.StatusOK}
 }
 
-// Failure response
+// InternalServerErrorFailure response
 //  @param message of error reason
 //  @return *EnvcdResult
-func Failure(message string) *EnvcdResult {
+func InternalServerErrorFailure(message string) *EnvcdResult {
 	return &EnvcdResult{Data: map[string]interface{}{
 		ResultCodeKey:    failureCode,
 		ResultMessageKey: message,
 		ResultDataKey:    nil,
-	}}
+	}, HttpStatusCode: http.StatusInternalServerError}
+}
+
+// InternalServerErrorFailure response
+//  @param message of error reason
+//  @param httpStatusCode of response http status code
+//  @return *EnvcdResult
+func Failure(message string, httpStatusCode int) *EnvcdResult {
+	return &EnvcdResult{Data: map[string]interface{}{
+		ResultCodeKey:    failureCode,
+		ResultMessageKey: message,
+		ResultDataKey:    nil,
+	}, HttpStatusCode: httpStatusCode}
 }

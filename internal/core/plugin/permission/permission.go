@@ -22,7 +22,7 @@ import (
 	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/executor"
 	"github.com/acmestack/envcd/internal/pkg/plugin"
-	"github.com/acmestack/envcd/pkg/entity/data"
+	"github.com/acmestack/envcd/pkg/entity/result"
 )
 
 const (
@@ -40,7 +40,7 @@ func New() *Permission {
 	return p
 }
 
-func (permission *Permission) Execute(context *context.Context, chain executor.Chain) (*data.EnvcdResult, error) {
+func (permission *Permission) Execute(context *context.Context, chain executor.Chain) *result.EnvcdResult {
 	return chain.Execute(context)
 }
 
