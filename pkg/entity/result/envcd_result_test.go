@@ -69,7 +69,7 @@ func TestSuccess(t *testing.T) {
 }
 
 func TestKey(t *testing.T) {
-	ResultCodeKey = "a"
+	CodeKey = "a"
 	tests := []struct {
 		name string
 		want string
