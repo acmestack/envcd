@@ -99,6 +99,7 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 	return router
 }
 
+// response to caller
 func (openapi *Openapi) response(ginCtx *gin.Context, ctx *context.Context) {
 	ret := plugin.NewChain(openapi.executors).Execute(ctx)
 	ginCtx.JSON(ret.HttpStatusCode, ret.Data)
