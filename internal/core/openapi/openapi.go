@@ -30,6 +30,7 @@ import (
 	"github.com/acmestack/envcd/internal/pkg/config"
 	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/executor"
+	"github.com/acmestack/envcd/pkg/entity/result"
 	"github.com/acmestack/godkits/log"
 	"github.com/gin-gonic/gin"
 )
@@ -103,8 +104,7 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 func (openapi *Openapi) response(ginCtx *gin.Context, ctx *context.Context) {
 	ret := plugin.NewChain(openapi.executors).Execute(ctx)
 	if ret == nil {
-		// todo invalid state
-		return
+		ret = result.InternalServerErrorFailure(http.StatusText(http.StatusInternalServerError))
 	}
 	ginCtx.JSON(ret.HttpStatusCode, ret.Data)
 }
