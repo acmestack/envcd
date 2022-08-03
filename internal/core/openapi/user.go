@@ -60,12 +60,12 @@ func (openapi *Openapi) login(ctx *gin.Context) {
 	}
 	if len(users) == 0 {
 		log.Error("User does not exist : %v", param)
-		ctx.JSON(http.StatusBadRequest, data.Failure("User does not exist!").Data)
+		ctx.JSON(http.StatusOK, data.Failure("User does not exist!").Data)
 		return
 	}
 	user := users[0]
 	if saltPassword(param.Password, user.Salt) != user.Password {
-		ctx.JSON(http.StatusBadRequest, data.Failure("password error!").Data)
+		ctx.JSON(http.StatusOK, data.Failure("password error!").Data)
 		return
 	}
 	token := authjwt.NewJWTToken(authjwt.AuthClaims{
