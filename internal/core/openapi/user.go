@@ -28,7 +28,8 @@ import (
 	"github.com/acmestack/envcd/pkg/entity/result"
 	"github.com/acmestack/godkits/gox/stringsx"
 	"github.com/acmestack/godkits/log"
-	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"	
+	"github.com/golang-jwt/jwt/v4"
 )
 
 // loginParam Login
@@ -73,8 +74,8 @@ func (openapi *Openapi) login(ginCtx *gin.Context) {
 			return result.Failure("password error!", http.StatusOK)
 		}
 		token := authjwt.NewJWTToken(authjwt.AuthClaims{
-			RegisteredClaims: &authjwt.RegisteredClaims{
-				ExpiresAt: authjwt.NewNumericDate(time.Now().Add(24 * time.Second)),
+			RegisteredClaims: &jwt.RegisteredClaims{
+				ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Second)),
 			},
 			UserId:   user.Id,
 			UserName: user.Name,

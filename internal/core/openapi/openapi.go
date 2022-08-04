@@ -118,4 +118,5 @@ func (openapi *Openapi) response(ginCtx *gin.Context, envcdAction context.EnvcdA
 		}
 	}
 	ginCtx.JSON(ret.HttpStatusCode, ret.Data)
+	delete(openapi.contexts, requestId)
 }
