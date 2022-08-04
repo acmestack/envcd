@@ -73,8 +73,8 @@ func (openapi *Openapi) login(ginCtx *gin.Context) {
 			return result.Failure("password error!", http.StatusOK)
 		}
 		token := authjwt.NewJWTToken(authjwt.AuthClaims{
-			RegisteredClaims: &jwt.RegisteredClaims{
-				ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Second)),
+			RegisteredClaims: &authjwt.RegisteredClaims{
+				ExpiresAt: authjwt.NewNumericDate(time.Now().Add(24 * time.Second)),
 			},
 			UserId:   user.Id,
 			UserName: user.Name,
