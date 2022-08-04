@@ -19,8 +19,10 @@ package openapi
 
 import (
 	"fmt"
+	"net/http"
 
 	"github.com/acmestack/envcd/internal/core/storage/dao"
+	"github.com/acmestack/envcd/internal/pkg/constants"
 	"github.com/acmestack/envcd/internal/pkg/entity"
 	"github.com/acmestack/envcd/pkg/entity/result"
 	"github.com/acmestack/godkits/gox/stringsx"
@@ -66,11 +68,31 @@ func (openapi *Openapi) updateDictionary(ginCtx *gin.Context) {
 
 func (openapi *Openapi) removeDictionary(ginCtx *gin.Context) {
 	openapi.response(ginCtx, func() *result.EnvcdResult {
-		fmt.Println("hello world")
-		// delete config
-		// ConfigDao.delete();
-		// go LogDao.save()
-		// openapi.exchange.Remove("key")
-		return nil
+		userId := stringsx.ToInt(ginCtx.Param("userId"))
+		appId := stringsx.ToInt(ginCtx.Param("appId"))
+		dictId := stringsx.ToInt(ginCtx.Param("dictId"))
+		dict := entity.Dictionary{Id: dictId, UserId: userId, ApplicationId: appId}
+		// query dictionary exist
+		daoApi := dao.New(openapi.storage)
+		dictionary, err := daoApi.SelectDictionary(dict)
+		if err != nil {
+			return result.InternalServerErrorFailure(err.Error())
+		}
+		if len(dictionary) == 0 {
+			return result.Failure(constants.DICT_NOT_FOUND, http.StatusBadRequest)
+		}
+		exchangeErr := openapi.exchange.Remove(getFirstDictionary(dictionary).DictKey)
+		if exchangeErr != nil {
+			return result.InternalServerErrorFailure(exchangeErr.Error())
+		}
+		retId, delErr := daoApi.DeleteDictionary(getFirstDictionary(dictionary))
+		if delErr != nil {
+			return result.InternalServerErrorFailure(delErr.Error())
+		}
+		return result.Success(retId)
 	})
+}
+
+func getFirstDictionary(dictionaryList []entity.Dictionary) entity.Dictionary {
+	return dictionaryList[0]
 }
