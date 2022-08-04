@@ -88,10 +88,10 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 	adminGroup := router.Group("/v1/user")
 	{
 		// TODO test
-		adminGroup.POST("/user", openapi.user)
-		adminGroup.PUT("/user/:id", openapi.updateUser)
-		adminGroup.GET("/user/:id", openapi.userById)
-		adminGroup.DELETE("/user/:id", openapi.removeUser)
+		adminGroup.POST("", openapi.user)
+		adminGroup.PUT("/:id", openapi.updateUser)
+		adminGroup.GET("/:id", openapi.userById)
+		adminGroup.DELETE("/:id", openapi.removeUser)
 	}
 	envcdApplication := router.Group("/v1/app")
 	{
