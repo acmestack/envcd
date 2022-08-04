@@ -23,6 +23,8 @@ import (
 	"github.com/acmestack/envcd/pkg/entity/result"
 )
 
+type EnvcdAction func() *result.EnvcdResult
+
 // Context for peer request
 type Context struct {
 	Uri         string
@@ -31,6 +33,7 @@ type Context struct {
 	ContentType string
 	Cookies     []*http.Cookie
 	Body        interface{}
-	Action      func() *result.EnvcdResult
+	Action      EnvcdAction
 	Request     *http.Request
+	RequestId   string
 }

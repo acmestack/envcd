@@ -18,11 +18,12 @@
 package result
 
 import (
+	"net/http"
 	"reflect"
 	"testing"
 )
 
-func TestFailure(t *testing.T) {
+func TestInternalServerErrorFailure(t *testing.T) {
 	type args struct {
 		message string
 	}
@@ -82,6 +83,62 @@ func TestKey(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := Success(nil); got == nil || (got.Data["a"] != successCode) {
 				t.Errorf("Success() = %v", got)
+			}
+		})
+	}
+}
+
+func TestFailure(t *testing.T) {
+	type args struct {
+		message        string
+		httpStatusCode int
+	}
+	tests := []struct {
+		name string
+		args args
+		want *EnvcdResult
+	}{
+		{
+			args: args{
+				message:        http.StatusText(http.StatusBadRequest),
+				httpStatusCode: http.StatusBadRequest,
+			},
+			want: Failure(http.StatusText(http.StatusBadRequest), http.StatusBadRequest),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Failure(tt.args.message, tt.args.httpStatusCode); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Failure() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestFailure1(t *testing.T) {
+	type args struct {
+		code           string
+		message        string
+		httpStatusCode int
+	}
+	tests := []struct {
+		name string
+		args args
+		want *EnvcdResult
+	}{
+		{
+			args: args{
+				code:           "ERROR",
+				message:        http.StatusText(http.StatusBadRequest),
+				httpStatusCode: http.StatusBadRequest,
+			},
+			want: Failure0("ERROR", http.StatusText(http.StatusBadRequest), http.StatusBadRequest),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Failure0(tt.args.code, tt.args.message, tt.args.httpStatusCode); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Failure0() = %v, want %v", got, tt.want)
 			}
 		})
 	}
