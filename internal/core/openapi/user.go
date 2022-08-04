@@ -23,12 +23,9 @@ import (
 	"time"
 
 	authjwt "github.com/acmestack/envcd/internal/core/jwt"
-	"github.com/acmestack/envcd/pkg/entity/result"
-	"github.com/golang-jwt/jwt/v4"
-
 	"github.com/acmestack/envcd/internal/core/storage/dao"
-	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/entity"
+	"github.com/acmestack/envcd/pkg/entity/result"
 	"github.com/acmestack/godkits/gox/stringsx"
 	"github.com/acmestack/godkits/log"
 	"github.com/gin-gonic/gin"
@@ -49,28 +46,30 @@ type userParam struct {
 }
 
 func (openapi *Openapi) login(ginCtx *gin.Context) {
-	c := buildContext(ginCtx)
-	c.Action = func() *result.EnvcdResult {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
 		param := loginParam{}
 		if err := ginCtx.ShouldBindJSON(&param); err != nil {
 			log.Error("Bind error, %v", err)
 			return result.InternalServerErrorFailure("Illegal params !")
 		}
-		daoApi := dao.New(openapi.storage)
-		users, err := daoApi.SelectUser(entity.User{
+
+		users, err := dao.New(openapi.storage).SelectUser(entity.User{
 			Name: param.Username,
 		})
 		if err != nil {
 			log.Error("Query User error: %v", err)
+			// todo error code : result.Failure0(code, message, httpStatusCode)
 			return result.Failure("System Error!", http.StatusBadRequest)
 		}
 
 		if len(users) == 0 {
+			// todo error code : result.Failure0(code, message, httpStatusCode)
 			log.Error("User does not exist : %v", param)
 			return result.Failure("User does not exist!", http.StatusOK)
 		}
 		user := users[0]
 		if saltPassword(param.Password, user.Salt) != user.Password {
+			// todo error code : result.Failure0(code, message, httpStatusCode)
 			return result.Failure("password error!", http.StatusOK)
 		}
 		token := authjwt.NewJWTToken(authjwt.AuthClaims{
@@ -81,27 +80,24 @@ func (openapi *Openapi) login(ginCtx *gin.Context) {
 			UserName: user.Name,
 		})
 		return result.Success(map[string]interface{}{
+			// todo const var
 			"userId": user.Id,
 			"token":  token,
 		})
-	}
-	openapi.response(ginCtx, c)
+	})
 }
 
 func (openapi *Openapi) logout(ginCtx *gin.Context) {
-	c := buildContext(ginCtx)
-	c.Action = func() *result.EnvcdResult {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		// UserDao.save(),
 		// LogDao.save()
 		return nil
-	}
-	openapi.response(ginCtx, c)
+	})
 }
 
 func (openapi *Openapi) user(ginCtx *gin.Context) {
-	c := buildContext(ginCtx)
-	c.Action = func() *result.EnvcdResult {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
 		param := userParam{}
 		if er := ginCtx.ShouldBindJSON(&param); er != nil {
 			log.Error("Bind error, %v", er)
@@ -143,27 +139,23 @@ func (openapi *Openapi) user(ginCtx *gin.Context) {
 		}
 		// fixme update success message or response token and id ?
 		return result.Success("ok")
-	}
-
-	openapi.response(ginCtx, c)
+	})
 }
 
 func (openapi *Openapi) userById(ginCtx *gin.Context) {
-	c := &context.Context{Action: func() *result.EnvcdResult {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
 		fmt.Println("hello world")
+		id := stringsx.ToInt(ginCtx.Param("id"))
+		user := entity.User{Id: id}
+		// todo user detail
+		dao.New(openapi.storage).SelectUser(user)
 		return nil
-	}}
-	id := stringsx.ToInt(ginCtx.Param("id"))
-	user := entity.User{Id: id}
-	dao.New(openapi.storage).SelectUser(user)
-	openapi.response(ginCtx, c)
+	})
 }
 
 func (openapi *Openapi) removeUser(ginCtx *gin.Context) {
-	c := buildContext(ginCtx)
-	c.Action = func() *result.EnvcdResult {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		return nil
-	}
-	openapi.response(ginCtx, c)
+	})
 }

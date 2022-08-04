@@ -35,10 +35,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var requestIdHeader = "x-envcd-request-id"
+
 type Openapi struct {
 	exchange  *exchanger.Exchange
 	storage   *storage.Storage
 	executors []executor.Executor
+	contexts  map[string]*context.Context
 }
 
 func Start(serverSetting *config.Server, exchange *exchanger.Exchange, storage *storage.Storage) {
@@ -46,6 +49,7 @@ func Start(serverSetting *config.Server, exchange *exchanger.Exchange, storage *
 		exchange:  exchange,
 		storage:   storage,
 		executors: []executor.Executor{logging.New(), permission.New()},
+		contexts:  map[string]*context.Context{},
 	}
 	// sort plugin
 	plugin.Sort(openapi.executors)
@@ -75,6 +79,8 @@ func (openapi *Openapi) initServer(serverSetting *config.Server) {
 // todo build Router
 func (openapi *Openapi) buildRouter() *gin.Engine {
 	router := gin.Default()
+	// build context for peer request
+	router.Use(openapi.buildContext)
 	// router group
 	adminGroup := router.Group("admin")
 	{
@@ -87,7 +93,7 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 	}
 	envcdApplication := router.Group("/v1/envcd")
 	{
-		// TODO evncd application
+		// TODO envcd application
 		envcdApplication.GET("/user/:userId/application/:appId", openapi.application)
 		envcdApplication.PUT("/user/:userId/application/:appId", openapi.putApplication)
 		envcdApplication.DELETE("/user/:userId/application/:appId", openapi.removeApplication)
@@ -101,10 +107,15 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 }
 
 // response to caller
-func (openapi *Openapi) response(ginCtx *gin.Context, ctx *context.Context) {
-	ret := plugin.NewChain(openapi.executors).Execute(ctx)
-	if ret == nil {
-		ret = result.InternalServerErrorFailure(http.StatusText(http.StatusInternalServerError))
+func (openapi *Openapi) response(ginCtx *gin.Context, envcdAction context.EnvcdAction) {
+	requestId := ginCtx.Request.Header.Get(requestIdHeader)
+	c := openapi.contexts[requestId]
+	ret := result.InternalServerErrorFailure(http.StatusText(http.StatusInternalServerError))
+	if c != nil && c.RequestId == requestId {
+		c.Action = envcdAction
+		if exeRet := plugin.NewChain(openapi.executors).Execute(c); exeRet != nil {
+			ret = exeRet
+		}
 	}
 	ginCtx.JSON(ret.HttpStatusCode, ret.Data)
 }

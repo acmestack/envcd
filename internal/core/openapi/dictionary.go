@@ -21,7 +21,6 @@ import (
 	"fmt"
 
 	"github.com/acmestack/envcd/internal/core/storage/dao"
-	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/entity"
 	"github.com/acmestack/envcd/pkg/entity/result"
 	"github.com/acmestack/godkits/gox/stringsx"
@@ -29,8 +28,7 @@ import (
 )
 
 func (openapi *Openapi) dictionary(ginCtx *gin.Context) {
-	c := buildContext(ginCtx)
-	c.Action = func() *result.EnvcdResult {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
 		// get user id from gin context
 		userId := stringsx.ToInt(ginCtx.Param("userId"))
 		appId := stringsx.ToInt(ginCtx.Param("appId"))
@@ -41,30 +39,27 @@ func (openapi *Openapi) dictionary(ginCtx *gin.Context) {
 			return result.InternalServerErrorFailure(err.Error())
 		}
 		return result.Success(dictionary)
-	}
-	openapi.response(ginCtx, c)
+	})
 }
 
 func (openapi *Openapi) putDictionary(ginCtx *gin.Context) {
-	c := &context.Context{Action: func() *result.EnvcdResult {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		// create config
 		// ConfigDao.save();
 		// go LogDao.save()
 		// openapi.exchange.Put("key", "value")
 		return nil
-	}}
-	openapi.response(ginCtx, c)
+	})
 }
 
 func (openapi *Openapi) removeDictionary(ginCtx *gin.Context) {
-	c := &context.Context{Action: func() *result.EnvcdResult {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		// delete config
 		// ConfigDao.delete();
 		// go LogDao.save()
 		// openapi.exchange.Remove("key")
 		return nil
-	}}
-	openapi.response(ginCtx, c)
+	})
 }

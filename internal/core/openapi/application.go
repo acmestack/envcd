@@ -20,43 +20,39 @@ package openapi
 import (
 	"fmt"
 
-	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/pkg/entity/result"
 	"github.com/gin-gonic/gin"
 )
 
 func (openapi *Openapi) application(ginCtx *gin.Context) {
-	c := &context.Context{Action: func() *result.EnvcdResult {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		// create config
 		// ConfigDao.save();
 		// go LogDao.save()
 		// openapi.exchange.Put("key", "value")
 		return nil
-	}}
-	openapi.response(ginCtx, c)
+	})
 }
 
 func (openapi *Openapi) putApplication(ginCtx *gin.Context) {
-	c := &context.Context{Action: func() *result.EnvcdResult {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		// create config
 		// ConfigDao.save();
 		// go LogDao.save()
 		// openapi.exchange.Put("key", "value")
 		return nil
-	}}
-	openapi.response(ginCtx, c)
+	})
 }
 
 func (openapi *Openapi) removeApplication(ginCtx *gin.Context) {
-	c := &context.Context{Action: func() *result.EnvcdResult {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		// create config
 		// ConfigDao.save();
 		// go LogDao.save()
 		// openapi.exchange.Put("key", "value")
 		return nil
-	}}
-	openapi.response(ginCtx, c)
+	})
 }

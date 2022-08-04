@@ -25,8 +25,11 @@ import (
 // buildContext build plugin context
 //  @param params params
 //  @return *context.Context context
-func buildContext(ginCtx *gin.Context) *context.Context {
-	return &context.Context{
+func (openapi *Openapi) buildContext(ginCtx *gin.Context) {
+	// todo create request id by uuid
+	requestId := "uuid"
+	ginCtx.Request.Header.Add(requestIdHeader, requestId)
+	openapi.contexts[requestId] = &context.Context{
 		Uri:         ginCtx.Request.RequestURI,
 		Method:      ginCtx.Request.Method,
 		Headers:     ginCtx.Request.Header,
@@ -34,5 +37,6 @@ func buildContext(ginCtx *gin.Context) *context.Context {
 		Cookies:     ginCtx.Request.Cookies(),
 		Body:        ginCtx.Request.Body,
 		Request:     ginCtx.Request,
+		RequestId:   requestId,
 	}
 }

@@ -56,14 +56,7 @@ func Success(data interface{}) *EnvcdResult {
 //  @param message of error reason
 //  @return *EnvcdResult
 func InternalServerErrorFailure(message string) *EnvcdResult {
-	return &EnvcdResult{
-		Data: map[string]interface{}{
-			CodeKey:    failureCode,
-			MessageKey: message,
-			DataKey:    nil,
-		},
-		HttpStatusCode: http.StatusInternalServerError,
-	}
+	return Failure0(failureCode, message, http.StatusInternalServerError)
 }
 
 // Failure response
@@ -71,9 +64,18 @@ func InternalServerErrorFailure(message string) *EnvcdResult {
 //  @param httpStatusCode of response http status code
 //  @return *EnvcdResult
 func Failure(message string, httpStatusCode int) *EnvcdResult {
+	return Failure0(failureCode, message, httpStatusCode)
+}
+
+// Failure0 response
+//  @param code of error code
+//  @param message of error reason
+//  @param httpStatusCode of response http status code
+//  @return *EnvcdResult
+func Failure0(code string, message string, httpStatusCode int) *EnvcdResult {
 	return &EnvcdResult{
 		Data: map[string]interface{}{
-			CodeKey:    failureCode,
+			CodeKey:    code,
 			MessageKey: message,
 			DataKey:    nil,
 		},
