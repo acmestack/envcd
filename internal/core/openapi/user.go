@@ -28,7 +28,7 @@ import (
 	"github.com/acmestack/envcd/pkg/entity/result"
 	"github.com/acmestack/godkits/gox/stringsx"
 	"github.com/acmestack/godkits/log"
-	"github.com/gin-gonic/gin"	
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 )
 
@@ -140,6 +140,13 @@ func (openapi *Openapi) user(ginCtx *gin.Context) {
 		}
 		// fixme update success message or response token and id ?
 		return result.Success("ok")
+	})
+}
+
+func (openapi *Openapi) updateUser(ginCtx *gin.Context) {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
+		fmt.Println("hello world")
+		return nil
 	})
 }
 

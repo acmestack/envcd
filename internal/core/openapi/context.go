@@ -19,6 +19,7 @@ package openapi
 
 import (
 	"github.com/acmestack/envcd/internal/pkg/context"
+	"github.com/acmestack/godkits/core"
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,8 +27,8 @@ import (
 //  @param params params
 //  @return *context.Context context
 func (openapi *Openapi) buildContext(ginCtx *gin.Context) {
-	// todo create request id by uuid
-	requestId := "uuid"
+	// create request id by uuid
+	requestId := core.RandomUUID()
 	ginCtx.Request.Header.Add(requestIdHeader, requestId)
 	openapi.contexts[requestId] = &context.Context{
 		Uri:         ginCtx.Request.RequestURI,

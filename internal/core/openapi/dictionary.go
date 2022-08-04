@@ -53,6 +53,17 @@ func (openapi *Openapi) putDictionary(ginCtx *gin.Context) {
 	})
 }
 
+func (openapi *Openapi) updateDictionary(ginCtx *gin.Context) {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
+		fmt.Println("hello world")
+		// create config
+		// ConfigDao.save();
+		// go LogDao.save()
+		// openapi.exchange.Put("key", "value")
+		return nil
+	})
+}
+
 func (openapi *Openapi) removeDictionary(ginCtx *gin.Context) {
 	openapi.response(ginCtx, func() *result.EnvcdResult {
 		fmt.Println("hello world")
