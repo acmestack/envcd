@@ -20,18 +20,17 @@ package context
 import (
 	"net/http"
 
-	"github.com/acmestack/envcd/pkg/entity/data"
+	"github.com/acmestack/envcd/pkg/entity/result"
 )
 
 // Context for peer request
 type Context struct {
 	Uri         string
 	Method      string
-	Headers     map[string]interface{}
+	Headers     http.Header
 	ContentType string
-	Parameters  map[string]interface{}
-	Cookies     map[string]interface{}
+	Cookies     []*http.Cookie
 	Body        interface{}
-	Action      func() (*data.EnvcdResult, error)
-	HttpRequest *http.Request
+	Action      func() *result.EnvcdResult
+	Request     *http.Request
 }

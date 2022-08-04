@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package data
+package result
 
 import (
 	"reflect"
@@ -33,13 +33,13 @@ func TestFailure(t *testing.T) {
 	}{
 		{
 			args: args{message: "failure"},
-			want: Failure("failure"),
+			want: InternalServerErrorFailure("failure"),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Failure(tt.args.message); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Failure() = %v, want %v", got, tt.want)
+			if got := InternalServerErrorFailure(tt.args.message); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("InternalServerErrorFailure() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -69,7 +69,7 @@ func TestSuccess(t *testing.T) {
 }
 
 func TestKey(t *testing.T) {
-	ResultCodeKey = "a"
+	CodeKey = "a"
 	tests := []struct {
 		name string
 		want string

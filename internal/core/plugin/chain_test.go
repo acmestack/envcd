@@ -25,7 +25,7 @@ import (
 	"github.com/acmestack/envcd/internal/core/plugin/permission"
 	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/executor"
-	"github.com/acmestack/envcd/pkg/entity/data"
+	"github.com/acmestack/envcd/pkg/entity/result"
 )
 
 func TestNewChain(t *testing.T) {
@@ -64,7 +64,6 @@ func TestExecutorChain_Execute(t *testing.T) {
 		fields  fields
 		args    args
 		wantRet interface{}
-		wantErr bool
 	}{
 		{
 			fields: fields{
@@ -72,8 +71,7 @@ func TestExecutorChain_Execute(t *testing.T) {
 				index:     0,
 			},
 			args:    args{context: &context.Context{}},
-			wantRet: data.Success(nil),
-			wantErr: false,
+			wantRet: result.Success(nil),
 		},
 		{
 			fields: fields{
@@ -81,8 +79,7 @@ func TestExecutorChain_Execute(t *testing.T) {
 				index:     0,
 			},
 			args:    args{context: &context.Context{}},
-			wantRet: data.Failure("IIllegal state for plugin chain."),
-			wantErr: true,
+			wantRet: result.InternalServerErrorFailure("IIllegal state for plugin chain."),
 		},
 		{
 			fields: fields{
@@ -90,8 +87,7 @@ func TestExecutorChain_Execute(t *testing.T) {
 				index:     0,
 			},
 			args:    args{context: &context.Context{Action: nil}},
-			wantRet: data.Success(nil),
-			wantErr: false,
+			wantRet: result.Success(nil),
 		},
 	}
 	for _, tt := range tests {
@@ -100,11 +96,7 @@ func TestExecutorChain_Execute(t *testing.T) {
 				executors: tt.fields.executors,
 				index:     tt.fields.index,
 			}
-			gotRet, err := executorChain.Execute(tt.args.context)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("Execute() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
+			gotRet := executorChain.Execute(tt.args.context)
 			if !reflect.DeepEqual(gotRet, tt.wantRet) {
 				t.Errorf("Execute() gotRet = %v, want %v", gotRet, tt.wantRet)
 			}

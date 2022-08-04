@@ -15,7 +15,9 @@
  * limitations under the License.
  */
 
-package data
+package result
+
+import "net/http"
 
 const (
 	successCode = "SUCCESS"
@@ -23,34 +25,58 @@ const (
 )
 
 var (
-	ResultCodeKey    = "code"
-	ResultMessageKey = "message"
-	ResultDataKey    = "data"
+	CodeKey    = "code"
+	MessageKey = "message"
+	DataKey    = "data"
 )
 
 // EnvcdResult for response
 type EnvcdResult struct {
+	// response data
 	Data map[string]interface{}
+	// response http status code
+	HttpStatusCode int
 }
 
 // Success response
 //  @param data
 //  @return *EnvcdResult
 func Success(data interface{}) *EnvcdResult {
-	return &EnvcdResult{Data: map[string]interface{}{
-		ResultCodeKey:    successCode,
-		ResultMessageKey: "success",
-		ResultDataKey:    data,
-	}}
+	return &EnvcdResult{
+		Data: map[string]interface{}{
+			CodeKey:    successCode,
+			MessageKey: "success",
+			DataKey:    data,
+		},
+		HttpStatusCode: http.StatusOK,
+	}
+}
+
+// InternalServerErrorFailure response
+//  @param message of error reason
+//  @return *EnvcdResult
+func InternalServerErrorFailure(message string) *EnvcdResult {
+	return &EnvcdResult{
+		Data: map[string]interface{}{
+			CodeKey:    failureCode,
+			MessageKey: message,
+			DataKey:    nil,
+		},
+		HttpStatusCode: http.StatusInternalServerError,
+	}
 }
 
 // Failure response
 //  @param message of error reason
+//  @param httpStatusCode of response http status code
 //  @return *EnvcdResult
-func Failure(message string) *EnvcdResult {
-	return &EnvcdResult{Data: map[string]interface{}{
-		ResultCodeKey:    failureCode,
-		ResultMessageKey: message,
-		ResultDataKey:    nil,
-	}}
+func Failure(message string, httpStatusCode int) *EnvcdResult {
+	return &EnvcdResult{
+		Data: map[string]interface{}{
+			CodeKey:    failureCode,
+			MessageKey: message,
+			DataKey:    nil,
+		},
+		HttpStatusCode: httpStatusCode,
+	}
 }

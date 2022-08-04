@@ -28,7 +28,9 @@ import (
 	"github.com/acmestack/envcd/internal/core/plugin/permission"
 	"github.com/acmestack/envcd/internal/core/storage"
 	"github.com/acmestack/envcd/internal/pkg/config"
+	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/executor"
+	"github.com/acmestack/envcd/pkg/entity/result"
 	"github.com/acmestack/godkits/log"
 	"github.com/gin-gonic/gin"
 )
@@ -96,4 +98,13 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 		envcdApplication.DELETE("/user/:userId/application/:appId/dict/:dictId", openapi.removeDictionary)
 	}
 	return router
+}
+
+// response to caller
+func (openapi *Openapi) response(ginCtx *gin.Context, ctx *context.Context) {
+	ret := plugin.NewChain(openapi.executors).Execute(ctx)
+	if ret == nil {
+		ret = result.InternalServerErrorFailure(http.StatusText(http.StatusInternalServerError))
+	}
+	ginCtx.JSON(ret.HttpStatusCode, ret.Data)
 }

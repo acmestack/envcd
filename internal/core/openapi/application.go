@@ -20,45 +20,43 @@ package openapi
 import (
 	"fmt"
 
-	"github.com/acmestack/envcd/internal/core/plugin"
 	"github.com/acmestack/envcd/internal/pkg/context"
-	"github.com/acmestack/envcd/pkg/entity/data"
-	"github.com/acmestack/godkits/gox/errorsx"
+	"github.com/acmestack/envcd/pkg/entity/result"
 	"github.com/gin-gonic/gin"
 )
 
-func (openapi *Openapi) application(ctx *gin.Context) {
-	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
+func (openapi *Openapi) application(ginCtx *gin.Context) {
+	c := &context.Context{Action: func() *result.EnvcdResult {
 		fmt.Println("hello world")
-		return nil, errorsx.Err("test error")
+		// create config
+		// ConfigDao.save();
+		// go LogDao.save()
+		// openapi.exchange.Put("key", "value")
+		return nil
 	}}
-	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
-		fmt.Printf("ret = %v, error = %v", ret, err)
-	}
+	openapi.response(ginCtx, c)
 }
 
-func (openapi *Openapi) putApplication(ctx *gin.Context) {
-	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
+func (openapi *Openapi) putApplication(ginCtx *gin.Context) {
+	c := &context.Context{Action: func() *result.EnvcdResult {
 		fmt.Println("hello world")
-		// create App
-		// ApplicationDao.save();
+		// create config
+		// ConfigDao.save();
 		// go LogDao.save()
-		return nil, errorsx.Err("test error")
+		// openapi.exchange.Put("key", "value")
+		return nil
 	}}
-	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
-		fmt.Printf("ret = %v, error = %v", ret, err)
-	}
+	openapi.response(ginCtx, c)
 }
 
-func (openapi *Openapi) removeApplication(ctx *gin.Context) {
-	c := &context.Context{Action: func() (*data.EnvcdResult, error) {
+func (openapi *Openapi) removeApplication(ginCtx *gin.Context) {
+	c := &context.Context{Action: func() *result.EnvcdResult {
 		fmt.Println("hello world")
-		// delete App
-		// ApplicationDao.delete();
+		// create config
+		// ConfigDao.save();
 		// go LogDao.save()
-		return nil, errorsx.Err("test error")
+		// openapi.exchange.Put("key", "value")
+		return nil
 	}}
-	if ret, err := plugin.NewChain(openapi.executors).Execute(c); err != nil {
-		fmt.Printf("ret = %v, error = %v", ret, err)
-	}
+	openapi.response(ginCtx, c)
 }

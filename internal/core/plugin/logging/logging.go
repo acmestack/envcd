@@ -22,7 +22,7 @@ import (
 	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/executor"
 	"github.com/acmestack/envcd/internal/pkg/plugin"
-	"github.com/acmestack/envcd/pkg/entity/data"
+	"github.com/acmestack/envcd/pkg/entity/result"
 	"github.com/acmestack/godkits/gox/encodingx/jsonx"
 	"github.com/acmestack/godkits/gox/stringsx"
 )
@@ -42,7 +42,7 @@ func New() *Logging {
 	return l
 }
 
-func (logging *Logging) Execute(context *context.Context, chain executor.Chain) (*data.EnvcdResult, error) {
+func (logging *Logging) Execute(context *context.Context, chain executor.Chain) *result.EnvcdResult {
 	printLog(context)
 	return chain.Execute(context)
 }
@@ -54,7 +54,6 @@ func (logging *Logging) Skip(context *context.Context) bool {
 func printLog(ctx *context.Context) {
 	build := stringsx.Builder{}
 	header, _ := jsonx.ToJsonString(ctx.Headers)
-	params, _ := jsonx.ToJsonString(ctx.Parameters)
 	requestBody, _ := jsonx.ToJsonString(ctx.Body)
 	responseBody, _ := jsonx.ToJsonString(ctx.Action)
 	_, err := build.JoinString("\n[Request Information]\n",
@@ -62,7 +61,6 @@ func printLog(ctx *context.Context) {
 		"Request Method:", ctx.Method, "\n",
 		"Request Headers:", header, "\n",
 		"Request ContentType:", ctx.ContentType, "\n",
-		"Request Parameters:", params, "\n\n",
 		"[Request Body]\n",
 		"Request Boyd:", requestBody, "\n\n",
 		"[Response Body]\n",
