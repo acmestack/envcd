@@ -22,7 +22,6 @@ import (
 	"net/http"
 	"time"
 
-	authjwt "github.com/acmestack/envcd/internal/core/jwt"
 	"github.com/acmestack/envcd/internal/core/storage/dao"
 	"github.com/acmestack/envcd/internal/pkg/entity"
 	"github.com/acmestack/envcd/pkg/entity/result"
@@ -44,6 +43,31 @@ type userParam struct {
 	Password string `json:"password"`
 	Identity int    `json:"identity"`
 	State    bool   `json:"state"`
+}
+
+const (
+	// hmacSecret secret
+	hmacSecret = "9C035514A15F78"
+	userIdKey  = "userId"
+	tokenKey   = "token"
+)
+
+// claims claims
+type claims struct {
+	*jwt.RegisteredClaims
+	userId   int
+	userName string
+}
+
+// newJWTToken secret
+func newJWTToken(authClaims claims) string {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, authClaims)
+	tokenString, err := token.SignedString([]byte(hmacSecret))
+	if err != nil {
+		// todo
+		return ""
+	}
+	return tokenString
 }
 
 func (openapi *Openapi) login(ginCtx *gin.Context) {
@@ -73,17 +97,17 @@ func (openapi *Openapi) login(ginCtx *gin.Context) {
 			// todo error code : result.Failure0(code, message, httpStatusCode)
 			return result.Failure("password error!", http.StatusOK)
 		}
-		token := authjwt.NewJWTToken(authjwt.AuthClaims{
+		token := newJWTToken(claims{
 			RegisteredClaims: &jwt.RegisteredClaims{
 				ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Second)),
 			},
-			UserId:   user.Id,
-			UserName: user.Name,
+			userId:   user.Id,
+			userName: user.Name,
 		})
 		return result.Success(map[string]interface{}{
 			// todo const var
-			"userId": user.Id,
-			"token":  token,
+			userIdKey: user.Id,
+			tokenKey:  token,
 		})
 	})
 }
@@ -157,7 +181,12 @@ func (openapi *Openapi) userById(ginCtx *gin.Context) {
 		user := entity.User{Id: id}
 		// todo user detail
 		dao.New(openapi.storage).SelectUser(user)
-		return nil
+		return result.Success(entity.User{
+			Id:        0,
+			Name:      "qicz",
+			CreatedAt: time.Time{},
+			UpdatedAt: time.Time{},
+		})
 	})
 }
 

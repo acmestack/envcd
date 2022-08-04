@@ -77,7 +77,6 @@ func Failure0(code string, message string, httpStatusCode int) *EnvcdResult {
 		Data: map[string]interface{}{
 			CodeKey:    code,
 			MessageKey: message,
-			DataKey:    nil,
 		},
 		HttpStatusCode: httpStatusCode,
 	}

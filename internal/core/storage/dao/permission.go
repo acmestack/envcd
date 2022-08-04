@@ -23,8 +23,7 @@ import (
 )
 
 func init() {
-	modelV := entity.Permission{}
-	gobatis.RegisterModel(&modelV)
+	gobatis.RegisterModel(&entity.Permission{})
 }
 
 func (dao *Dao) SelectPermission(model entity.Permission) ([]entity.Permission, error) {
