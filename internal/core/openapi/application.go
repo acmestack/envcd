@@ -46,6 +46,17 @@ func (openapi *Openapi) putApplication(ginCtx *gin.Context) {
 	})
 }
 
+func (openapi *Openapi) updateApplication(ginCtx *gin.Context) {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
+		fmt.Println("hello world")
+		// create config
+		// ConfigDao.save();
+		// go LogDao.save()
+		// openapi.exchange.Put("key", "value")
+		return nil
+	})
+}
+
 func (openapi *Openapi) removeApplication(ginCtx *gin.Context) {
 	openapi.response(ginCtx, func() *result.EnvcdResult {
 		fmt.Println("hello world")
