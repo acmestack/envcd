@@ -23,8 +23,7 @@ import (
 )
 
 func init() {
-	modelV := entity.User{}
-	gobatis.RegisterModel(&modelV)
+	gobatis.RegisterModel(&entity.User{})
 }
 
 func (dao *Dao) SelectUser(model entity.User) ([]entity.User, error) {

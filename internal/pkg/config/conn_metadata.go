@@ -19,9 +19,10 @@ package config
 
 import (
 	"fmt"
-	"github.com/acmestack/godkits/gox/stringsx"
 	"log"
 	"net/url"
+
+	"github.com/acmestack/godkits/gox/stringsx"
 )
 
 // ConnMetadata with standard Url: etcd://user:123@localhost:123 metadata
@@ -54,7 +55,7 @@ func (connMedata *ConnMetadata) information(t string) {
 	// todo logging
 	fmt.Println(fmt.Sprintf("ConnectionMetadata For %v", t))
 	fmt.Println(fmt.Sprintf("Type: %v", connMedata.Type))
-	fmt.Println(fmt.Sprintf("UserName: %v", connMedata.UserName))
+	fmt.Println(fmt.Sprintf("userName: %v", connMedata.UserName))
 	fmt.Println(fmt.Sprintf("Host: %v", connMedata.Host))
 	fmt.Println(fmt.Sprintf("Hostname: %v", connMedata.Hostname))
 	fmt.Println(fmt.Sprintf("Port: %v", connMedata.Port))

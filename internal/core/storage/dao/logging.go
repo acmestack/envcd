@@ -23,8 +23,7 @@ import (
 )
 
 func init() {
-	modelV := entity.Logging{}
-	gobatis.RegisterModel(&modelV)
+	gobatis.RegisterModel(&entity.Logging{})
 }
 
 func (dao *Dao) SelectLogging(model entity.Logging) ([]entity.Logging, error) {
