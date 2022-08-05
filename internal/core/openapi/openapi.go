@@ -81,33 +81,40 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 	router := gin.Default()
 	// build context for peer request
 	router.Use(openapi.buildContext)
+	// version 1 group
+	v1 := router.Group("/v1")
 	// login and logout
-	router.POST("/login", openapi.login)
-	router.GET("/logout", openapi.logout)
-	// router group
-	adminGroup := router.Group("/v1/user")
+	v1.POST("/login", openapi.login)
+	v1.GET("/logout", openapi.logout)
+	// user group
+	userGroup := v1.Group("/user")
 	{
 		// TODO test
-		adminGroup.POST("", openapi.user)
-		adminGroup.PUT("/:id", openapi.updateUser)
-		adminGroup.GET("/:id", openapi.userById)
-		adminGroup.DELETE("/:id", openapi.removeUser)
-	}
-	envcdApplication := router.Group("/v1/app")
-	{
-		// TODO envcd application
-		envcdApplication.GET("/user/:userId/application/:appId", openapi.application)
-		envcdApplication.POST("/user/:userId/application", openapi.putApplication)
-		envcdApplication.PUT("/user/:userId/application/:appId", openapi.updateApplication)
-		envcdApplication.DELETE("/user/:userId/application/:appId", openapi.removeApplication)
-	}
-	envcdConfig := router.Group("/v1/config")
-	{
+		userGroup.POST("", openapi.user)
+		userGroup.PUT("/:id", openapi.updateUser)
+		userGroup.GET("/:id", openapi.userById)
+		userGroup.DELETE("/:id", openapi.removeUser)
+
+		// TODO envcd scopespace
+		userGroup.GET("/:userId/scopespace/:scopeSpaceId", openapi.scopeSpace)
+		userGroup.POST("/:userId/scopespace", openapi.putScopeSpace)
+		userGroup.PUT("/:userId/scopespace/:scopeSpaceId", openapi.updateScopeSpace)
+		userGroup.DELETE("/:userId/scopespace/:scopeSpaceId", openapi.removeScopeSpace)
+
 		// TODO envcd config
-		envcdConfig.GET("/user/:userId/application/:appId/dict/:dictId", openapi.dictionary)
-		envcdConfig.POST("/user/:userId/application/:appId/dict", openapi.putDictionary)
-		envcdConfig.PUT("/user/:userId/application/:appId/dict/:dictId", openapi.updateDictionary)
-		envcdConfig.DELETE("/user/:userId/application/:appId/dict/:dictId", openapi.removeDictionary)
+		userGroup.GET("/:userId/scopespace/:scopeSpaceId/dict/:dictId", openapi.dictionary)
+		userGroup.POST("/:userId/scopespace/:scopeSpaceId/dict", openapi.putDictionary)
+		userGroup.PUT("/:userId/scopespace/:scopeSpaceId/dict/:dictId", openapi.updateDictionary)
+		userGroup.DELETE("/:userId/scopespace/:scopeSpaceId/dict/:dictId", openapi.removeDictionary)
+	}
+	envcdScopeSpace := v1.Group("/scopespace")
+	{
+		envcdScopeSpace.GET("/all")
+
+	}
+	envcdDictionary := v1.Group("/dictionary")
+	{
+		envcdDictionary.GET("/all")
 	}
 	return router
 }

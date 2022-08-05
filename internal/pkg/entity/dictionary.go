@@ -21,12 +21,12 @@ import "time"
 
 type Dictionary struct {
 	//TableName gobatis.TableName `dictionary`
-	Id            int       `column:"id"`
-	UserId        int       `column:"user_id"`
-	ApplicationId int       `column:"application_id"`
-	DictKey       string    `column:"dict_key"`
-	DictValue     string    `column:"dict_value"`
-	State         int       `column:"state"`
-	CreatedAt     time.Time `column:"created_at"`
-	UpdatedAt     time.Time `column:"updated_at"`
+	Id           int       `column:"id"`
+	UserId       int       `column:"user_id"`
+	ScopeSpaceId int       `column:"scopespace_id"`
+	DictKey      string    `column:"dict_key"`
+	DictValue    string    `column:"dict_value"`
+	State        bool      `column:"state"`
+	CreatedAt    time.Time `column:"created_at"`
+	UpdatedAt    time.Time `column:"updated_at"`
 }

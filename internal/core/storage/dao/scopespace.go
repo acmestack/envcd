@@ -23,46 +23,46 @@ import (
 )
 
 func init() {
-	modelV := entity.Application{}
+	modelV := entity.ScopeSpace{}
 	gobatis.RegisterModel(&modelV)
 }
 
-func (dao *Dao) SelectApplication(model entity.Application) ([]entity.Application, error) {
-	var dataList []entity.Application
-	err := dao.storage.NewSession().Select("dao.selectApplication").Param(model).Result(&dataList)
+func (dao *Dao) SelectScopeSpace(model entity.ScopeSpace) ([]entity.ScopeSpace, error) {
+	var dataList []entity.ScopeSpace
+	err := dao.storage.NewSession().Select("dao.selectScopeSpace").Param(model).Result(&dataList)
 	return dataList, err
 }
 
-func (dao *Dao) SelectApplicationCount(model entity.Application) (int64, error) {
+func (dao *Dao) SelectScopeSpaceCount(model entity.ScopeSpace) (int64, error) {
 	var ret int64
-	err := dao.storage.NewSession().Select("dao.selectApplicationCount").Param(model).Result(&ret)
+	err := dao.storage.NewSession().Select("dao.selectScopeSpaceCount").Param(model).Result(&ret)
 	return ret, err
 }
 
-func (dao *Dao) InsertApplication(model entity.Application) (int64, int64, error) {
+func (dao *Dao) InsertScopeSpace(model entity.ScopeSpace) (int64, int64, error) {
 	var ret int64
-	runner := dao.storage.NewSession().Insert("dao.insertApplication").Param(model)
+	runner := dao.storage.NewSession().Insert("dao.insertScopeSpace").Param(model)
 	err := runner.Result(&ret)
 	id := runner.LastInsertId()
 	return ret, id, err
 }
 
-func (dao *Dao) InsertBatchApplication(models []entity.Application) (int64, int64, error) {
+func (dao *Dao) InsertBatchScopeSpace(models []entity.ScopeSpace) (int64, int64, error) {
 	var ret int64
-	runner := dao.storage.NewSession().Insert("dao.insertBatchApplication").Param(models)
+	runner := dao.storage.NewSession().Insert("dao.insertBatchScopeSpace").Param(models)
 	err := runner.Result(&ret)
 	id := runner.LastInsertId()
 	return ret, id, err
 }
 
-func (dao *Dao) UpdateApplication(model entity.Application) (int64, error) {
+func (dao *Dao) UpdateScopeSpace(model entity.ScopeSpace) (int64, error) {
 	var ret int64
-	err := dao.storage.NewSession().Update("dao.updateApplication").Param(model).Result(&ret)
+	err := dao.storage.NewSession().Update("dao.updateScopeSpace").Param(model).Result(&ret)
 	return ret, err
 }
 
-func (dao *Dao) DeleteApplication(model entity.Application) (int64, error) {
+func (dao *Dao) DeleteScopeSpace(model entity.ScopeSpace) (int64, error) {
 	var ret int64
-	err := dao.storage.NewSession().Delete("dao.deleteApplication").Param(model).Result(&ret)
+	err := dao.storage.NewSession().Delete("dao.deleteScopeSpace").Param(model).Result(&ret)
 	return ret, err
 }

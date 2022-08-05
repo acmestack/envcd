@@ -1,5 +1,8 @@
 package constants
 
 const (
-	DICT_NOT_FOUND = "Dictionary can't find!"
+	// DictNotFound dict not find
+	DictNotFound = "dictionary can't find!"
+
+	IllegalJsonBinding = "illegal json parameters binding!"
 )

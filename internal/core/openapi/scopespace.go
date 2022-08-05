@@ -24,7 +24,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (openapi *Openapi) application(ginCtx *gin.Context) {
+func (openapi *Openapi) scopeSpace(ginCtx *gin.Context) {
 	openapi.response(ginCtx, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		// create config
@@ -35,7 +35,7 @@ func (openapi *Openapi) application(ginCtx *gin.Context) {
 	})
 }
 
-func (openapi *Openapi) putApplication(ginCtx *gin.Context) {
+func (openapi *Openapi) putScopeSpace(ginCtx *gin.Context) {
 	openapi.response(ginCtx, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		// create config
@@ -46,7 +46,7 @@ func (openapi *Openapi) putApplication(ginCtx *gin.Context) {
 	})
 }
 
-func (openapi *Openapi) updateApplication(ginCtx *gin.Context) {
+func (openapi *Openapi) updateScopeSpace(ginCtx *gin.Context) {
 	openapi.response(ginCtx, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		// create config
@@ -57,7 +57,7 @@ func (openapi *Openapi) updateApplication(ginCtx *gin.Context) {
 	})
 }
 
-func (openapi *Openapi) removeApplication(ginCtx *gin.Context) {
+func (openapi *Openapi) removeScopeSpace(ginCtx *gin.Context) {
 	openapi.response(ginCtx, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		// create config

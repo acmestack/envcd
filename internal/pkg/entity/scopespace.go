@@ -21,8 +21,8 @@ import (
 	"time"
 )
 
-type Application struct {
-	//TableName gobatis.TableName `application`
+type ScopeSpace struct {
+	//TableName gobatis.TableName `ScopeSpace`
 	Id        int       `column:"id"`
 	Name      string    `column:"name"`
 	Note      string    `column:"note"`
