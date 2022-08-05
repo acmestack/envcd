@@ -17,14 +17,14 @@
   -->
 
 <mapper namespace="dao">
-    <sql id="columns_id">id,user_id,application_id,dict_key,dict_value,state,created_at,updated_at</sql>
+    <sql id="columns_id">id,user_id,scopespace_id,dict_key,dict_value,state,created_at,updated_at</sql>
 
     <select id="selectDictionary">
         SELECT <include refid="columns_id"> </include> FROM dictionary
         <where>
             <if test="{Dictionary.id} != nil and {Dictionary.id} != 0">AND id = #{Dictionary.id} </if>
             <if test="{Dictionary.user_id} != nil and {Dictionary.user_id} != 0">AND user_id = #{Dictionary.user_id} </if>
-            <if test="{Dictionary.application_id} != nil and {Dictionary.application_id} != 0">AND application_id = #{Dictionary.application_id} </if>
+            <if test="{Dictionary.scopespace_id} != nil and {Dictionary.scopespace_id} != 0">AND scopespace_id = #{Dictionary.scopespace_id} </if>
             <if test="{Dictionary.dict_key} != nil">AND dict_key = #{Dictionary.dict_key} </if>
             <if test="{Dictionary.dict_value} != nil">AND dict_value = #{Dictionary.dict_value} </if>
             <if test="{Dictionary.state} != nil and {Dictionary.state} != 0">AND state = #{Dictionary.state} </if>
@@ -38,7 +38,7 @@
         <where>
             <if test="{Dictionary.id} != nil and {Dictionary.id} != 0">AND id = #{Dictionary.id} </if>
             <if test="{Dictionary.user_id} != nil and {Dictionary.user_id} != 0">AND user_id = #{Dictionary.user_id} </if>
-            <if test="{Dictionary.application_id} != nil and {Dictionary.application_id} != 0">AND application_id = #{Dictionary.application_id} </if>
+            <if test="{Dictionary.scopespace_id} != nil and {Dictionary.scopespace_id} != 0">AND scopespace_id = #{Dictionary.scopespace_id} </if>
             <if test="{Dictionary.dict_key} != nil">AND dict_key = #{Dictionary.dict_key} </if>
             <if test="{Dictionary.dict_value} != nil">AND dict_value = #{Dictionary.dict_value} </if>
             <if test="{Dictionary.state} != nil and {Dictionary.state} != 0">AND state = #{Dictionary.state} </if>
@@ -48,11 +48,11 @@
     </select>
 
     <insert id="insertDictionary">
-        INSERT INTO dictionary (id,user_id,application_id,dict_key,dict_value,state,created_at,updated_at)
+        INSERT INTO dictionary (id,user_id,scopespace_id,dict_key,dict_value,state,created_at,updated_at)
         VALUES(
         #{Dictionary.id},
         #{Dictionary.user_id},
-        #{Dictionary.application_id},
+        #{Dictionary.scopespace_id},
         #{Dictionary.dict_key},
         #{Dictionary.dict_value},
         #{Dictionary.state},
@@ -62,10 +62,10 @@
     </insert>
 
     <insert id="insertBatchDictionary">
-        INSERT INTO dictionary (id,user_id,application_id,dict_key,dict_value,state,created_at,updated_at)
+        INSERT INTO dictionary (id,user_id,scopespace_id,dict_key,dict_value,state,created_at,updated_at)
         VALUES
         <foreach item="item" index="index" collection="{0}" open="" separator="," close="">
-            (#{item.Dictionary.id},#{item.Dictionary.user_id},#{item.Dictionary.application_id},#{item.Dictionary.dict_key},#{item.Dictionary.dict_value},#{item.Dictionary.state},#{item.Dictionary.created_at},#{item.Dictionary.updated_at})
+            (#{item.Dictionary.id},#{item.Dictionary.user_id},#{item.Dictionary.scopespace_id},#{item.Dictionary.dict_key},#{item.Dictionary.dict_value},#{item.Dictionary.state},#{item.Dictionary.created_at},#{item.Dictionary.updated_at})
         </foreach>
     </insert>
 
@@ -73,7 +73,7 @@
         UPDATE dictionary
         <set>
             <if test="{Dictionary.user_id} != nil and {Dictionary.user_id} != 0"> user_id = #{Dictionary.user_id} </if>
-            <if test="{Dictionary.application_id} != nil and {Dictionary.application_id} != 0"> application_id = #{Dictionary.application_id} </if>
+            <if test="{Dictionary.scopespace_id} != nil and {Dictionary.scopespace_id} != 0"> scopespace_id = #{Dictionary.scopespace_id} </if>
             <if test="{Dictionary.dict_key} != nil"> dict_key = #{Dictionary.dict_key} </if>
             <if test="{Dictionary.dict_value} != nil"> dict_value = #{Dictionary.dict_value} </if>
             <if test="{Dictionary.state} != nil and {Dictionary.state} != 0"> state = #{Dictionary.state} </if>
@@ -88,7 +88,7 @@
         <where>
             <if test="{Dictionary.id} != nil and {Dictionary.id} != 0">AND id = #{Dictionary.id} </if>
             <if test="{Dictionary.user_id} != nil and {Dictionary.user_id} != 0">AND user_id = #{Dictionary.user_id} </if>
-            <if test="{Dictionary.application_id} != nil and {Dictionary.application_id} != 0">AND application_id = #{Dictionary.application_id} </if>
+            <if test="{Dictionary.scopespace_id} != nil and {Dictionary.scopespace_id} != 0">AND scopespace_id = #{Dictionary.scopespace_id} </if>
             <if test="{Dictionary.dict_key} != nil">AND dict_key = #{Dictionary.dict_key} </if>
             <if test="{Dictionary.dict_value} != nil">AND dict_value = #{Dictionary.dict_value} </if>
             <if test="{Dictionary.state} != nil and {Dictionary.state} != 0">AND state = #{Dictionary.state} </if>

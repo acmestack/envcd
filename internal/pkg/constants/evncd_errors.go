@@ -15,7 +15,11 @@
  * limitations under the License.
  */
 
-package entity
+package constants
 
-type ScopeSpace struct {
-}
+const (
+	// DictNotFound dict not find
+	DictNotFound = "dictionary can't find!"
+
+	IllegalJsonBinding = "illegal json parameters binding!"
+)

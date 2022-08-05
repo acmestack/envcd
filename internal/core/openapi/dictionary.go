@@ -19,21 +19,31 @@ package openapi
 
 import (
 	"fmt"
+	"net/http"
+	"time"
 
 	"github.com/acmestack/envcd/internal/core/storage/dao"
+	"github.com/acmestack/envcd/internal/pkg/constants"
 	"github.com/acmestack/envcd/internal/pkg/entity"
 	"github.com/acmestack/envcd/pkg/entity/result"
 	"github.com/acmestack/godkits/gox/stringsx"
 	"github.com/gin-gonic/gin"
 )
 
+type dictParams struct {
+	DictKey   string `json:"dictKey"`
+	DictValue string `json:"dictValue"`
+	Version   string `json:"version"`
+	State     bool   `json:"state"`
+}
+
 func (openapi *Openapi) dictionary(ginCtx *gin.Context) {
 	openapi.response(ginCtx, func() *result.EnvcdResult {
 		// get user id from gin context
 		userId := stringsx.ToInt(ginCtx.Param("userId"))
-		appId := stringsx.ToInt(ginCtx.Param("appId"))
-		configId := stringsx.ToInt(ginCtx.Param("configId"))
-		dict := entity.Dictionary{Id: configId, UserId: userId, ApplicationId: appId}
+		scopeSpaceId := stringsx.ToInt(ginCtx.Param("scopeSpaceId"))
+		dictId := stringsx.ToInt(ginCtx.Param("dictId"))
+		dict := entity.Dictionary{Id: dictId, UserId: userId, ScopeSpaceId: scopeSpaceId}
 		dictionary, err := dao.New(openapi.storage).SelectDictionary(dict)
 		if err != nil {
 			return result.InternalServerErrorFailure(err.Error())
@@ -44,7 +54,32 @@ func (openapi *Openapi) dictionary(ginCtx *gin.Context) {
 
 func (openapi *Openapi) putDictionary(ginCtx *gin.Context) {
 	openapi.response(ginCtx, func() *result.EnvcdResult {
-		fmt.Println("hello world")
+		param := dictParams{}
+		if err := ginCtx.ShouldBindJSON(&param); err != nil {
+			fmt.Printf("Bind error, %v\n", err)
+			return result.InternalServerErrorFailure(constants.IllegalJsonBinding)
+		}
+		// get userId and appId from gin context
+		userId := stringsx.ToInt(ginCtx.Param("userId"))
+		scopeSpaceId := stringsx.ToInt(ginCtx.Param("scopeSpaceId"))
+
+		dictionary := entity.Dictionary{
+			UserId:       userId,
+			ScopeSpaceId: scopeSpaceId,
+			DictKey:      param.DictKey,
+			DictValue:    param.DictValue,
+			State:        param.State,
+			CreatedAt:    time.Now(),
+			UpdatedAt:    time.Now(),
+		}
+		// Strategy
+		// scopespace + username + dictKey + version
+		// insertDictionary, i, err := dao.New(openapi.storage).InsertDictionary(dictionary)
+		// openapi.exchange.Put(dictionary.DictKey, dictionary.DictValue)
+		// if err != nil {
+		//	return nil
+		//}
+		fmt.Println(dictionary)
 		// create config
 		// ConfigDao.save();
 		// go LogDao.save()
@@ -66,11 +101,31 @@ func (openapi *Openapi) updateDictionary(ginCtx *gin.Context) {
 
 func (openapi *Openapi) removeDictionary(ginCtx *gin.Context) {
 	openapi.response(ginCtx, func() *result.EnvcdResult {
-		fmt.Println("hello world")
-		// delete config
-		// ConfigDao.delete();
-		// go LogDao.save()
-		// openapi.exchange.Remove("key")
-		return nil
+		userId := stringsx.ToInt(ginCtx.Param("userId"))
+		appId := stringsx.ToInt(ginCtx.Param("appId"))
+		dictId := stringsx.ToInt(ginCtx.Param("dictId"))
+		dict := entity.Dictionary{Id: dictId, UserId: userId, ScopeSpaceId: appId}
+		// query dictionary exist
+		daoApi := dao.New(openapi.storage)
+		dictionary, err := daoApi.SelectDictionary(dict)
+		if err != nil {
+			return result.InternalServerErrorFailure(err.Error())
+		}
+		if len(dictionary) == 0 {
+			return result.Failure(constants.DictNotFound, http.StatusBadRequest)
+		}
+		exchangeErr := openapi.exchange.Remove(getFirstDictionary(dictionary).DictKey)
+		if exchangeErr != nil {
+			return result.InternalServerErrorFailure(exchangeErr.Error())
+		}
+		retId, delErr := daoApi.DeleteDictionary(getFirstDictionary(dictionary))
+		if delErr != nil {
+			return result.InternalServerErrorFailure(delErr.Error())
+		}
+		return result.Success(retId)
 	})
+}
+
+func getFirstDictionary(dictionaryList []entity.Dictionary) entity.Dictionary {
+	return dictionaryList[0]
 }

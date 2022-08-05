@@ -19,10 +19,10 @@ SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for application
+-- Table structure for scopespace
 -- ----------------------------
-DROP TABLE IF EXISTS `application`;
-CREATE TABLE `application` (
+DROP TABLE IF EXISTS `scopespace`;
+CREATE TABLE `scopespace` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `note` varchar(150) NOT NULL,
@@ -39,14 +39,14 @@ DROP TABLE IF EXISTS `dictionary`;
 CREATE TABLE `dictionary` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL,
-  `application_id` int(10) unsigned NOT NULL,
+  `scopespace_id` int(10) unsigned NOT NULL,
   `dict_key` varchar(200) NOT NULL,
   `dict_value` text NOT NULL,
   `state` tinyint(4) unsigned NOT NULL DEFAULT 1 COMMENT '1:enable;2:disable',
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
-  UNIQUE KEY `ukey` (`user_id`,`application_id`,`dict_key`) USING BTREE
+  UNIQUE KEY `ukey` (`user_id`,`scopespace_id`,`dict_key`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
@@ -69,7 +69,7 @@ DROP TABLE IF EXISTS `permission`;
 CREATE TABLE `permission` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned NOT NULL,
-  `data_type` tinyint(4) unsigned NOT NULL DEFAULT 1 COMMENT '1:application;2:dictionary;3:other',
+  `data_type` tinyint(4) unsigned NOT NULL DEFAULT 1 COMMENT '1:scopespace;2:dictionary;3:other',
   `data_id` int(10) unsigned NOT NULL,
   `note` varchar(150) NOT NULL,
   `state` tinyint(4) unsigned NOT NULL DEFAULT 1 COMMENT '1:enable;2:disable',
