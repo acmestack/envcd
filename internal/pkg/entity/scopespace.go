@@ -22,7 +22,7 @@ import (
 )
 
 type ScopeSpace struct {
-	//TableName gobatis.TableName `ScopeSpace`
+	//TableName gobatis.TableName `scopespace`
 	Id        int       `column:"id"`
 	Name      string    `column:"name"`
 	Note      string    `column:"note"`
