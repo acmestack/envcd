@@ -41,7 +41,20 @@ func New() *Permission {
 }
 
 func (permission *Permission) Execute(context *context.Context, chain executor.Chain) *result.EnvcdResult {
+	if ret := permission.tokenValidate(context); ret != nil {
+		return ret
+	}
+	if context.PermissionAction != nil {
+		if ret := context.PermissionAction(); ret != nil {
+			return ret
+		}
+	}
 	return chain.Execute(context)
+}
+
+func (permission Permission) tokenValidate(context *context.Context) *result.EnvcdResult {
+	// todo token validate
+	return nil
 }
 
 func (permission *Permission) Skip(context *context.Context) bool {

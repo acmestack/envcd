@@ -38,7 +38,7 @@ type dictParams struct {
 }
 
 func (openapi *Openapi) dictionary(ginCtx *gin.Context) {
-	openapi.response(ginCtx, func() *result.EnvcdResult {
+	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		// get user id from gin context
 		userId := stringsx.ToInt(ginCtx.Param("userId"))
 		scopeSpaceId := stringsx.ToInt(ginCtx.Param("scopeSpaceId"))
@@ -53,7 +53,7 @@ func (openapi *Openapi) dictionary(ginCtx *gin.Context) {
 }
 
 func (openapi *Openapi) createDictionary(ginCtx *gin.Context) {
-	openapi.response(ginCtx, func() *result.EnvcdResult {
+	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		param := dictParams{}
 		if err := ginCtx.ShouldBindJSON(&param); err != nil {
 			fmt.Printf("Bind error, %v\n", err)
@@ -89,7 +89,7 @@ func (openapi *Openapi) createDictionary(ginCtx *gin.Context) {
 }
 
 func (openapi *Openapi) updateDictionary(ginCtx *gin.Context) {
-	openapi.response(ginCtx, func() *result.EnvcdResult {
+	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		// create config
 		// ConfigDao.save();
@@ -100,7 +100,7 @@ func (openapi *Openapi) updateDictionary(ginCtx *gin.Context) {
 }
 
 func (openapi *Openapi) removeDictionary(ginCtx *gin.Context) {
-	openapi.response(ginCtx, func() *result.EnvcdResult {
+	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		userId := stringsx.ToInt(ginCtx.Param("userId"))
 		appId := stringsx.ToInt(ginCtx.Param("appId"))
 		dictId := stringsx.ToInt(ginCtx.Param("dictId"))
@@ -131,7 +131,7 @@ func getFirstDictionary(dictionaryList []entity.Dictionary) entity.Dictionary {
 }
 
 func (openapi *Openapi) dictionaries(ginCtx *gin.Context) {
-	openapi.response(ginCtx, func() *result.EnvcdResult {
+	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		// create config
 		// ConfigDao.save();

@@ -82,6 +82,15 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 	// build context for peer request
 	router.Use(openapi.buildContext)
 
+	// Recovery middleware recovers from any panics and writes a 500 if there was one.
+	router.Use(gin.CustomRecovery(func(ginCtx *gin.Context, recovered interface{}) {
+		if err, ok := recovered.(string); ok {
+			failure := result.InternalServerErrorFailure(fmt.Sprintf("error: %s", err))
+			ginCtx.JSON(failure.HttpStatusCode, failure.Data)
+		}
+		ginCtx.AbortWithStatus(http.StatusInternalServerError)
+	}))
+
 	// login and logout
 	router.POST("/login", openapi.login)
 	router.GET("/logout", openapi.logout)
@@ -138,12 +147,13 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 }
 
 // response to caller
-func (openapi *Openapi) response(ginCtx *gin.Context, envcdAction context.EnvcdAction) {
+func (openapi *Openapi) response(ginCtx *gin.Context, permissionAction context.EnvcdActionFunc, action context.EnvcdActionFunc) {
 	requestId := ginCtx.Request.Header.Get(requestIdHeader)
 	c := openapi.contexts[requestId]
 	ret := result.InternalServerErrorFailure(http.StatusText(http.StatusInternalServerError))
 	if c != nil && c.RequestId == requestId {
-		c.Action = envcdAction
+		c.PermissionAction = permissionAction
+		c.Action = action
 		if exeRet := plugin.NewChain(openapi.executors).Execute(c); exeRet != nil {
 			ret = exeRet
 		}

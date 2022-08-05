@@ -23,17 +23,18 @@ import (
 	"github.com/acmestack/envcd/pkg/entity/result"
 )
 
-type EnvcdAction func() *result.EnvcdResult
+type EnvcdActionFunc func() *result.EnvcdResult
 
 // Context for peer request
 type Context struct {
-	Uri         string
-	Method      string
-	Headers     http.Header
-	ContentType string
-	Cookies     []*http.Cookie
-	Body        interface{}
-	Action      EnvcdAction
-	Request     *http.Request
-	RequestId   string
+	Uri              string
+	Method           string
+	Headers          http.Header
+	ContentType      string
+	Cookies          []*http.Cookie
+	Body             interface{}
+	PermissionAction EnvcdActionFunc
+	Action           EnvcdActionFunc
+	Request          *http.Request
+	RequestId        string
 }
