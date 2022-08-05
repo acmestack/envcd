@@ -92,6 +92,7 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 	// user group routers
 	usersGroup := v1.Group("/users")
 	{
+		// todo fuzzy => ?page=2&per_page=100&name=
 		usersGroup.GET("", openapi.users)
 		usersGroup.POST("", openapi.createUser)
 		usersGroup.PUT("/:userId", openapi.updateUser)
