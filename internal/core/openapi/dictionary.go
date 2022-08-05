@@ -39,7 +39,7 @@ type dictParams struct {
 
 func (openapi *Openapi) dictionary(ginCtx *gin.Context) {
 	openapi.response(ginCtx, func() *result.EnvcdResult {
-		// get createUser id from gin context
+		// get user id from gin context
 		userId := stringsx.ToInt(ginCtx.Param("userId"))
 		scopeSpaceId := stringsx.ToInt(ginCtx.Param("scopeSpaceId"))
 		dictId := stringsx.ToInt(ginCtx.Param("dictId"))
