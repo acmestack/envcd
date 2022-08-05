@@ -39,7 +39,7 @@ type dictParams struct {
 
 func (openapi *Openapi) dictionary(ginCtx *gin.Context) {
 	openapi.response(ginCtx, func() *result.EnvcdResult {
-		// get user id from gin context
+		// get createUser id from gin context
 		userId := stringsx.ToInt(ginCtx.Param("userId"))
 		scopeSpaceId := stringsx.ToInt(ginCtx.Param("scopeSpaceId"))
 		dictId := stringsx.ToInt(ginCtx.Param("dictId"))
@@ -52,7 +52,7 @@ func (openapi *Openapi) dictionary(ginCtx *gin.Context) {
 	})
 }
 
-func (openapi *Openapi) putDictionary(ginCtx *gin.Context) {
+func (openapi *Openapi) createDictionary(ginCtx *gin.Context) {
 	openapi.response(ginCtx, func() *result.EnvcdResult {
 		param := dictParams{}
 		if err := ginCtx.ShouldBindJSON(&param); err != nil {
@@ -128,4 +128,26 @@ func (openapi *Openapi) removeDictionary(ginCtx *gin.Context) {
 
 func getFirstDictionary(dictionaryList []entity.Dictionary) entity.Dictionary {
 	return dictionaryList[0]
+}
+
+func (openapi *Openapi) dictionaries(ginCtx *gin.Context) {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
+		fmt.Println("hello world")
+		// create config
+		// ConfigDao.save();
+		// go LogDao.save()
+		// openapi.exchange.Put("key", "value")
+		return nil
+	})
+}
+
+func (openapi *Openapi) dictionariesByFuzzyKey(ginCtx *gin.Context) {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
+		fmt.Println("hello world")
+		// create config
+		// ConfigDao.save();
+		// go LogDao.save()
+		// openapi.exchange.Put("key", "value")
+		return nil
+	})
 }

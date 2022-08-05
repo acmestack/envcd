@@ -27,7 +27,7 @@ import (
 	"github.com/acmestack/envcd/pkg/entity/result"
 	"github.com/acmestack/godkits/gox/stringsx"
 	"github.com/acmestack/godkits/log"
-	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"	
 	"github.com/golang-jwt/jwt/v4"
 )
 
@@ -121,7 +121,7 @@ func (openapi *Openapi) logout(ginCtx *gin.Context) {
 	})
 }
 
-func (openapi *Openapi) user(ginCtx *gin.Context) {
+func (openapi *Openapi) createUser(ginCtx *gin.Context) {
 	openapi.response(ginCtx, func() *result.EnvcdResult {
 		param := userParam{}
 		if er := ginCtx.ShouldBindJSON(&param); er != nil {
@@ -129,7 +129,7 @@ func (openapi *Openapi) user(ginCtx *gin.Context) {
 			return result.InternalServerErrorFailure("Illegal params !")
 		}
 		daoApi := dao.New(openapi.storage)
-		// check if the user already exists in the database
+		// check if the createUser already exists in the database
 		users, er := daoApi.SelectUser(entity.User{
 			Name: param.Name,
 		})
@@ -157,7 +157,7 @@ func (openapi *Openapi) user(ginCtx *gin.Context) {
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
 		}
-		// save user
+		// save createUser
 		if _, _, err := daoApi.InsertUser(user); err != nil {
 			log.Error("insert error=%v", err)
 			return result.InternalServerErrorFailure("Save User Error!")
@@ -174,12 +174,12 @@ func (openapi *Openapi) updateUser(ginCtx *gin.Context) {
 	})
 }
 
-func (openapi *Openapi) userById(ginCtx *gin.Context) {
+func (openapi *Openapi) user(ginCtx *gin.Context) {
 	openapi.response(ginCtx, func() *result.EnvcdResult {
 		fmt.Println("hello world")
-		id := stringsx.ToInt(ginCtx.Param("id"))
+		id := stringsx.ToInt(ginCtx.Param("userId"))
 		user := entity.User{Id: id}
-		// todo user detail
+		// todo createUser detail
 		dao.New(openapi.storage).SelectUser(user)
 		return result.Success(entity.User{
 			Id:        0,
@@ -191,6 +191,20 @@ func (openapi *Openapi) userById(ginCtx *gin.Context) {
 }
 
 func (openapi *Openapi) removeUser(ginCtx *gin.Context) {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
+		fmt.Println("hello world")
+		return nil
+	})
+}
+
+func (openapi *Openapi) users(ginCtx *gin.Context) {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
+		fmt.Println("hello world")
+		return nil
+	})
+}
+
+func (openapi *Openapi) usersByFuzzyName(ginCtx *gin.Context) {
 	openapi.response(ginCtx, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		return nil
