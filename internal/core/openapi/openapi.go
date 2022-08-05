@@ -129,9 +129,9 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 		// fuzzy filter => ?page=2&per_page=100&userId=123&name=
 		dictionariesGroup.GET("", openapi.dictionaries)
 		dictionariesGroup.POST("", openapi.createDictionary)
-		dictionariesGroup.GET("/:dictId", openapi.dictionary)
-		dictionariesGroup.PUT("/:dictId", openapi.updateDictionary)
-		dictionariesGroup.DELETE("/:dictId", openapi.removeDictionary)
+		dictionariesGroup.GET("/:dictionaryId", openapi.dictionary)
+		dictionariesGroup.PUT("/:dictionaryId", openapi.updateDictionary)
+		dictionariesGroup.DELETE("/:dictionaryId", openapi.removeDictionary)
 	}
 
 	return router
