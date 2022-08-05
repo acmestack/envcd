@@ -98,11 +98,11 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 		userGroup.DELETE("/:userId", openapi.removeUser)
 
 		// user's all scopespaces
-		userGroup.GET("/:userId/scopespaces")
+		userGroup.GET("/:userId/scopespaces", openapi.userScopeSpaces)
 		// user's all dictionaries under one scopespace
-		userGroup.GET("/:userId/scopespace/:scopeSpaceId/dictionaries")
+		userGroup.GET("/:userId/scopespace/:scopeSpaceId/dictionaries", openapi.userDictionariesUnderScopeSpace)
 		// user's all dictionaries
-		userGroup.GET("/:userId/dictionaries")
+		userGroup.GET("/:userId/dictionaries", openapi.userDictionaries)
 	}
 
 	// all users routers
@@ -136,6 +136,7 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 		// todo page
 		scopeSpacesGroup.GET("", openapi.scopespaces)
 		// fuzzy search by name
+		// todo by use fuzzy name
 		scopeSpacesGroup.GET("/:scopespaceFuzzyName", openapi.scopespacesByFuzzyName)
 	}
 
@@ -145,6 +146,7 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 		// todo page
 		dictionariesGroup.GET("", openapi.dictionaries)
 		// fuzzy search by key
+		// todo by use fuzzy name
 		dictionariesGroup.GET("/:dictFuzzyKey", openapi.dictionariesByFuzzyKey)
 	}
 

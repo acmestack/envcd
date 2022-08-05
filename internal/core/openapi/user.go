@@ -27,7 +27,7 @@ import (
 	"github.com/acmestack/envcd/pkg/entity/result"
 	"github.com/acmestack/godkits/gox/stringsx"
 	"github.com/acmestack/godkits/log"
-	"github.com/gin-gonic/gin"	
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 )
 
@@ -205,6 +205,27 @@ func (openapi *Openapi) users(ginCtx *gin.Context) {
 }
 
 func (openapi *Openapi) usersByFuzzyName(ginCtx *gin.Context) {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
+		fmt.Println("hello world")
+		return nil
+	})
+}
+
+func (openapi *Openapi) userScopeSpaces(ginCtx *gin.Context) {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
+		fmt.Println("hello world")
+		return nil
+	})
+}
+
+func (openapi *Openapi) userDictionaries(ginCtx *gin.Context) {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
+		fmt.Println("hello world")
+		return nil
+	})
+}
+
+func (openapi *Openapi) userDictionariesUnderScopeSpace(ginCtx *gin.Context) {
 	openapi.response(ginCtx, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		return nil
