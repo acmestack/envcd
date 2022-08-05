@@ -129,7 +129,7 @@ func (openapi *Openapi) createUser(ginCtx *gin.Context) {
 			return result.InternalServerErrorFailure("Illegal params !")
 		}
 		daoApi := dao.New(openapi.storage)
-		// check if the createUser already exists in the database
+		// check if the user already exists in the database
 		users, er := daoApi.SelectUser(entity.User{
 			Name: param.Name,
 		})
@@ -157,7 +157,7 @@ func (openapi *Openapi) createUser(ginCtx *gin.Context) {
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
 		}
-		// save createUser
+		// save user
 		if _, _, err := daoApi.InsertUser(user); err != nil {
 			log.Error("insert error=%v", err)
 			return result.InternalServerErrorFailure("Save User Error!")
@@ -179,7 +179,7 @@ func (openapi *Openapi) user(ginCtx *gin.Context) {
 		fmt.Println("hello world")
 		id := stringsx.ToInt(ginCtx.Param("userId"))
 		user := entity.User{Id: id}
-		// todo createUser detail
+		// todo user detail
 		dao.New(openapi.storage).SelectUser(user)
 		return result.Success(entity.User{
 			Id:        0,
