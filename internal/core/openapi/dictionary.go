@@ -52,7 +52,7 @@ func (openapi *Openapi) dictionary(ginCtx *gin.Context) {
 	})
 }
 
-func (openapi *Openapi) putDictionary(ginCtx *gin.Context) {
+func (openapi *Openapi) createDictionary(ginCtx *gin.Context) {
 	openapi.response(ginCtx, func() *result.EnvcdResult {
 		param := dictParams{}
 		if err := ginCtx.ShouldBindJSON(&param); err != nil {
@@ -128,4 +128,15 @@ func (openapi *Openapi) removeDictionary(ginCtx *gin.Context) {
 
 func getFirstDictionary(dictionaryList []entity.Dictionary) entity.Dictionary {
 	return dictionaryList[0]
+}
+
+func (openapi *Openapi) dictionaries(ginCtx *gin.Context) {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
+		fmt.Println("hello world")
+		// create config
+		// ConfigDao.save();
+		// go LogDao.save()
+		// openapi.exchange.Put("key", "value")
+		return nil
+	})
 }

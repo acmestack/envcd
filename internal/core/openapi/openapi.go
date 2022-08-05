@@ -88,36 +88,52 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 
 	// version 1 group
 	v1 := router.Group("/v1")
-	// user group
-	userGroup := v1.Group("/user")
-	{
-		// TODO test
-		userGroup.POST("", openapi.user)
-		userGroup.PUT("/:id", openapi.updateUser)
-		userGroup.GET("/:id", openapi.userById)
-		userGroup.DELETE("/:id", openapi.removeUser)
 
-		// TODO envcd scopespace
-		userGroup.GET("/:userId/scopespace/:scopeSpaceId", openapi.scopeSpace)
-		userGroup.POST("/:userId/scopespace", openapi.putScopeSpace)
-		userGroup.PUT("/:userId/scopespace/:scopeSpaceId", openapi.updateScopeSpace)
-		userGroup.DELETE("/:userId/scopespace/:scopeSpaceId", openapi.removeScopeSpace)
-
-		// TODO envcd config
-		userGroup.GET("/:userId/scopespace/:scopeSpaceId/dict/:dictId", openapi.dictionary)
-		userGroup.POST("/:userId/scopespace/:scopeSpaceId/dict", openapi.putDictionary)
-		userGroup.PUT("/:userId/scopespace/:scopeSpaceId/dict/:dictId", openapi.updateDictionary)
-		userGroup.DELETE("/:userId/scopespace/:scopeSpaceId/dict/:dictId", openapi.removeDictionary)
-	}
-	envcdScopeSpace := v1.Group("/scopespace")
+	// user group routers
+	usersGroup := v1.Group("/users")
 	{
-		envcdScopeSpace.GET("/all")
+		// fuzzy filter => ?page=2&per_page=100&name=
+		usersGroup.GET("", openapi.users)
+		usersGroup.POST("", openapi.createUser)
+		usersGroup.PUT("/:userId", openapi.updateUser)
+		usersGroup.GET("/:userId", openapi.user)
+		usersGroup.DELETE("/:userId", openapi.removeUser)
 
+		// user's all scopespaces
+		// fuzzy filter => ?page=2&per_page=100&scopespace_name=
+		usersGroup.GET("/:userId/scopespaces", openapi.userScopeSpaces)
+
+		// user's all dictionaries under one scopespace
+		// fuzzy filter => ?page=2&per_page=100&scopespace_name=abc&dictionary_key=aaa
+		usersGroup.GET("/:userId/scopespace/:scopeSpaceId/dictionaries", openapi.userDictionariesUnderScopeSpace)
+
+		// user's all dictionaries
+		// fuzzy filter => ?page=2&per_page=100&dictionary_key=aaa
+		usersGroup.GET("/:userId/dictionaries", openapi.userDictionaries)
 	}
-	envcdDictionary := v1.Group("/dictionary")
+
+	// scopespaces group routers
+	scopeSpacesGroup := v1.Group("/scopespaces")
 	{
-		envcdDictionary.GET("/all")
+		// fuzzy filter => ?page=2&per_page=100&userId=123&scopespace_name=
+		scopeSpacesGroup.GET("", openapi.scopespaces)
+		scopeSpacesGroup.POST("", openapi.createScopeSpace)
+		scopeSpacesGroup.GET("/:scopeSpaceId", openapi.scopeSpace)
+		scopeSpacesGroup.PUT("/:scopeSpaceId", openapi.updateScopeSpace)
+		scopeSpacesGroup.DELETE("/:scopeSpaceId", openapi.removeScopeSpace)
 	}
+
+	// dictionaries group routers
+	dictionariesGroup := v1.Group("/dictionaries")
+	{
+		// fuzzy filter => ?page=2&per_page=100&userId=123&name=
+		dictionariesGroup.GET("", openapi.dictionaries)
+		dictionariesGroup.POST("", openapi.createDictionary)
+		dictionariesGroup.GET("/:dictionaryId", openapi.dictionary)
+		dictionariesGroup.PUT("/:dictionaryId", openapi.updateDictionary)
+		dictionariesGroup.DELETE("/:dictionaryId", openapi.removeDictionary)
+	}
+
 	return router
 }
 

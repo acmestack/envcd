@@ -121,7 +121,7 @@ func (openapi *Openapi) logout(ginCtx *gin.Context) {
 	})
 }
 
-func (openapi *Openapi) user(ginCtx *gin.Context) {
+func (openapi *Openapi) createUser(ginCtx *gin.Context) {
 	openapi.response(ginCtx, func() *result.EnvcdResult {
 		param := userParam{}
 		if er := ginCtx.ShouldBindJSON(&param); er != nil {
@@ -174,10 +174,10 @@ func (openapi *Openapi) updateUser(ginCtx *gin.Context) {
 	})
 }
 
-func (openapi *Openapi) userById(ginCtx *gin.Context) {
+func (openapi *Openapi) user(ginCtx *gin.Context) {
 	openapi.response(ginCtx, func() *result.EnvcdResult {
 		fmt.Println("hello world")
-		id := stringsx.ToInt(ginCtx.Param("id"))
+		id := stringsx.ToInt(ginCtx.Param("userId"))
 		user := entity.User{Id: id}
 		// todo user detail
 		dao.New(openapi.storage).SelectUser(user)
@@ -191,6 +191,34 @@ func (openapi *Openapi) userById(ginCtx *gin.Context) {
 }
 
 func (openapi *Openapi) removeUser(ginCtx *gin.Context) {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
+		fmt.Println("hello world")
+		return nil
+	})
+}
+
+func (openapi *Openapi) users(ginCtx *gin.Context) {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
+		fmt.Println("hello world")
+		return nil
+	})
+}
+
+func (openapi *Openapi) userScopeSpaces(ginCtx *gin.Context) {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
+		fmt.Println("hello world")
+		return nil
+	})
+}
+
+func (openapi *Openapi) userDictionaries(ginCtx *gin.Context) {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
+		fmt.Println("hello world")
+		return nil
+	})
+}
+
+func (openapi *Openapi) userDictionariesUnderScopeSpace(ginCtx *gin.Context) {
 	openapi.response(ginCtx, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		return nil

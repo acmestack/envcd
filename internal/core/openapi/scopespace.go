@@ -35,7 +35,7 @@ func (openapi *Openapi) scopeSpace(ginCtx *gin.Context) {
 	})
 }
 
-func (openapi *Openapi) putScopeSpace(ginCtx *gin.Context) {
+func (openapi *Openapi) createScopeSpace(ginCtx *gin.Context) {
 	openapi.response(ginCtx, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		// create config
@@ -58,6 +58,17 @@ func (openapi *Openapi) updateScopeSpace(ginCtx *gin.Context) {
 }
 
 func (openapi *Openapi) removeScopeSpace(ginCtx *gin.Context) {
+	openapi.response(ginCtx, func() *result.EnvcdResult {
+		fmt.Println("hello world")
+		// create config
+		// ConfigDao.save();
+		// go LogDao.save()
+		// openapi.exchange.Put("key", "value")
+		return nil
+	})
+}
+
+func (openapi *Openapi) scopespaces(ginCtx *gin.Context) {
 	openapi.response(ginCtx, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		// create config
