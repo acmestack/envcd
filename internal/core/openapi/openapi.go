@@ -81,11 +81,13 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 	router := gin.Default()
 	// build context for peer request
 	router.Use(openapi.buildContext)
+
+	// login and logout
+	router.POST("/login", openapi.login)
+	router.GET("/logout", openapi.logout)
+
 	// version 1 group
 	v1 := router.Group("/v1")
-	// login and logout
-	v1.POST("/login", openapi.login)
-	v1.GET("/logout", openapi.logout)
 	// user group
 	userGroup := v1.Group("/user")
 	{
