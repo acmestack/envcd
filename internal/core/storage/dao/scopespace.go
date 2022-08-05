@@ -23,8 +23,7 @@ import (
 )
 
 func init() {
-	modelV := entity.ScopeSpace{}
-	gobatis.RegisterModel(&modelV)
+	gobatis.RegisterModel(&entity.ScopeSpace{})
 }
 
 func (dao *Dao) SelectScopeSpace(model entity.ScopeSpace) ([]entity.ScopeSpace, error) {
