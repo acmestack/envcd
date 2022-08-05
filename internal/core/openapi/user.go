@@ -204,13 +204,6 @@ func (openapi *Openapi) users(ginCtx *gin.Context) {
 	})
 }
 
-func (openapi *Openapi) usersByFuzzyName(ginCtx *gin.Context) {
-	openapi.response(ginCtx, func() *result.EnvcdResult {
-		fmt.Println("hello world")
-		return nil
-	})
-}
-
 func (openapi *Openapi) userScopeSpaces(ginCtx *gin.Context) {
 	openapi.response(ginCtx, func() *result.EnvcdResult {
 		fmt.Println("hello world")
