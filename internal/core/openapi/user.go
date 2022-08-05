@@ -28,7 +28,6 @@ import (
 	"github.com/acmestack/godkits/gox/stringsx"
 	"github.com/acmestack/godkits/log"
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
 )
 
 // loginParam Login
@@ -71,7 +70,7 @@ func newJWTToken(authClaims claims) string {
 }
 
 func (openapi *Openapi) login(ginCtx *gin.Context) {
-	openapi.response(ginCtx, func() *result.EnvcdResult {
+	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		param := loginParam{}
 		if err := ginCtx.ShouldBindJSON(&param); err != nil {
 			log.Error("Bind error, %v", err)
@@ -99,13 +98,12 @@ func (openapi *Openapi) login(ginCtx *gin.Context) {
 		}
 		token := newJWTToken(claims{
 			RegisteredClaims: &jwt.RegisteredClaims{
-				ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Second)),
+				ExpiresAt: jwt.NewNumericDate(time.Now().Add(10 * time.Minute)),
 			},
 			userId:   user.Id,
 			userName: user.Name,
 		})
 		return result.Success(map[string]interface{}{
-			// todo const var
 			userIdKey: user.Id,
 			tokenKey:  token,
 		})
@@ -113,7 +111,7 @@ func (openapi *Openapi) login(ginCtx *gin.Context) {
 }
 
 func (openapi *Openapi) logout(ginCtx *gin.Context) {
-	openapi.response(ginCtx, func() *result.EnvcdResult {
+	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		// UserDao.save(),
 		// LogDao.save()
@@ -122,7 +120,7 @@ func (openapi *Openapi) logout(ginCtx *gin.Context) {
 }
 
 func (openapi *Openapi) createUser(ginCtx *gin.Context) {
-	openapi.response(ginCtx, func() *result.EnvcdResult {
+	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		param := userParam{}
 		if er := ginCtx.ShouldBindJSON(&param); er != nil {
 			log.Error("Bind error, %v", er)
@@ -168,14 +166,14 @@ func (openapi *Openapi) createUser(ginCtx *gin.Context) {
 }
 
 func (openapi *Openapi) updateUser(ginCtx *gin.Context) {
-	openapi.response(ginCtx, func() *result.EnvcdResult {
+	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		return nil
 	})
 }
 
 func (openapi *Openapi) user(ginCtx *gin.Context) {
-	openapi.response(ginCtx, func() *result.EnvcdResult {
+	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		id := stringsx.ToInt(ginCtx.Param("userId"))
 		user := entity.User{Id: id}
@@ -191,35 +189,35 @@ func (openapi *Openapi) user(ginCtx *gin.Context) {
 }
 
 func (openapi *Openapi) removeUser(ginCtx *gin.Context) {
-	openapi.response(ginCtx, func() *result.EnvcdResult {
+	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		return nil
 	})
 }
 
 func (openapi *Openapi) users(ginCtx *gin.Context) {
-	openapi.response(ginCtx, func() *result.EnvcdResult {
+	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		return nil
 	})
 }
 
 func (openapi *Openapi) userScopeSpaces(ginCtx *gin.Context) {
-	openapi.response(ginCtx, func() *result.EnvcdResult {
+	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		return nil
 	})
 }
 
 func (openapi *Openapi) userDictionaries(ginCtx *gin.Context) {
-	openapi.response(ginCtx, func() *result.EnvcdResult {
+	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		return nil
 	})
 }
 
 func (openapi *Openapi) userDictionariesUnderScopeSpace(ginCtx *gin.Context) {
-	openapi.response(ginCtx, func() *result.EnvcdResult {
+	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		return nil
 	})
