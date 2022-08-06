@@ -15,11 +15,21 @@
  * limitations under the License.
  */
 
-package constants
+package result
 
 const (
-	// DictNotFound dict not find
-	DictNotFound = "dictionary can't find!"
+	// DictionaryNotExistErrorCode dict not exist
+	DictionaryNotExistErrorCode = "dictionaryNotExist"
 
-	IllegalJsonBinding = "illegal json parameters binding!"
+	IllegalJsonBindingErrorCode = "illegalJsonBinding"
 )
+
+// EnvcdErrors code - message
+var EnvcdErrors map[string]string
+
+func init() {
+	EnvcdErrors = map[string]string{
+		DictionaryNotExistErrorCode: "the dictionary is not exist!",
+		IllegalJsonBindingErrorCode: "illegal json parameters binding!",
+	}
+}

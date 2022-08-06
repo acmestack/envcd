@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package constants
+package plugin
 
 const (
 	// LoggingSorted plugin of logging order

@@ -18,7 +18,6 @@
 package permission
 
 import (
-	"github.com/acmestack/envcd/internal/pkg/constants"
 	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/executor"
 	"github.com/acmestack/envcd/internal/pkg/plugin"
@@ -36,7 +35,7 @@ type Permission struct {
 func New() *Permission {
 	p := &Permission{}
 	p.Name = name
-	p.Sort = constants.PermissionSorted
+	p.Sort = plugin.PermissionSorted
 	return p
 }
 
