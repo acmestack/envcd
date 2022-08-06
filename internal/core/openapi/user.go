@@ -127,17 +127,17 @@ func (openapi *Openapi) logout(ginCtx *gin.Context) {
 func (openapi *Openapi) createUser(ginCtx *gin.Context) {
 	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		param := userParam{}
-		if er := ginCtx.ShouldBindJSON(&param); er != nil {
-			log.Error("Bind error, %v", er)
+		if err := ginCtx.ShouldBindJSON(&param); err != nil {
+			log.Error("Bind error, %v", err)
 			return result.InternalServerErrorFailure("Illegal params !")
 		}
-		daoApi := dao.New(openapi.storage)
+		daoAction := dao.New(openapi.storage)
 		// check if the user already exists in the database
-		users, er := daoApi.SelectUser(entity.User{
+		users, err := daoAction.SelectUser(entity.User{
 			Name: param.Name,
 		})
-		if er != nil {
-			log.Error("Query User error: %v", er)
+		if err != nil {
+			log.Error("Query User error: %v", err)
 			return result.InternalServerErrorFailure("System Error!")
 		}
 		if len(users) > 0 {
@@ -157,7 +157,7 @@ func (openapi *Openapi) createUser(ginCtx *gin.Context) {
 			UpdatedAt: time.Now(),
 		}
 		// save user
-		if _, _, err := daoApi.InsertUser(user); err != nil {
+		if _, _, err := daoAction.InsertUser(user); err != nil {
 			log.Error("insert error=%v", err)
 			return result.InternalServerErrorFailure("Save User Error!")
 		}
