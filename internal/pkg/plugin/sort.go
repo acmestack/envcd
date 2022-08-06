@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-package constants
+package plugin
 
 const (
-	// DictNotFound dict not find
-	DictNotFound = "dictionary can't find!"
-
-	IllegalJsonBinding = "illegal json parameters binding!"
+	// LoggingSorted plugin of logging order
+	LoggingSorted = 1
+	// PermissionSorted plugin of logging order
+	PermissionSorted = 10
 )

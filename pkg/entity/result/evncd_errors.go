@@ -15,11 +15,20 @@
  * limitations under the License.
  */
 
-package constants
+package result
 
 const (
-	// LoggingSorted plugin of logging order
-	LoggingSorted = 1
-	// PermissionSorted plugin of logging order
-	PermissionSorted = 10
+	// DictionaryNotExistErrorCode dict not exist
+	DictionaryNotExistErrorCode = "dictionaryNotExist"
+
+	IllegalJsonBindingErrorCode = "illegal json parameters binding!"
 )
+
+// EnvcdErrors code - message
+var EnvcdErrors map[string]string
+
+func init() {
+	EnvcdErrors = map[string]string{
+		DictionaryNotExistErrorCode: "the dictionary is not exist!",
+	}
+}

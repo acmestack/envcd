@@ -18,7 +18,6 @@
 package logging
 
 import (
-	"github.com/acmestack/envcd/internal/pkg/constants"
 	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/executor"
 	"github.com/acmestack/envcd/internal/pkg/plugin"
@@ -38,7 +37,7 @@ type Logging struct {
 func New() *Logging {
 	l := &Logging{}
 	l.Name = name
-	l.Sort = constants.LoggingSorted
+	l.Sort = plugin.LoggingSorted
 	return l
 }
 

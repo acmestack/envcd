@@ -23,7 +23,6 @@ import (
 	"time"
 
 	"github.com/acmestack/envcd/internal/core/storage/dao"
-	"github.com/acmestack/envcd/internal/pkg/constants"
 	"github.com/acmestack/envcd/internal/pkg/entity"
 	"github.com/acmestack/envcd/pkg/entity/result"
 	"github.com/acmestack/godkits/gox/stringsx"
@@ -57,7 +56,7 @@ func (openapi *Openapi) createDictionary(ginCtx *gin.Context) {
 		param := dictParams{}
 		if err := ginCtx.ShouldBindJSON(&param); err != nil {
 			fmt.Printf("Bind error, %v\n", err)
-			return result.InternalServerErrorFailure(constants.IllegalJsonBinding)
+			return result.InternalServerErrorFailure(result.IllegalJsonBindingErrorCode)
 		}
 		// get userId and appId from gin context
 		userId := stringsx.ToInt(ginCtx.Param("userId"))
@@ -112,7 +111,7 @@ func (openapi *Openapi) removeDictionary(ginCtx *gin.Context) {
 			return result.InternalServerErrorFailure(err.Error())
 		}
 		if len(dictionary) == 0 {
-			return result.Failure(constants.DictNotFound, http.StatusBadRequest)
+			return result.Failure0(result.DictionaryNotExistErrorCode, result.EnvcdErrors[result.DictionaryNotExistErrorCode], http.StatusBadRequest)
 		}
 		exchangeErr := openapi.exchange.Remove(getFirstDictionary(dictionary).DictKey)
 		if exchangeErr != nil {

@@ -17,11 +17,13 @@
 
 package result
 
-import "net/http"
+import (
+	"net/http"
+)
 
 const (
-	successCode = "SUCCESS"
-	failureCode = "FAILURE"
+	successCode = "success"
+	failureCode = "failure"
 )
 
 var (
