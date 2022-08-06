@@ -17,7 +17,9 @@
 
 package dao
 
-import "github.com/acmestack/envcd/internal/core/storage"
+import (
+	"github.com/acmestack/envcd/internal/core/storage"
+)
 
 type Dao struct {
 	storage *storage.Storage

@@ -25,7 +25,7 @@
             <if test="{ScopeSpace.id} != nil and {ScopeSpace.id} != 0">AND id = #{ScopeSpace.id} </if>
             <if test="{ScopeSpace.name} != nil">AND name = #{ScopeSpace.name} </if>
             <if test="{ScopeSpace.note} != nil">AND note = #{ScopeSpace.note} </if>
-            <if test="{ScopeSpace.state} != nil and {ScopeSpace.state} != 0">AND state = #{ScopeSpace.state} </if>
+            <if test="{ScopeSpace.state} != nil">AND state = #{ScopeSpace.state} </if>
             <if test="{ScopeSpace.created_at} != nil">AND created_at = #{ScopeSpace.created_at} </if>
             <if test="{ScopeSpace.updated_at} != nil">AND updated_at = #{ScopeSpace.updated_at} </if>
         </where>
@@ -37,7 +37,7 @@
             <if test="{ScopeSpace.id} != nil and {ScopeSpace.id} != 0">AND id = #{ScopeSpace.id} </if>
             <if test="{ScopeSpace.name} != nil">AND name = #{ScopeSpace.name} </if>
             <if test="{ScopeSpace.note} != nil">AND note = #{ScopeSpace.note} </if>
-            <if test="{ScopeSpace.state} != nil and {ScopeSpace.state} != 0">AND state = #{ScopeSpace.state} </if>
+            <if test="{ScopeSpace.state} != nil">AND state = #{ScopeSpace.state} </if>
             <if test="{ScopeSpace.created_at} != nil">AND created_at = #{ScopeSpace.created_at} </if>
             <if test="{ScopeSpace.updated_at} != nil">AND updated_at = #{ScopeSpace.updated_at} </if>
         </where>
@@ -68,7 +68,7 @@
         <set>
             <if test="{ScopeSpace.name} != nil"> name = #{ScopeSpace.name} </if>
             <if test="{ScopeSpace.note} != nil"> note = #{ScopeSpace.note} </if>
-            <if test="{ScopeSpace.state} != nil and {ScopeSpace.state} != 0"> state = #{ScopeSpace.state} </if>
+            <if test="{ScopeSpace.state} != nil"> state = #{ScopeSpace.state} </if>
             <if test="{ScopeSpace.created_at} != nil"> created_at = #{ScopeSpace.created_at} </if>
             <if test="{ScopeSpace.updated_at} != nil"> updated_at = #{ScopeSpace.updated_at} </if>
         </set>
@@ -81,7 +81,7 @@
             <if test="{ScopeSpace.id} != nil and {ScopeSpace.id} != 0">AND id = #{ScopeSpace.id} </if>
             <if test="{ScopeSpace.name} != nil">AND name = #{ScopeSpace.name} </if>
             <if test="{ScopeSpace.note} != nil">AND note = #{ScopeSpace.note} </if>
-            <if test="{ScopeSpace.state} != nil and {ScopeSpace.state} != 0">AND state = #{ScopeSpace.state} </if>
+            <if test="{ScopeSpace.state} != nil">AND state = #{ScopeSpace.state} </if>
             <if test="{ScopeSpace.created_at} != nil">AND created_at = #{ScopeSpace.created_at} </if>
             <if test="{ScopeSpace.updated_at} != nil">AND updated_at = #{ScopeSpace.updated_at} </if>
         </where>

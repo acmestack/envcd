@@ -27,7 +27,7 @@
             <if test="{Permission.data_type} != nil and {Permission.data_type} != 0">AND data_type = #{Permission.data_type} </if>
             <if test="{Permission.data_id} != nil and {Permission.data_id} != 0">AND data_id = #{Permission.data_id} </if>
             <if test="{Permission.note} != nil">AND note = #{Permission.note} </if>
-            <if test="{Permission.state} != nil and {Permission.state} != 0">AND state = #{Permission.state} </if>
+            <if test="{Permission.state} != nil">AND state = #{Permission.state} </if>
             <if test="{Permission.created_at} != nil">AND created_at = #{Permission.created_at} </if>
             <if test="{Permission.updated_at} != nil">AND updated_at = #{Permission.updated_at} </if>
         </where>
@@ -41,7 +41,7 @@
             <if test="{Permission.data_type} != nil and {Permission.data_type} != 0">AND data_type = #{Permission.data_type} </if>
             <if test="{Permission.data_id} != nil and {Permission.data_id} != 0">AND data_id = #{Permission.data_id} </if>
             <if test="{Permission.note} != nil">AND note = #{Permission.note} </if>
-            <if test="{Permission.state} != nil and {Permission.state} != 0">AND state = #{Permission.state} </if>
+            <if test="{Permission.state} != nil">AND state = #{Permission.state} </if>
             <if test="{Permission.created_at} != nil">AND created_at = #{Permission.created_at} </if>
             <if test="{Permission.updated_at} != nil">AND updated_at = #{Permission.updated_at} </if>
         </where>
@@ -76,7 +76,7 @@
             <if test="{Permission.data_type} != nil and {Permission.data_type} != 0"> data_type = #{Permission.data_type} </if>
             <if test="{Permission.data_id} != nil and {Permission.data_id} != 0"> data_id = #{Permission.data_id} </if>
             <if test="{Permission.note} != nil"> note = #{Permission.note} </if>
-            <if test="{Permission.state} != nil and {Permission.state} != 0"> state = #{Permission.state} </if>
+            <if test="{Permission.state} != nil"> state = #{Permission.state} </if>
             <if test="{Permission.created_at} != nil"> created_at = #{Permission.created_at} </if>
             <if test="{Permission.updated_at} != nil"> updated_at = #{Permission.updated_at} </if>
         </set>
@@ -91,7 +91,7 @@
             <if test="{Permission.data_type} != nil and {Permission.data_type} != 0">AND data_type = #{Permission.data_type} </if>
             <if test="{Permission.data_id} != nil and {Permission.data_id} != 0">AND data_id = #{Permission.data_id} </if>
             <if test="{Permission.note} != nil">AND note = #{Permission.note} </if>
-            <if test="{Permission.state} != nil and {Permission.state} != 0">AND state = #{Permission.state} </if>
+            <if test="{Permission.state} != nil">AND state = #{Permission.state} </if>
             <if test="{Permission.created_at} != nil">AND created_at = #{Permission.created_at} </if>
             <if test="{Permission.updated_at} != nil">AND updated_at = #{Permission.updated_at} </if>
         </where>

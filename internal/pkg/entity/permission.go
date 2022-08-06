@@ -28,7 +28,7 @@ type Permission struct {
 	DataType  int       `column:"data_type"`
 	DataId    int       `column:"data_id"`
 	Note      string    `column:"note"`
-	State     int       `column:"state"`
+	State     string    `column:"state"`
 	CreatedAt time.Time `column:"created_at"`
 	UpdatedAt time.Time `column:"updated_at"`
 }

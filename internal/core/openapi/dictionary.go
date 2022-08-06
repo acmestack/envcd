@@ -34,7 +34,7 @@ type dictParams struct {
 	DictKey   string `json:"dictKey"`
 	DictValue string `json:"dictValue"`
 	Version   string `json:"version"`
-	State     bool   `json:"state"`
+	State     string `json:"state"`
 }
 
 func (openapi *Openapi) dictionary(ginCtx *gin.Context) {

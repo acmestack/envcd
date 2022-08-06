@@ -27,7 +27,7 @@
             <if test="{User.password} != nil">AND password = #{User.password} </if>
             <if test="{User.salt} != nil">AND salt = #{User.salt} </if>
             <if test="{User.identity} != nil and {User.identity} != 0">AND identity = #{User.identity} </if>
-            <if test="{User.state} != nil and {User.state} != 0">AND state = #{User.state} </if>
+            <if test="{User.state} != nil">AND state = #{User.state} </if>
             <if test="{User.created_at} != nil">AND created_at = #{User.created_at} </if>
             <if test="{User.updated_at} != nil">AND updated_at = #{User.updated_at} </if>
         </where>
@@ -41,7 +41,7 @@
             <if test="{User.password} != nil">AND password = #{User.password} </if>
             <if test="{User.salt} != nil">AND salt = #{User.salt} </if>
             <if test="{User.identity} != nil and {User.identity} != 0">AND identity = #{User.identity} </if>
-            <if test="{User.state} != nil and {User.state} != 0">AND state = #{User.state} </if>
+            <if test="{User.state} != nil">AND state = #{User.state} </if>
             <if test="{User.created_at} != nil">AND created_at = #{User.created_at} </if>
             <if test="{User.updated_at} != nil">AND updated_at = #{User.updated_at} </if>
         </where>
@@ -76,7 +76,7 @@
             <if test="{User.password} != nil"> password = #{User.password} </if>
             <if test="{User.salt} != nil"> salt = #{User.salt} </if>
             <if test="{User.identity} != nil and {User.identity} != 0"> identity = #{User.identity} </if>
-            <if test="{User.state} != nil and {User.state} != 0"> state = #{User.state} </if>
+            <if test="{User.state} != nil"> state = #{User.state} </if>
             <if test="{User.created_at} != nil"> created_at = #{User.created_at} </if>
             <if test="{User.updated_at} != nil"> updated_at = #{User.updated_at} </if>
         </set>
@@ -91,9 +91,18 @@
             <if test="{User.password} != nil">AND password = #{User.password} </if>
             <if test="{User.salt} != nil">AND salt = #{User.salt} </if>
             <if test="{User.identity} != nil and {User.identity} != 0">AND identity = #{User.identity} </if>
-            <if test="{User.state} != nil and {User.state} != 0">AND state = #{User.state} </if>
+            <if test="{User.state} != nil">AND state = #{User.state} </if>
             <if test="{User.created_at} != nil">AND created_at = #{User.created_at} </if>
             <if test="{User.updated_at} != nil">AND updated_at = #{User.updated_at} </if>
         </where>
     </delete>
+
+    <select id="pageSelectUser">
+        SELECT <include refid="columns_id"> </include> FROM user
+        <where>
+            <if test="true">state != "deleted"</if>
+            <if test="{PageUserParam.Name} != nil">AND `name` LIKE CONCAT('%',#{PageUserParam.Name},'%') </if>
+        </where>
+        limit #{PageUserParam.Page},#{PageUserParam.PageSize}
+    </select>
 </mapper>
