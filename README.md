@@ -25,8 +25,7 @@ environment configurations detector/discovery/dictionary
 * you can comment with idea plugin `Gonano`
 
 ```go
-// NewAsyncWriter 
-//  @description: Write data with Buffer, this Writer and Closer is thread safety, but WriteCloser parameters not safety.
+// NewAsyncWriter Write data with Buffer, this Writer and Closer is thread safety, but WriteCloser parameters not safety.
 //  @param w       Writer
 //  @param bufSize accept buffer max length
 //  @param block   if true, overflow buffer size, will blocking, if false will occur error
