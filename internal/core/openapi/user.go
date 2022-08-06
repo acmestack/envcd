@@ -20,6 +20,7 @@ package openapi
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/acmestack/envcd/internal/core/storage/dao"
@@ -175,18 +176,42 @@ func (openapi *Openapi) updateUser(ginCtx *gin.Context) {
 
 func (openapi *Openapi) user(ginCtx *gin.Context) {
 	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
-		fmt.Println("hello world")
 		id := stringsx.ToInt(ginCtx.Param("userId"))
-		user := entity.User{Id: id}
-		// todo user detail
-		dao.New(openapi.storage).SelectUser(user)
-		return result.Success(entity.User{
-			Id:        0,
-			Name:      "qicz",
-			CreatedAt: time.Time{},
-			UpdatedAt: time.Time{},
+		param := entity.User{Id: id}
+		// query user by param
+		users, err := dao.New(openapi.storage).SelectUser(param)
+		if err != nil {
+			log.Error("select user error = %v", err)
+			return result.InternalServerErrorFailure("Get User Error!")
+		}
+		if len(users) == 0 {
+			log.Error("User does not exist : %v", param)
+			return result.Failure("User does not exist!", http.StatusOK)
+		}
+		return result.Success(userVO{
+			Id:        users[0].Id,
+			Name:      users[0].Name,
+			Identity:  users[0].Identity,
+			State:     users[0].State,
+			CreatedAt: users[0].CreatedAt.Format("2006-01-02 15:04:05"),
+			UpdatedAt: users[0].UpdatedAt.Format("2006-01-02 15:04:05"),
 		})
 	})
+}
+
+type pageUserVO struct {
+	Page     int      `json:"page"`
+	PageSize int      `json:"pageSize"`
+	List     []userVO `json:"list"`
+}
+
+type userVO struct {
+	Id        int    `json:"id"`
+	Name      string `json:"name"`
+	Identity  int    `json:"identity"`
+	State     int    `json:"state"`
+	CreatedAt string `json:"createdAt"`
+	UpdatedAt string `json:"updatedAt"`
 }
 
 func (openapi *Openapi) removeUser(ginCtx *gin.Context) {
@@ -198,9 +223,62 @@ func (openapi *Openapi) removeUser(ginCtx *gin.Context) {
 
 func (openapi *Openapi) users(ginCtx *gin.Context) {
 	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
-		fmt.Println("hello world")
-		return nil
+		// receive params from request
+		page := stringsx.ToInt(ginCtx.Query("page"))
+		pageSize := stringsx.ToInt(ginCtx.Query("pageSize"))
+		if page == 0 {
+			page = 1
+		}
+		if pageSize == 0 {
+			pageSize = 10
+		}
+		nameParam := ginCtx.Query("name")
+
+		// construct sql and params
+		builder := stringsx.Builder{}
+		position := 0
+		builder.JoinString("SELECT id, `name`, identity, state, created_at, updated_at FROM `user`")
+		params := []interface{}{}
+		if !stringsx.Empty(nameParam) {
+			builder.JoinString(" where name like '%${", strconv.Itoa(position), "}%'")
+			params = append(params, nameParam)
+			position++
+		}
+		builder.JoinString(" limit ${", strconv.Itoa(position))
+		position++
+		builder.JoinString("},${", strconv.Itoa(position), "}")
+		position++
+		params = append(params, strconv.Itoa((page-1)*pageSize), strconv.Itoa(pageSize))
+
+		// query users by param
+		ret := []entity.User{}
+		err := openapi.storage.NewSession().Select(builder.String()).Param(params...).Result(&ret)
+		if err != nil {
+			log.Error("select users error = %v", err)
+			return result.InternalServerErrorFailure("Get Users Error!")
+		}
+		return result.Success(pageUserVO{
+			page, pageSize, userTransfer(ret),
+		})
 	})
+}
+
+func userTransfer(users []entity.User) []userVO {
+	back := []userVO{}
+	if users == nil || len(users) == 0 {
+		return back
+	}
+	for _, user := range users {
+		back = append(back, userVO{
+			Id:        user.Id,
+			Name:      user.Name,
+			Identity:  user.Identity,
+			State:     user.State,
+			CreatedAt: user.CreatedAt.Format("2006-01-02 15:04:05"),
+			UpdatedAt: user.UpdatedAt.Format("2006-01-02 15:04:05"),
+		})
+	}
+	return back
 }
 
 func (openapi *Openapi) userScopeSpaces(ginCtx *gin.Context) {
