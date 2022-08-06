@@ -65,3 +65,9 @@ func (dao *Dao) DeleteUser(model entity.User) (int64, error) {
 	err := dao.storage.NewSession().Delete("dao.deleteUser").Param(model).Result(&ret)
 	return ret, err
 }
+
+func (dao *Dao) PageSelectUser(model entity.PageUserParam) ([]entity.User, error) {
+	var dataList []entity.User
+	err := dao.storage.NewSession().Select("dao.pageSelectUser").Param(model).Result(&dataList)
+	return dataList, err
+}

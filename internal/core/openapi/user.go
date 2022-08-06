@@ -20,7 +20,6 @@ package openapi
 import (
 	"fmt"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/acmestack/envcd/internal/core/storage/dao"
@@ -234,34 +233,15 @@ func (openapi *Openapi) users(ginCtx *gin.Context) {
 		}
 		nameParam := ginCtx.Query("name")
 
-		// construct sql and params
-		builder := stringsx.Builder{}
-		position := 0
-		builder.JoinString("SELECT id, `name`, identity, state, created_at, updated_at FROM `user`")
-		params := []interface{}{}
-		builder.JoinString(" where state != '${", strconv.Itoa(position), "}'")
-		position++
-		params = append(params, userStateDeleted)
-		if !stringsx.Empty(nameParam) {
-			builder.JoinString(" and name like '%${", strconv.Itoa(position), "}%'")
-			params = append(params, nameParam)
-			position++
-		}
-		builder.JoinString(" limit ${", strconv.Itoa(position))
-		position++
-		builder.JoinString("},${", strconv.Itoa(position), "}")
-		position++
-		params = append(params, strconv.Itoa((page-1)*pageSize), strconv.Itoa(pageSize))
+		pageParam := entity.PageUserParam{page, pageSize, nameParam}
 
-		// query users by param
-		ret := []entity.User{}
-		err := openapi.storage.NewSession().Select(builder.String()).Param(params...).Result(&ret)
+		users, err := dao.New(openapi.storage).PageSelectUser(pageParam)
 		if err != nil {
 			log.Error("select users error = %v", err)
 			return result.InternalServerErrorFailure("Get Users Error!")
 		}
 		return result.Success(pageUserVO{
-			page, pageSize, userTransfer(ret),
+			page, pageSize, userTransfer(users),
 		})
 	})
 }

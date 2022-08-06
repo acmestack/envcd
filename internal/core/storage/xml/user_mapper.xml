@@ -96,4 +96,13 @@
             <if test="{User.updated_at} != nil">AND updated_at = #{User.updated_at} </if>
         </where>
     </delete>
+
+    <select id="pageSelectUser">
+        SELECT <include refid="columns_id"> </include> FROM user
+        <where>
+            <if test="true">state != "deleted"</if>
+            <if test="{PageUserParam.Name} != nil">AND `name` LIKE CONCAT('%',#{PageUserParam.Name},'%') </if>
+        </where>
+        limit #{PageUserParam.Page},#{PageUserParam.PageSize}
+    </select>
 </mapper>

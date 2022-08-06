@@ -30,3 +30,9 @@ type User struct {
 	CreatedAt time.Time `column:"created_at"`
 	UpdatedAt time.Time `column:"updated_at"`
 }
+
+type PageUserParam struct {
+	Page     int
+	PageSize int
+	Name     string
+}
