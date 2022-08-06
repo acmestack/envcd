@@ -26,7 +26,7 @@ type User struct {
 	Password  string    `column:"password"`
 	Salt      string    `column:"salt"`
 	Identity  int       `column:"identity"`
-	State     int       `column:"state"`
+	State     string    `column:"state"`
 	CreatedAt time.Time `column:"created_at"`
 	UpdatedAt time.Time `column:"updated_at"`
 }

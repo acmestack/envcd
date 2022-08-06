@@ -43,7 +43,7 @@ type userParam struct {
 	Name     string `json:"name"`
 	Password string `json:"password"`
 	Identity int    `json:"identity"`
-	State    bool   `json:"state"`
+	State    string `json:"state"`
 }
 
 const (
@@ -51,6 +51,10 @@ const (
 	hmacSecret = "9C035514A15F78"
 	userIdKey  = "userId"
 	tokenKey   = "token"
+
+	userStateEnabled  = "enabled"
+	userStateDisabled = "disabled"
+	userStateDeleted  = "deleted"
 )
 
 // claims claims
@@ -144,16 +148,12 @@ func (openapi *Openapi) createUser(ginCtx *gin.Context) {
 		// generate database password by salt
 		salt := randomSalt()
 		password := saltPassword(param.Password, salt)
-		state := 1
-		if !param.State {
-			state = 2
-		}
 		user := entity.User{
 			Name:      param.Name,
 			Password:  password,
 			Salt:      salt,
 			Identity:  param.Identity,
-			State:     state,
+			State:     stringsx.DefaultIfEmpty(param.State, userStateEnabled),
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
 		}
@@ -209,7 +209,7 @@ type userVO struct {
 	Id        int    `json:"id"`
 	Name      string `json:"name"`
 	Identity  int    `json:"identity"`
-	State     int    `json:"state"`
+	State     string `json:"state"`
 	CreatedAt string `json:"createdAt"`
 	UpdatedAt string `json:"updatedAt"`
 }
@@ -239,8 +239,11 @@ func (openapi *Openapi) users(ginCtx *gin.Context) {
 		position := 0
 		builder.JoinString("SELECT id, `name`, identity, state, created_at, updated_at FROM `user`")
 		params := []interface{}{}
+		builder.JoinString(" where state != '${", strconv.Itoa(position), "}'")
+		position++
+		params = append(params, userStateDeleted)
 		if !stringsx.Empty(nameParam) {
-			builder.JoinString(" where name like '%${", strconv.Itoa(position), "}%'")
+			builder.JoinString(" and name like '%${", strconv.Itoa(position), "}%'")
 			params = append(params, nameParam)
 			position++
 		}

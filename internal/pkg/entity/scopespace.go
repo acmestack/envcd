@@ -26,7 +26,7 @@ type ScopeSpace struct {
 	Id        int       `column:"id"`
 	Name      string    `column:"name"`
 	Note      string    `column:"note"`
-	State     int       `column:"state"`
+	State     string    `column:"state"`
 	CreatedAt time.Time `column:"created_at"`
 	UpdatedAt time.Time `column:"updated_at"`
 }
