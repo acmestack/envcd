@@ -21,7 +21,7 @@ const (
 	// DictionaryNotExistErrorCode dict not exist
 	DictionaryNotExistErrorCode = "dictionaryNotExist"
 
-	IllegalJsonBindingErrorCode = "illegal json parameters binding!"
+	IllegalJsonBindingErrorCode = "illegalJsonBinding"
 )
 
 // EnvcdErrors code - message
@@ -30,5 +30,6 @@ var EnvcdErrors map[string]string
 func init() {
 	EnvcdErrors = map[string]string{
 		DictionaryNotExistErrorCode: "the dictionary is not exist!",
+		IllegalJsonBindingErrorCode: "illegal json parameters binding!",
 	}
 }

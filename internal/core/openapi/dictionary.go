@@ -56,7 +56,7 @@ func (openapi *Openapi) createDictionary(ginCtx *gin.Context) {
 		param := dictParams{}
 		if err := ginCtx.ShouldBindJSON(&param); err != nil {
 			fmt.Printf("Bind error, %v\n", err)
-			return result.InternalServerErrorFailure(result.IllegalJsonBindingErrorCode)
+			return result.InternalServerErrorFailure(result.EnvcdErrors[result.IllegalJsonBindingErrorCode])
 		}
 		// get userId and appId from gin context
 		userId := stringsx.ToInt(ginCtx.Param("userId"))
