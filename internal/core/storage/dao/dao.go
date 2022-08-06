@@ -25,6 +25,7 @@ type Dao struct {
 	storage *storage.Storage
 }
 
+// New dao instance
 func New(storage *storage.Storage) *Dao {
 	return &Dao{storage: storage}
 }

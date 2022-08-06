@@ -105,8 +105,8 @@ func (openapi *Openapi) removeDictionary(ginCtx *gin.Context) {
 		dictId := stringsx.ToInt(ginCtx.Param("dictId"))
 		dict := entity.Dictionary{Id: dictId, UserId: userId, ScopeSpaceId: appId}
 		// query dictionary exist
-		daoApi := dao.New(openapi.storage)
-		dictionary, err := daoApi.SelectDictionary(dict)
+		daoAction := dao.New(openapi.storage)
+		dictionary, err := daoAction.SelectDictionary(dict)
 		if err != nil {
 			return result.InternalServerErrorFailure(err.Error())
 		}
@@ -117,7 +117,7 @@ func (openapi *Openapi) removeDictionary(ginCtx *gin.Context) {
 		if exchangeErr != nil {
 			return result.InternalServerErrorFailure(exchangeErr.Error())
 		}
-		retId, delErr := daoApi.DeleteDictionary(getFirstDictionary(dictionary))
+		retId, delErr := daoAction.DeleteDictionary(getFirstDictionary(dictionary))
 		if delErr != nil {
 			return result.InternalServerErrorFailure(delErr.Error())
 		}
