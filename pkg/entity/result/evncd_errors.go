@@ -20,12 +20,12 @@ package result
 import "net/http"
 
 var (
-	ErrorUserNotFound             = anError("userNotFound", "the user is not exist.", http.StatusBadRequest)
-	ErrorUserExisted              = anError("userExisted", "the user is existed.", http.StatusOK)
-	ErrorCreateUser               = anError("userCreateFault", "the user save error.", http.StatusOK)
-	ErrorUserPasswordIncorrect    = anError("userPasswordIncorrect", "the password is incorrect for user.", http.StatusOK)
-	ErrorDictionaryNotExist       = anError("dictionaryNotExist", "the dictionary is not exist.", http.StatusBadRequest)
-	errorEnvcdInternalServerError = anError("envcdInternalServerError", "Envcd Internal Server Error, try again lately.", http.StatusInternalServerError)
+	ErrorUserNotFound             = aError("userNotFound", "the user is not exist.", http.StatusBadRequest)
+	ErrorUserExisted              = aError("userExisted", "the user is existed.", http.StatusOK)
+	ErrorCreateUser               = aError("userCreateFault", "the user save error.", http.StatusOK)
+	ErrorUserPasswordIncorrect    = aError("userPasswordIncorrect", "the password is incorrect for user.", http.StatusOK)
+	ErrorDictionaryNotExist       = aError("dictionaryNotExist", "the dictionary is not exist.", http.StatusBadRequest)
+	errorEnvcdInternalServerError = aError("envcdInternalServerError", "Envcd Internal Server Error, try again lately.", http.StatusInternalServerError)
 )
 
 type envcdError struct {
@@ -34,6 +34,6 @@ type envcdError struct {
 	httpStatusCode int
 }
 
-func anError(code string, message string, httpStatusCode int) envcdError {
+func aError(code string, message string, httpStatusCode int) envcdError {
 	return envcdError{code: code, message: message, httpStatusCode: httpStatusCode}
 }
