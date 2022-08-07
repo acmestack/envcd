@@ -65,3 +65,9 @@ func (dao *Dao) DeleteDictionary(model entity.Dictionary) (int64, error) {
 	err := dao.storage.NewSession().Delete("dao.deleteDictionary").Param(model).Result(&ret)
 	return ret, err
 }
+
+func (dao *Dao) DeleteDictionaryByUserId(model entity.Dictionary) (int64, error) {
+	var ret int64
+	err := dao.storage.NewSession().Delete("dao.deleteDictionaryByUserId").Param(model).Result(&ret)
+	return ret, err
+}
