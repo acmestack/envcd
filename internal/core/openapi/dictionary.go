@@ -44,7 +44,7 @@ func (openapi *Openapi) dictionary(ginCtx *gin.Context) {
 		dict := entity.Dictionary{Id: dictId, UserId: userId, ScopeSpaceId: scopeSpaceId}
 		dictionary, err := dao.New(openapi.storage).SelectDictionary(dict)
 		if err != nil {
-			return result.InternalFailureByError(err)
+			return result.InternalFailure(err)
 		}
 		return result.Success(dictionary)
 	})
@@ -55,7 +55,7 @@ func (openapi *Openapi) createDictionary(ginCtx *gin.Context) {
 		param := dictParams{}
 		if err := ginCtx.ShouldBindJSON(&param); err != nil {
 			fmt.Printf("Bind error, %v\n", err)
-			return result.InternalFailureByError(err)
+			return result.InternalFailure(err)
 		}
 		// get userId and appId from gin context
 		userId := stringsx.ToInt(ginCtx.Param("userId"))
@@ -107,18 +107,18 @@ func (openapi *Openapi) removeDictionary(ginCtx *gin.Context) {
 		daoAction := dao.New(openapi.storage)
 		dictionary, err := daoAction.SelectDictionary(dict)
 		if err != nil {
-			return result.InternalFailureByError(err)
+			return result.InternalFailure(err)
 		}
 		if len(dictionary) == 0 {
 			return result.Failure0(result.ErrorDictionaryNotExist)
 		}
 		exchangeErr := openapi.exchange.Remove(getFirstDictionary(dictionary).DictKey)
 		if exchangeErr != nil {
-			return result.InternalFailureByError(exchangeErr)
+			return result.InternalFailure(exchangeErr)
 		}
 		retId, delErr := daoAction.DeleteDictionary(getFirstDictionary(dictionary))
 		if delErr != nil {
-			return result.InternalFailureByError(delErr)
+			return result.InternalFailure(delErr)
 		}
 		return result.Success(retId)
 	})

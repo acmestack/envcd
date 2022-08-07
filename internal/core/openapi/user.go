@@ -78,7 +78,7 @@ func (openapi *Openapi) login(ginCtx *gin.Context) {
 		param := loginParam{}
 		if err := ginCtx.ShouldBindJSON(&param); err != nil {
 			log.Error("Bind error, %v", err)
-			return result.InternalFailureByError(err)
+			return result.InternalFailure(err)
 		}
 
 		users, err := dao.New(openapi.storage).SelectUser(entity.User{
@@ -86,7 +86,7 @@ func (openapi *Openapi) login(ginCtx *gin.Context) {
 		})
 		if err != nil {
 			log.Error("Query User error: %v", err)
-			return result.InternalFailureByError(err)
+			return result.InternalFailure(err)
 		}
 
 		if len(users) == 0 {
@@ -125,7 +125,7 @@ func (openapi *Openapi) createUser(ginCtx *gin.Context) {
 		param := userParam{}
 		if err := ginCtx.ShouldBindJSON(&param); err != nil {
 			log.Error("Bind error, %v", err)
-			return result.InternalFailureByError(err)
+			return result.InternalFailure(err)
 		}
 		daoAction := dao.New(openapi.storage)
 		// check if the user already exists in the database
@@ -134,7 +134,7 @@ func (openapi *Openapi) createUser(ginCtx *gin.Context) {
 		})
 		if err != nil {
 			log.Error("Query User error: %v", err)
-			return result.InternalFailureByError(err)
+			return result.InternalFailure(err)
 		}
 		if len(users) > 0 {
 			log.Error("User Has exists: %v", users)

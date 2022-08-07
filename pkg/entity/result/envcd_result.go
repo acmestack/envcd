@@ -56,15 +56,14 @@ func Success(data interface{}) *EnvcdResult {
 
 // InternalFailure response
 //  @return *EnvcdResult
-func InternalFailure() *EnvcdResult {
-	return failure(errorEnvcdInternalServerError, nil)
+func InternalFailure(err error) *EnvcdResult {
+	return failure(errorEnvcdInternalServerError, err)
 }
 
-// InternalFailureByError response
-//  @param message of error format: envcd internal error message : detail error [code]
+// InternalFailure0 response
 //  @return *EnvcdResult
-func InternalFailureByError(err error) *EnvcdResult {
-	return failure(errorEnvcdInternalServerError, err)
+func InternalFailure0() *EnvcdResult {
+	return failure(errorEnvcdInternalServerError, nil)
 }
 
 // Failure response
@@ -82,7 +81,7 @@ func Failure0(envcdErr envcdError) *EnvcdResult {
 	return failure(envcdErr, nil)
 }
 
-// failure response
+// failure response, error format: envcd internal error message [code: detail error]
 //  @param envcdError of envcd error
 //  @param err of error instance
 //  @return *EnvcdResult

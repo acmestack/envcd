@@ -72,13 +72,13 @@ func TestInternalFailure(t *testing.T) {
 		want *EnvcdResult
 	}{
 		{
-			want: InternalFailure(),
+			want: InternalFailure0(),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := InternalFailure(); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("InternalFailure() = %v, want %v", got, tt.want)
+			if got := InternalFailure0(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("InternalFailure0() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -95,13 +95,13 @@ func TestInternalFailureByError(t *testing.T) {
 	}{
 		{
 			args: args{err: errorsx.Err("error")},
-			want: InternalFailureByError(errorsx.Err("error")),
+			want: InternalFailure(errorsx.Err("error")),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := InternalFailureByError(tt.args.err); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("InternalFailureByError() = %v, want %v", got, tt.want)
+			if got := InternalFailure(tt.args.err); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("InternalFailure() = %v, want %v", got, tt.want)
 			}
 		})
 	}

@@ -55,7 +55,7 @@ func NewChain(executors executorArray) *Chain {
 //  @param context chain context
 func (chain *Chain) Execute(context *context.Context) *result.EnvcdResult {
 	if chain == nil || chain.executors == nil || len(chain.executors) == 0 {
-		return result.InternalFailureByError(errorsx.Err("IIllegal state for plugin chain."))
+		return result.InternalFailure(errorsx.Err("IIllegal state for plugin chain."))
 	}
 	if chain.index < len(chain.executors) {
 		currentExecutor := chain.executors[chain.index]

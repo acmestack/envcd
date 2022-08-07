@@ -80,7 +80,7 @@ func TestExecutorChain_Execute(t *testing.T) {
 				index:     0,
 			},
 			args:    args{context: &context.Context{}},
-			wantRet: result.InternalFailureByError(errorsx.Err("IIllegal state for plugin chain.")),
+			wantRet: result.InternalFailure(errorsx.Err("IIllegal state for plugin chain.")),
 		},
 		{
 			fields: fields{
