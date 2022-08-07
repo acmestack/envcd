@@ -31,6 +31,7 @@ import (
 	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/executor"
 	"github.com/acmestack/envcd/pkg/entity/result"
+	"github.com/acmestack/godkits/gox/errorsx"
 	"github.com/acmestack/godkits/log"
 	"github.com/gin-gonic/gin"
 )
@@ -85,7 +86,7 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
 	router.Use(gin.CustomRecovery(func(ginCtx *gin.Context, recovered interface{}) {
 		if err, ok := recovered.(string); ok {
-			failure := result.InternalServerErrorFailure(fmt.Sprintf("error: %s", err))
+			failure := result.InternalFailure(errorsx.Err(fmt.Sprintf("error: %s", err)))
 			ginCtx.JSON(failure.HttpStatusCode, failure.Data)
 		}
 		ginCtx.AbortWithStatus(http.StatusInternalServerError)
@@ -150,7 +151,7 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 func (openapi *Openapi) response(ginCtx *gin.Context, permissionAction context.EnvcdActionFunc, action context.EnvcdActionFunc) {
 	requestId := ginCtx.Request.Header.Get(requestIdHeader)
 	c := openapi.contexts[requestId]
-	ret := result.InternalServerErrorFailure(http.StatusText(http.StatusInternalServerError))
+	ret := result.InternalFailure0()
 	if c != nil && c.RequestId == requestId {
 		c.PermissionAction = permissionAction
 		c.Action = action

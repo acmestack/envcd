@@ -17,19 +17,23 @@
 
 package result
 
-const (
-	// DictionaryNotExistErrorCode dict not exist
-	DictionaryNotExistErrorCode = "dictionaryNotExist"
+import "net/http"
 
-	IllegalJsonBindingErrorCode = "illegalJsonBinding"
+var (
+	ErrorUserNotFound             = aError("userNotFound", "the user is not exist.", http.StatusBadRequest)
+	ErrorUserExisted              = aError("userExisted", "the user is existed.", http.StatusOK)
+	ErrorCreateUser               = aError("userCreateFault", "the user save error.", http.StatusOK)
+	ErrorUserPasswordIncorrect    = aError("userPasswordIncorrect", "the password is incorrect for user.", http.StatusOK)
+	ErrorDictionaryNotExist       = aError("dictionaryNotExist", "the dictionary is not exist.", http.StatusBadRequest)
+	errorEnvcdInternalServerError = aError("envcdInternalServerError", "Envcd Internal Server Error, try again lately.", http.StatusInternalServerError)
 )
 
-// EnvcdErrors code - message
-var EnvcdErrors map[string]string
+type envcdError struct {
+	code           string
+	message        string
+	httpStatusCode int
+}
 
-func init() {
-	EnvcdErrors = map[string]string{
-		DictionaryNotExistErrorCode: "the dictionary is not exist!",
-		IllegalJsonBindingErrorCode: "illegal json parameters binding!",
-	}
+func aError(code string, message string, httpStatusCode int) envcdError {
+	return envcdError{code: code, message: message, httpStatusCode: httpStatusCode}
 }

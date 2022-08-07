@@ -18,33 +18,11 @@
 package result
 
 import (
-	"net/http"
 	"reflect"
 	"testing"
-)
 
-func TestInternalServerErrorFailure(t *testing.T) {
-	type args struct {
-		message string
-	}
-	tests := []struct {
-		name string
-		args args
-		want *EnvcdResult
-	}{
-		{
-			args: args{message: "failure"},
-			want: InternalServerErrorFailure("failure"),
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := InternalServerErrorFailure(tt.args.message); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("InternalServerErrorFailure() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
+	"github.com/acmestack/godkits/gox/errorsx"
+)
 
 func TestSuccess(t *testing.T) {
 	type args struct {
@@ -88,10 +66,74 @@ func TestKey(t *testing.T) {
 	}
 }
 
+func TestInternalFailure(t *testing.T) {
+	tests := []struct {
+		name string
+		want *EnvcdResult
+	}{
+		{
+			want: InternalFailure0(),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := InternalFailure0(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("InternalFailure0() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestInternalFailureByError(t *testing.T) {
+	type args struct {
+		err error
+	}
+	tests := []struct {
+		name string
+		args args
+		want *EnvcdResult
+	}{
+		{
+			args: args{err: errorsx.Err("error")},
+			want: InternalFailure(errorsx.Err("error")),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := InternalFailure(tt.args.err); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("InternalFailure() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestFailure(t *testing.T) {
 	type args struct {
-		message        string
-		httpStatusCode int
+		envcdError envcdError
+	}
+	tests := []struct {
+		name string
+		args args
+		want *EnvcdResult
+	}{
+		{
+			args: args{errorEnvcdInternalServerError},
+			want: Failure0(errorEnvcdInternalServerError),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := Failure0(tt.args.envcdError); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Failure0() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestFailureByError(t *testing.T) {
+	type args struct {
+		envcdError envcdError
+		err        error
 	}
 	tests := []struct {
 		name string
@@ -100,26 +142,25 @@ func TestFailure(t *testing.T) {
 	}{
 		{
 			args: args{
-				message:        http.StatusText(http.StatusBadRequest),
-				httpStatusCode: http.StatusBadRequest,
+				envcdError: errorEnvcdInternalServerError,
+				err:        errorsx.Err("error"),
 			},
-			want: Failure(http.StatusText(http.StatusBadRequest), http.StatusBadRequest),
+			want: Failure(errorEnvcdInternalServerError, errorsx.Err("error")),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Failure(tt.args.message, tt.args.httpStatusCode); !reflect.DeepEqual(got, tt.want) {
+			if got := Failure(tt.args.envcdError, tt.args.err); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Failure() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestFailure1(t *testing.T) {
+func Test_failure(t *testing.T) {
 	type args struct {
-		code           string
-		message        string
-		httpStatusCode int
+		envcdErr envcdError
+		err      error
 	}
 	tests := []struct {
 		name string
@@ -128,17 +169,23 @@ func TestFailure1(t *testing.T) {
 	}{
 		{
 			args: args{
-				code:           "ERROR",
-				message:        http.StatusText(http.StatusBadRequest),
-				httpStatusCode: http.StatusBadRequest,
+				envcdErr: errorEnvcdInternalServerError,
+				err:      nil,
 			},
-			want: Failure0("ERROR", http.StatusText(http.StatusBadRequest), http.StatusBadRequest),
+			want: failure(errorEnvcdInternalServerError, nil),
+		},
+		{
+			args: args{
+				envcdErr: errorEnvcdInternalServerError,
+				err:      errorsx.Err("error"),
+			},
+			want: failure(errorEnvcdInternalServerError, errorsx.Err("error")),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := Failure0(tt.args.code, tt.args.message, tt.args.httpStatusCode); !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("Failure0() = %v, want %v", got, tt.want)
+			if got := failure(tt.args.envcdErr, tt.args.err); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("failure() = %v, want %v", got, tt.want)
 			}
 		})
 	}
