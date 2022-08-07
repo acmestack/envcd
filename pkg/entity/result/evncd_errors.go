@@ -32,12 +32,14 @@ const (
 	envcdInternalServerErrorMessage = "Envcd Internal Server Error, try again lately."
 )
 
-var ErrorUserNotFound envcdError
-var ErrorUserExisted envcdError
-var ErrorCreateUser envcdError
-var ErrorUserPasswordIncorrect envcdError
-var ErrorDictionaryNotExist envcdError
-var errorEnvcdInternalServerError envcdError
+var (
+	ErrorUserNotFound             envcdError
+	ErrorUserExisted              envcdError
+	ErrorCreateUser               envcdError
+	ErrorUserPasswordIncorrect    envcdError
+	ErrorDictionaryNotExist       envcdError
+	errorEnvcdInternalServerError envcdError
+)
 
 func init() {
 	ErrorCreateUser = envcdError{
