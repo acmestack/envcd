@@ -19,63 +19,21 @@ package result
 
 import "net/http"
 
-const (
-	errorCodeUserNotFound          = "userNotFound"
-	errorCodeUserExisted           = "userExisted"
-	errorCodeCreateUser            = "userCreateFault"
-	errorCodeUserPasswordIncorrect = "userPasswordIncorrect"
-	errorCodeDictionaryNotExist    = "dictionaryNotExist"
-
-	// errorCodeEnvcdInternalServerError internal server error code
-	errorCodeEnvcdInternalServerError = "envcdInternalServerError"
-	// envcdInternalServerErrorMessage internal server error message
-	envcdInternalServerErrorMessage = "Envcd Internal Server Error, try again lately."
-)
-
 var (
-	ErrorUserNotFound             envcdError
-	ErrorUserExisted              envcdError
-	ErrorCreateUser               envcdError
-	ErrorUserPasswordIncorrect    envcdError
-	ErrorDictionaryNotExist       envcdError
-	errorEnvcdInternalServerError envcdError
+	ErrorUserNotFound             = anError("userNotFound", "the user is not exist.", http.StatusBadRequest)
+	ErrorUserExisted              = anError("userExisted", "the user is existed.", http.StatusOK)
+	ErrorCreateUser               = anError("userCreateFault", "the user save error.", http.StatusOK)
+	ErrorUserPasswordIncorrect    = anError("userPasswordIncorrect", "the password is incorrect for user.", http.StatusOK)
+	ErrorDictionaryNotExist       = anError("dictionaryNotExist", "the dictionary is not exist.", http.StatusBadRequest)
+	errorEnvcdInternalServerError = anError("envcdInternalServerError", "Envcd Internal Server Error, try again lately.", http.StatusInternalServerError)
 )
-
-func init() {
-	ErrorCreateUser = envcdError{
-		code:           errorCodeCreateUser,
-		message:        "the user save error.",
-		httpStatusCode: http.StatusOK,
-	}
-	ErrorUserNotFound = envcdError{
-		code:           errorCodeUserNotFound,
-		message:        "the user is not exist.",
-		httpStatusCode: http.StatusBadRequest,
-	}
-	ErrorUserExisted = envcdError{
-		code:           errorCodeUserExisted,
-		message:        "the user is existed.",
-		httpStatusCode: http.StatusOK,
-	}
-	ErrorUserPasswordIncorrect = envcdError{
-		code:           errorCodeUserPasswordIncorrect,
-		message:        "the password is incorrect for user.",
-		httpStatusCode: http.StatusOK,
-	}
-	ErrorDictionaryNotExist = envcdError{
-		code:           errorCodeDictionaryNotExist,
-		message:        "the dictionary is not exist.",
-		httpStatusCode: http.StatusBadRequest,
-	}
-	errorEnvcdInternalServerError = envcdError{
-		code:           errorCodeEnvcdInternalServerError,
-		message:        envcdInternalServerErrorMessage,
-		httpStatusCode: http.StatusInternalServerError,
-	}
-}
 
 type envcdError struct {
 	code           string
 	message        string
 	httpStatusCode int
+}
+
+func anError(code string, message string, httpStatusCode int) envcdError {
+	return envcdError{code: code, message: message, httpStatusCode: httpStatusCode}
 }
