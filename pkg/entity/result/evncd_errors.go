@@ -17,19 +17,63 @@
 
 package result
 
-const (
-	// DictionaryNotExistErrorCode dict not exist
-	DictionaryNotExistErrorCode = "dictionaryNotExist"
+import "net/http"
 
-	IllegalJsonBindingErrorCode = "illegalJsonBinding"
+const (
+	errorCodeUserNotFound          = "userNotFound"
+	errorCodeUserExisted           = "userExisted"
+	errorCodeCreateUser            = "userCreateFault"
+	errorCodeUserPasswordIncorrect = "userPasswordIncorrect"
+	errorCodeDictionaryNotExist    = "dictionaryNotExist"
+
+	// errorCodeEnvcdInternalServerError internal server error code
+	errorCodeEnvcdInternalServerError = "envcdInternalServerError"
+	// envcdInternalServerErrorMessage internal server error message
+	envcdInternalServerErrorMessage = "Envcd Internal Server Error, try again lately."
 )
 
-// EnvcdErrors code - message
-var EnvcdErrors map[string]string
+var ErrorUserNotFound envcdError
+var ErrorUserExisted envcdError
+var ErrorCreateUser envcdError
+var ErrorUserPasswordIncorrect envcdError
+var ErrorDictionaryNotExist envcdError
+var errorEnvcdInternalServerError envcdError
 
 func init() {
-	EnvcdErrors = map[string]string{
-		DictionaryNotExistErrorCode: "the dictionary is not exist!",
-		IllegalJsonBindingErrorCode: "illegal json parameters binding!",
+	ErrorCreateUser = envcdError{
+		code:           errorCodeCreateUser,
+		message:        "the user save error.",
+		httpStatusCode: http.StatusOK,
 	}
+	ErrorUserNotFound = envcdError{
+		code:           errorCodeUserNotFound,
+		message:        "the user is not exist.",
+		httpStatusCode: http.StatusBadRequest,
+	}
+	ErrorUserExisted = envcdError{
+		code:           errorCodeUserExisted,
+		message:        "the user is existed.",
+		httpStatusCode: http.StatusOK,
+	}
+	ErrorUserPasswordIncorrect = envcdError{
+		code:           errorCodeUserPasswordIncorrect,
+		message:        "the password is incorrect for user.",
+		httpStatusCode: http.StatusOK,
+	}
+	ErrorDictionaryNotExist = envcdError{
+		code:           errorCodeDictionaryNotExist,
+		message:        "the dictionary is not exist.",
+		httpStatusCode: http.StatusBadRequest,
+	}
+	errorEnvcdInternalServerError = envcdError{
+		code:           errorCodeEnvcdInternalServerError,
+		message:        envcdInternalServerErrorMessage,
+		httpStatusCode: http.StatusInternalServerError,
+	}
+}
+
+type envcdError struct {
+	code           string
+	message        string
+	httpStatusCode int
 }

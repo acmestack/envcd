@@ -33,4 +33,3 @@ environment configurations detector/discovery/dictionary
 func NewAsyncWriter(w io.Writer, bufSize int, block bool) *AsyncLogWriter {
 }
 ```
-

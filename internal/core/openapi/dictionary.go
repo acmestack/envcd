@@ -19,7 +19,6 @@ package openapi
 
 import (
 	"fmt"
-	"net/http"
 	"time"
 
 	"github.com/acmestack/envcd/internal/core/storage/dao"
@@ -45,7 +44,7 @@ func (openapi *Openapi) dictionary(ginCtx *gin.Context) {
 		dict := entity.Dictionary{Id: dictId, UserId: userId, ScopeSpaceId: scopeSpaceId}
 		dictionary, err := dao.New(openapi.storage).SelectDictionary(dict)
 		if err != nil {
-			return result.InternalServerErrorFailure(err.Error())
+			return result.InternalFailureByError(err)
 		}
 		return result.Success(dictionary)
 	})
@@ -56,7 +55,7 @@ func (openapi *Openapi) createDictionary(ginCtx *gin.Context) {
 		param := dictParams{}
 		if err := ginCtx.ShouldBindJSON(&param); err != nil {
 			fmt.Printf("Bind error, %v\n", err)
-			return result.InternalServerErrorFailure(result.EnvcdErrors[result.IllegalJsonBindingErrorCode])
+			return result.InternalFailureByError(err)
 		}
 		// get userId and appId from gin context
 		userId := stringsx.ToInt(ginCtx.Param("userId"))
@@ -108,18 +107,18 @@ func (openapi *Openapi) removeDictionary(ginCtx *gin.Context) {
 		daoAction := dao.New(openapi.storage)
 		dictionary, err := daoAction.SelectDictionary(dict)
 		if err != nil {
-			return result.InternalServerErrorFailure(err.Error())
+			return result.InternalFailureByError(err)
 		}
 		if len(dictionary) == 0 {
-			return result.Failure0(result.DictionaryNotExistErrorCode, result.EnvcdErrors[result.DictionaryNotExistErrorCode], http.StatusBadRequest)
+			return result.Failure0(result.ErrorDictionaryNotExist)
 		}
 		exchangeErr := openapi.exchange.Remove(getFirstDictionary(dictionary).DictKey)
 		if exchangeErr != nil {
-			return result.InternalServerErrorFailure(exchangeErr.Error())
+			return result.InternalFailureByError(exchangeErr)
 		}
 		retId, delErr := daoAction.DeleteDictionary(getFirstDictionary(dictionary))
 		if delErr != nil {
-			return result.InternalServerErrorFailure(delErr.Error())
+			return result.InternalFailureByError(delErr)
 		}
 		return result.Success(retId)
 	})

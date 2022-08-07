@@ -19,7 +19,6 @@ package openapi
 
 import (
 	"fmt"
-	"net/http"
 	"time"
 
 	"github.com/acmestack/envcd/internal/core/storage/dao"
@@ -49,7 +48,7 @@ const (
 	// hmacSecret secret
 	hmacSecret = "9C035514A15F78"
 	userIdKey  = "userId"
-	tokenKey   = "token"
+	tokenKey   = "accessToken"
 
 	userStateEnabled  = "enabled"
 	userStateDisabled = "disabled"
@@ -79,7 +78,7 @@ func (openapi *Openapi) login(ginCtx *gin.Context) {
 		param := loginParam{}
 		if err := ginCtx.ShouldBindJSON(&param); err != nil {
 			log.Error("Bind error, %v", err)
-			return result.InternalServerErrorFailure("Illegal params !")
+			return result.InternalFailureByError(err)
 		}
 
 		users, err := dao.New(openapi.storage).SelectUser(entity.User{
@@ -87,19 +86,16 @@ func (openapi *Openapi) login(ginCtx *gin.Context) {
 		})
 		if err != nil {
 			log.Error("Query User error: %v", err)
-			// todo error code : result.Failure0(code, message, httpStatusCode)
-			return result.Failure("System Error!", http.StatusBadRequest)
+			return result.InternalFailureByError(err)
 		}
 
 		if len(users) == 0 {
-			// todo error code : result.Failure0(code, message, httpStatusCode)
 			log.Error("User does not exist : %v", param)
-			return result.Failure("User does not exist!", http.StatusOK)
+			return result.Failure0(result.ErrorUserNotFound)
 		}
 		user := users[0]
 		if saltPassword(param.Password, user.Salt) != user.Password {
-			// todo error code : result.Failure0(code, message, httpStatusCode)
-			return result.Failure("password error!", http.StatusOK)
+			return result.Failure0(result.ErrorUserPasswordIncorrect)
 		}
 		token := newJWTToken(claims{
 			RegisteredClaims: &jwt.RegisteredClaims{
@@ -129,7 +125,7 @@ func (openapi *Openapi) createUser(ginCtx *gin.Context) {
 		param := userParam{}
 		if err := ginCtx.ShouldBindJSON(&param); err != nil {
 			log.Error("Bind error, %v", err)
-			return result.InternalServerErrorFailure("Illegal params !")
+			return result.InternalFailureByError(err)
 		}
 		daoAction := dao.New(openapi.storage)
 		// check if the user already exists in the database
@@ -138,11 +134,11 @@ func (openapi *Openapi) createUser(ginCtx *gin.Context) {
 		})
 		if err != nil {
 			log.Error("Query User error: %v", err)
-			return result.InternalServerErrorFailure("System Error!")
+			return result.InternalFailureByError(err)
 		}
 		if len(users) > 0 {
 			log.Error("User Has exists: %v", users)
-			return result.InternalServerErrorFailure("User Has Exists!")
+			return result.Failure0(result.ErrorUserExisted)
 		}
 		// generate database password by salt
 		salt := randomSalt()
@@ -159,7 +155,7 @@ func (openapi *Openapi) createUser(ginCtx *gin.Context) {
 		// save user
 		if _, _, err := daoAction.InsertUser(user); err != nil {
 			log.Error("insert error=%v", err)
-			return result.InternalServerErrorFailure("Save User Error!")
+			return result.Failure(result.ErrorCreateUser, err)
 		}
 		// fixme update success message or response token and id ?
 		return result.Success("ok")
@@ -181,11 +177,11 @@ func (openapi *Openapi) user(ginCtx *gin.Context) {
 		users, err := dao.New(openapi.storage).SelectUser(param)
 		if err != nil {
 			log.Error("select user error = %v", err)
-			return result.InternalServerErrorFailure("Get User Error!")
+			return result.Failure(result.ErrorUserNotFound, err)
 		}
 		if len(users) == 0 {
 			log.Error("User does not exist : %v", param)
-			return result.Failure("User does not exist!", http.StatusOK)
+			return result.Failure0(result.ErrorUserNotFound)
 		}
 		return result.Success(userVO{
 			Id:        users[0].Id,
@@ -238,7 +234,7 @@ func (openapi *Openapi) users(ginCtx *gin.Context) {
 		users, err := dao.New(openapi.storage).PageSelectUser(pageParam)
 		if err != nil {
 			log.Error("select users error = %v", err)
-			return result.InternalServerErrorFailure("Get Users Error!")
+			return result.Failure(result.ErrorUserNotFound, err)
 		}
 		return result.Success(pageUserVO{
 			page, pageSize, userTransfer(users),

@@ -18,12 +18,12 @@
 package result
 
 import (
+	"fmt"
 	"net/http"
 )
 
 const (
 	successCode = "success"
-	failureCode = "failure"
 )
 
 var (
@@ -54,32 +54,49 @@ func Success(data interface{}) *EnvcdResult {
 	}
 }
 
-// InternalServerErrorFailure response
-//  @param message of error reason
+// InternalFailure response
 //  @return *EnvcdResult
-func InternalServerErrorFailure(message string) *EnvcdResult {
-	return Failure0(failureCode, message, http.StatusInternalServerError)
+func InternalFailure() *EnvcdResult {
+	return failure(errorEnvcdInternalServerError, nil)
+}
+
+// InternalFailureByError response
+//  @param message of error format: envcd internal error message : detail error [code]
+//  @return *EnvcdResult
+func InternalFailureByError(err error) *EnvcdResult {
+	return failure(errorEnvcdInternalServerError, err)
 }
 
 // Failure response
-//  @param message of error reason
-//  @param httpStatusCode of response http status code
+//  @param envcdError of envcd error
+//  @param err of handler error
 //  @return *EnvcdResult
-func Failure(message string, httpStatusCode int) *EnvcdResult {
-	return Failure0(failureCode, message, httpStatusCode)
+func Failure(envcdError envcdError, err error) *EnvcdResult {
+	return failure(envcdError, err)
 }
 
 // Failure0 response
-//  @param code of error code
-//  @param message of error reason
-//  @param httpStatusCode of response http status code
+//  @param envcdError of envcd error
 //  @return *EnvcdResult
-func Failure0(code string, message string, httpStatusCode int) *EnvcdResult {
+func Failure0(envcdErr envcdError) *EnvcdResult {
+	return failure(envcdErr, nil)
+}
+
+// failure response
+//  @param envcdError of envcd error
+//  @param err of error instance
+//  @return *EnvcdResult
+func failure(envcdErr envcdError, err error) *EnvcdResult {
+	message := envcdErr.message
+	envcdErr.message = fmt.Sprintf("%s [%s]", message, envcdErr.code)
+	if err != nil && err.Error() != "" {
+		envcdErr.message = fmt.Sprintf("%s [%s: %s]", message, envcdErr.code, err.Error())
+	}
 	return &EnvcdResult{
 		Data: map[string]interface{}{
-			CodeKey:    code,
-			MessageKey: message,
+			CodeKey:    envcdErr.code,
+			MessageKey: envcdErr.message,
 		},
-		HttpStatusCode: httpStatusCode,
+		HttpStatusCode: envcdErr.httpStatusCode,
 	}
 }

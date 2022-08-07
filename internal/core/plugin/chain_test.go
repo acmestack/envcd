@@ -26,6 +26,7 @@ import (
 	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/executor"
 	"github.com/acmestack/envcd/pkg/entity/result"
+	"github.com/acmestack/godkits/gox/errorsx"
 )
 
 func TestNewChain(t *testing.T) {
@@ -79,7 +80,7 @@ func TestExecutorChain_Execute(t *testing.T) {
 				index:     0,
 			},
 			args:    args{context: &context.Context{}},
-			wantRet: result.InternalServerErrorFailure("IIllegal state for plugin chain."),
+			wantRet: result.InternalFailureByError(errorsx.Err("IIllegal state for plugin chain.")),
 		},
 		{
 			fields: fields{
