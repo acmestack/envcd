@@ -66,8 +66,8 @@ func (openapi *Openapi) dictionary(ginCtx *gin.Context) {
 //  @param ginCtx gin context
 func (openapi *Openapi) createDictionary(ginCtx *gin.Context) {
 	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
-		dictParams := dictionaryDTO{}
-		if err := ginCtx.ShouldBindJSON(&dictParams); err != nil {
+		dictParams := &dictionaryDTO{}
+		if err := ginCtx.ShouldBindJSON(dictParams); err != nil {
 			fmt.Printf("Bind error, %v\n", err)
 			return result.InternalFailure(err)
 		}
@@ -104,8 +104,8 @@ func (openapi *Openapi) createDictionary(ginCtx *gin.Context) {
 //  @param ginCtx gin context
 func (openapi *Openapi) updateDictionary(ginCtx *gin.Context) {
 	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
-		dictParams := dictionUpdateDTO{}
-		if err := ginCtx.ShouldBindJSON(&dictParams); err != nil {
+		dictParams := &dictionUpdateDTO{}
+		if err := ginCtx.ShouldBindJSON(dictParams); err != nil {
 			fmt.Printf("Bind error, %v\n", err)
 			return result.InternalFailure(err)
 		}
