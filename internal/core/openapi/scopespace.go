@@ -18,7 +18,9 @@
 package openapi
 
 import (
+	"errors"
 	"fmt"
+	"time"
 
 	"github.com/acmestack/envcd/internal/core/storage/dao"
 	"github.com/acmestack/envcd/internal/pkg/entity"
@@ -27,6 +29,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type SingleScopeSpace struct {
+	scopeSpace entity.ScopeSpace
+	edit       bool
+}
+
+type UpdateScopeSpace struct {
+	ScopeSpaceName string `json:"scopeSpaceName"`
+	Note           string `json:"note"`
+	State          string `json:"state"`
+}
+
 // scopeSpace get scope space by id
 //  @receiver openapi openapi
 //  @param ginCtx gin context
@@ -34,11 +47,25 @@ func (openapi *Openapi) scopeSpace(ginCtx *gin.Context) {
 	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		scopeSpaceId := stringsx.ToInt(ginCtx.Param("scopeSpaceId"))
 		scopeSpace := entity.ScopeSpace{Id: scopeSpaceId}
-		scopeSpaceRet, err := dao.New(openapi.storage).SelectScopeSpace(scopeSpace)
+		daoAction := dao.New(openapi.storage)
+		scopeSpaceQueryRet, err := daoAction.SelectScopeSpace(scopeSpace)
 		if err != nil {
 			return result.InternalFailure(err)
 		}
-		return result.Success(scopeSpaceRet)
+		// TODO can refactor
+		if len(scopeSpaceQueryRet) == 0 {
+			return result.InternalFailure(errors.New("no data"))
+		}
+		// TODO can refactor
+		scopeSpaceRet := getDefaultScopeSpace(scopeSpaceQueryRet)
+		// query dictionary
+		count, dictCountErr := daoAction.SelectDictionaryCount(entity.Dictionary{ScopeSpaceId: scopeSpaceId})
+		if dictCountErr != nil {
+			return result.InternalFailure(dictCountErr)
+		}
+		// no dictionary => ScopeSpace name can edit
+		vo := SingleScopeSpace{scopeSpace: scopeSpaceRet, edit: count == 0}
+		return result.Success(vo)
 	})
 }
 
@@ -55,12 +82,52 @@ func (openapi *Openapi) createScopeSpace(ginCtx *gin.Context) {
 
 func (openapi *Openapi) updateScopeSpace(ginCtx *gin.Context) {
 	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
-		fmt.Println("hello world")
-		// create config
-		// ConfigDao.save();
-		// go LogDao.save()
-		// openapi.exchange.Put("key", "value")
-		return nil
+		updateScopeSpace := &UpdateScopeSpace{}
+		if err := ginCtx.ShouldBindJSON(updateScopeSpace); err != nil {
+			fmt.Printf("Bind error, %v\n", err)
+			return result.InternalFailure(err)
+		}
+		scopeSpaceId := stringsx.ToInt(ginCtx.Param("scopeSpaceId"))
+		daoAction := dao.New(openapi.storage)
+		scopeSpaceQueryRet, queryErr := daoAction.SelectScopeSpace(entity.ScopeSpace{Id: scopeSpaceId})
+		if queryErr != nil {
+			return result.InternalFailure(queryErr)
+		}
+		if len(scopeSpaceQueryRet) == 0 {
+			return result.InternalFailure(errors.New("no scopespace error"))
+		}
+		defaultScopeSpace := getDefaultScopeSpace(scopeSpaceQueryRet)
+		// name change, no dictionaries, just update mysql
+		if defaultScopeSpace.Name != updateScopeSpace.ScopeSpaceName {
+			updateRet, updateErr := daoAction.UpdateScopeSpace(entity.ScopeSpace{
+				Id:        scopeSpaceId,
+				Name:      updateScopeSpace.ScopeSpaceName,
+				Note:      updateScopeSpace.Note,
+				State:     updateScopeSpace.State,
+				UpdatedAt: time.Now(),
+			})
+			if updateErr != nil {
+				return result.InternalFailure(updateErr)
+			}
+			return result.Success(updateRet)
+		} else {
+			// name can't change, build no name scope space, judge state and update dictionary
+			// scope space state change, following to do
+			// 1.update scope space
+			// 2.update all dictionaries
+			if defaultScopeSpace.State == updateScopeSpace.State && defaultScopeSpace.Note == updateScopeSpace.Note {
+				return result.Success(nil)
+			} else if defaultScopeSpace.State == updateScopeSpace.State && defaultScopeSpace.Note != updateScopeSpace.Note {
+				updateRet, updateErr := daoAction.UpdateScopeSpace(entity.ScopeSpace{Note: updateScopeSpace.Note, UpdatedAt: time.Now()})
+				if updateErr != nil {
+					return result.InternalFailure(updateErr)
+				}
+				return result.Success(updateRet)
+			} else {
+				// TODO update scope space state and update dictionary state and note need update
+				return result.Success(nil)
+			}
+		}
 	})
 }
 
@@ -86,10 +153,10 @@ func (openapi *Openapi) scopespaces(ginCtx *gin.Context) {
 	})
 }
 
-func getDefaultScopeSpace(params []interface{}) (interface{}, error) {
-	if len(params) == 0 {
-		return nil, nil
-	} else {
-		return params[0], nil
-	}
+func getDefaultScopeSpace(params []entity.ScopeSpace) entity.ScopeSpace {
+	return params[0]
+}
+
+func updateScopeSpace(scopeSpaceId int, state string) {
+
 }
