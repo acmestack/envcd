@@ -20,18 +20,25 @@ package openapi
 import (
 	"fmt"
 
+	"github.com/acmestack/envcd/internal/core/storage/dao"
+	"github.com/acmestack/envcd/internal/pkg/entity"
 	"github.com/acmestack/envcd/pkg/entity/result"
+	"github.com/acmestack/godkits/gox/stringsx"
 	"github.com/gin-gonic/gin"
 )
 
+// scopeSpace get scope space by id
+//  @receiver openapi openapi
+//  @param ginCtx gin context
 func (openapi *Openapi) scopeSpace(ginCtx *gin.Context) {
 	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
-		fmt.Println("hello world")
-		// create config
-		// ConfigDao.save();
-		// go LogDao.save()
-		// openapi.exchange.Put("key", "value")
-		return nil
+		scopeSpaceId := stringsx.ToInt(ginCtx.Param("scopeSpaceId"))
+		scopeSpace := entity.ScopeSpace{Id: scopeSpaceId}
+		scopeSpaceRet, err := dao.New(openapi.storage).SelectScopeSpace(scopeSpace)
+		if err != nil {
+			return result.InternalFailure(err)
+		}
+		return result.Success(scopeSpaceRet)
 	})
 }
 
