@@ -90,6 +90,9 @@ func (openapi *Openapi) createDictionary(ginCtx *gin.Context) {
 		if PathErr != nil {
 			return result.Failure0(result.ErrorEtcdPath)
 		}
+		if stringsx.Empty(path) {
+			return result.Failure0(result.NilExchangePath)
+		}
 		exchangeErr := openapi.exchange.Put(path, dictParams.DictValue)
 		if exchangeErr != nil {
 			return result.InternalFailure(exchangeErr)
@@ -158,6 +161,9 @@ func (openapi *Openapi) removeDictionary(ginCtx *gin.Context) {
 		if etcdPathError != nil {
 			return result.Failure0(result.ErrorEtcdPath)
 		}
+		if stringsx.Empty(path) {
+			return result.Failure0(result.NilExchangePath)
+		}
 		if stringsx.NotEmpty(path) {
 			exchangeErr := openapi.exchange.Remove(path)
 			if exchangeErr != nil {
@@ -209,7 +215,7 @@ func buildEtcdPath(daoAction *dao.Dao, userId int, scopeSpaceId int, dictKey str
 	}
 	// build path
 	build := stringsx.Builder{}
-	// /scopeSpaceName/userName/dictKey, etc. /spring/moremind/userKey
+	// /scopeSpaceName/userName/dictKey, etc. /spring/moremind/userKey@version
 	_, err := build.JoinString("/", scopeSpace[0].Name, "/", user[0].Name, "/", dictKey)
 	if err != nil {
 		return "", err
@@ -246,6 +252,9 @@ func (openapi *Openapi) updateDictionaryState(dictId int, state string) *result.
 	}
 	defaultDictionary := getFirstDictionary(dictionary)
 	path, err := buildEtcdPath(daoAction, defaultDictionary.UserId, defaultDictionary.ScopeSpaceId, defaultDictionary.DictKey)
+	if stringsx.Empty(path) {
+		return result.Failure0(result.NilExchangePath)
+	}
 	if err != nil {
 		return result.Failure0(result.ErrorEtcdPath)
 	}

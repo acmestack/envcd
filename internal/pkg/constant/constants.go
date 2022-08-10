@@ -18,9 +18,12 @@
 package constant
 
 const (
+	// EnabledState enabled
 	EnabledState = "enabled"
 
+	// DisabledState disabled
 	DisabledState = "disabled"
 
+	// DeletedState deleted
 	DeletedState = "deleted"
 )

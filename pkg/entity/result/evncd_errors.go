@@ -25,8 +25,9 @@ var (
 	ErrorCreateUser               = aError("userCreateFault", "the user save error.", http.StatusOK)
 	ErrorUserPasswordIncorrect    = aError("userPasswordIncorrect", "the password is incorrect for user.", http.StatusOK)
 	ErrorDictionaryNotExist       = aError("dictionaryNotExist", "the dictionary is not exist.", http.StatusBadRequest)
-	ErrorEtcdPath                 = aError("etcd path error", "build etcd path eror", http.StatusBadRequest)
+	ErrorEtcdPath                 = aError("etcd path error", "build etcd path error", http.StatusBadRequest)
 	ErrorNotExistState            = aError("state not exist", "current state is error", http.StatusBadRequest)
+	NilExchangePath               = aError("exchange path error", "exchange path is nil", http.StatusBadRequest)
 	errorEnvcdInternalServerError = aError("envcdInternalServerError", "Envcd Internal Server Error, try again lately.", http.StatusInternalServerError)
 )
 
