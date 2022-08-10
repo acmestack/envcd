@@ -85,3 +85,11 @@ func (openapi *Openapi) scopespaces(ginCtx *gin.Context) {
 		return nil
 	})
 }
+
+func getDefaultScopeSpace(params []interface{}) (interface{}, error) {
+	if len(params) == 0 {
+		return nil, nil
+	} else {
+		return params[0], nil
+	}
+}
