@@ -209,7 +209,7 @@ func buildEtcdPath(daoAction *dao.Dao, userId int, scopeSpaceId int, dictKey str
 	if scopeSpaceErr != nil {
 		return "", scopeSpaceErr
 	}
-	// user and scopeSpace exist
+	// user and scopeSpace not exist
 	if len(user) == 0 || len(scopeSpace) == 0 {
 		return "", errors.New("user or spaceSpace not exist")
 	}
