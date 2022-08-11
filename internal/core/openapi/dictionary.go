@@ -30,7 +30,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type dictionaryDTO struct {
+type DictionaryDTO struct {
 	UserId       int    `json:"userId" binding:"required"`
 	ScopeSpaceId int    `json:"scopeSpaceId" binding:"required"`
 	DictKey      string `json:"dictKey" binding:"required"`
@@ -66,7 +66,7 @@ func (openapi *Openapi) dictionary(ginCtx *gin.Context) {
 //  @param ginCtx gin context
 func (openapi *Openapi) createDictionary(ginCtx *gin.Context) {
 	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
-		dictParams := &dictionaryDTO{}
+		dictParams := &DictionaryDTO{}
 		if err := ginCtx.ShouldBindJSON(dictParams); err != nil {
 			fmt.Printf("Bind error, %v\n", err)
 			return result.InternalFailure(err)
@@ -284,7 +284,7 @@ func (openapi *Openapi) updateDictionaryState(dictId int, state string) *result.
 		}
 		break
 	default:
-		result.Failure0(result.ErrorNotExistState)
+		return result.Failure0(result.ErrorNotExistState)
 	}
 	return nil
 }

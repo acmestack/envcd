@@ -23,6 +23,7 @@ import (
 	"time"
 
 	"github.com/acmestack/envcd/internal/core/storage/dao"
+	"github.com/acmestack/envcd/internal/pkg/constant"
 	"github.com/acmestack/envcd/internal/pkg/entity"
 	"github.com/acmestack/envcd/pkg/entity/result"
 	"github.com/acmestack/godkits/gox/stringsx"
@@ -125,6 +126,7 @@ func (openapi *Openapi) updateScopeSpace(ginCtx *gin.Context) {
 				}
 				return result.Success(updateRet)
 			} else {
+				openapi.updateScopeSpaceState(defaultScopeSpace, updateScopeSpace.State)
 				// if defaultScopeSpace.State != updateScopeSpace.State && defaultScopeSpace.Note == updateScopeSpace.Note
 				// defaultScopeSpace.State != updateScopeSpace.State && defaultScopeSpace.Note != updateScopeSpace.Note
 				// TODO update scope space state and update dictionary state and note need update
@@ -162,15 +164,44 @@ func getDefaultScopeSpace(params []entity.ScopeSpace) entity.ScopeSpace {
 }
 
 func updateScopeSpaceAndNote() {
-	updateScopeSpace(1, "22")
+	//updateScopeSpace(1, "22")
 }
 
-func updateScopeSpace(defaultScopeSpace entity.ScopeSpace, newState string) *result.EnvcdResult {
+func (openapi *Openapi) updateScopeSpaceState(defaultScopeSpace entity.ScopeSpace, newState string, note ...string) *result.EnvcdResult {
 	if stringsx.Empty(newState) {
 		return result.InternalFailure(errors.New("current state is nil"))
 	}
 	// defaultState must not equal new state
-
-	switch newState {
+	// query exist dictionary
+	daoAction := dao.New(openapi.storage)
+	dictionary, queryDictErr := daoAction.SelectDictionary(entity.Dictionary{ScopeSpaceId: defaultScopeSpace.Id})
+	if queryDictErr != nil {
+		return result.InternalFailure(queryDictErr)
 	}
+	// no dictionary
+	if len(dictionary) == 0 {
+		var scopeSpace int64
+		var updateErr error
+		if defaultScopeSpace.Note == note[0] {
+			scopeSpace, updateErr = daoAction.UpdateScopeSpace(entity.ScopeSpace{Id: defaultScopeSpace.Id, State: newState, UpdatedAt: time.Now()})
+		} else {
+			scopeSpace, updateErr = daoAction.UpdateScopeSpace(entity.ScopeSpace{Id: defaultScopeSpace.Id, Note: note[0], State: newState, UpdatedAt: time.Now()})
+		}
+		if updateErr != nil {
+			return result.InternalFailure(updateErr)
+		}
+		return result.Success(scopeSpace)
+	} else {
+		switch newState {
+		case constant.EnabledState:
+			// if new state is enabled,change scopeSpace state and change dictionary state, end generate etcd path and put
+			break
+		case constant.DisabledState:
+		case constant.DeletedState:
+			break
+		default:
+			return result.Failure0(result.ErrorNotExistState)
+		}
+	}
+	return nil
 }
