@@ -71,6 +71,7 @@ func (openapi *Openapi) scopeSpace(ginCtx *gin.Context) {
 
 func (openapi *Openapi) createScopeSpace(ginCtx *gin.Context) {
 	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+		// query user have same scopeSpace for one person.
 		fmt.Println("hello world")
 		// create config
 		// ConfigDao.save();
@@ -124,6 +125,8 @@ func (openapi *Openapi) updateScopeSpace(ginCtx *gin.Context) {
 				}
 				return result.Success(updateRet)
 			} else {
+				// if defaultScopeSpace.State != updateScopeSpace.State && defaultScopeSpace.Note == updateScopeSpace.Note
+				// defaultScopeSpace.State != updateScopeSpace.State && defaultScopeSpace.Note != updateScopeSpace.Note
 				// TODO update scope space state and update dictionary state and note need update
 				return result.Success(nil)
 			}
@@ -134,10 +137,11 @@ func (openapi *Openapi) updateScopeSpace(ginCtx *gin.Context) {
 func (openapi *Openapi) removeScopeSpace(ginCtx *gin.Context) {
 	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		fmt.Println("hello world")
-		// create config
-		// ConfigDao.save();
-		// go LogDao.save()
-		// openapi.exchange.Put("key", "value")
+		// TODO remove scopeSpace
+		// 1.query dictionary by scopeSpaceId
+		// 2.if no dictionary, then change scopeSpace state to deleted
+		// 3.if there are some dictionaries, update scopeSpace to deleted and
+		// change batch change dictionaries to deleted state and remove etcd data
 		return nil
 	})
 }
@@ -157,6 +161,16 @@ func getDefaultScopeSpace(params []entity.ScopeSpace) entity.ScopeSpace {
 	return params[0]
 }
 
-func updateScopeSpace(scopeSpaceId int, state string) {
+func updateScopeSpaceAndNote() {
+	updateScopeSpace(1, "22")
+}
 
+func updateScopeSpace(defaultScopeSpace entity.ScopeSpace, newState string) *result.EnvcdResult {
+	if stringsx.Empty(newState) {
+		return result.InternalFailure(errors.New("current state is nil"))
+	}
+	// defaultState must not equal new state
+
+	switch newState {
+	}
 }
