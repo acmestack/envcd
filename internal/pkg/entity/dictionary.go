@@ -26,6 +26,7 @@ type Dictionary struct {
 	ScopeSpaceId int       `column:"scopespace_id"`
 	DictKey      string    `column:"dict_key"`
 	DictValue    string    `column:"dict_value"`
+	Version      string    `column:"version"`
 	State        string    `column:"state"`
 	CreatedAt    time.Time `column:"created_at"`
 	UpdatedAt    time.Time `column:"updated_at"`
