@@ -27,6 +27,7 @@
             <if test="{Dictionary.scopespace_id} != nil and {Dictionary.scopespace_id} != 0">AND scopespace_id = #{Dictionary.scopespace_id} </if>
             <if test="{Dictionary.dict_key} != nil">AND dict_key = #{Dictionary.dict_key} </if>
             <if test="{Dictionary.dict_value} != nil">AND dict_value = #{Dictionary.dict_value} </if>
+            <if test="{Dictionary.version} != nil">AND version = #{Dictionary.version} </if>
             <if test="{Dictionary.state} != nil">AND state = #{Dictionary.state} </if>
             <if test="{Dictionary.created_at} != nil">AND created_at = #{Dictionary.created_at} </if>
             <if test="{Dictionary.updated_at} != nil">AND updated_at = #{Dictionary.updated_at} </if>
@@ -41,6 +42,7 @@
             <if test="{Dictionary.scopespace_id} != nil and {Dictionary.scopespace_id} != 0">AND scopespace_id = #{Dictionary.scopespace_id} </if>
             <if test="{Dictionary.dict_key} != nil">AND dict_key = #{Dictionary.dict_key} </if>
             <if test="{Dictionary.dict_value} != nil">AND dict_value = #{Dictionary.dict_value} </if>
+            <if test="{Dictionary.version} != nil">AND version = #{Dictionary.version} </if>
             <if test="{Dictionary.state} != nil">AND state = #{Dictionary.state} </if>
             <if test="{Dictionary.created_at} != nil">AND created_at = #{Dictionary.created_at} </if>
             <if test="{Dictionary.updated_at} != nil">AND updated_at = #{Dictionary.updated_at} </if>
@@ -55,6 +57,7 @@
         #{Dictionary.scopespace_id},
         #{Dictionary.dict_key},
         #{Dictionary.dict_value},
+        #{Dictionary.version},
         #{Dictionary.state},
         #{Dictionary.created_at},
         #{Dictionary.updated_at}
@@ -65,7 +68,8 @@
         INSERT INTO dictionary (id,user_id,scopespace_id,dict_key,dict_value,state,created_at,updated_at)
         VALUES
         <foreach item="item" index="index" collection="{0}" open="" separator="," close="">
-            (#{item.Dictionary.id},#{item.Dictionary.user_id},#{item.Dictionary.scopespace_id},#{item.Dictionary.dict_key},#{item.Dictionary.dict_value},#{item.Dictionary.state},#{item.Dictionary.created_at},#{item.Dictionary.updated_at})
+            (#{item.Dictionary.id},#{item.Dictionary.user_id},#{item.Dictionary.scopespace_id},#{item.Dictionary.dict_key},#{item.Dictionary.dict_value},
+            #{item.Dictionary.version},#{item.Dictionary.state},#{item.Dictionary.created_at},#{item.Dictionary.updated_at})
         </foreach>
     </insert>
 

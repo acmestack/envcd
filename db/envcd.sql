@@ -42,6 +42,7 @@ CREATE TABLE `dictionary` (
   `scopespace_id` int(10) unsigned NOT NULL,
   `dict_key` varchar(200) NOT NULL,
   `dict_value` text NOT NULL,
+  `version` varchar(20) NOT NULL,
   `state` varchar(12) NOT NULL DEFAULT 'enabled' COMMENT 'enabled; disabled; deleted',
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
