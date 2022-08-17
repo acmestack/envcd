@@ -100,4 +100,9 @@
             <if test="{Dictionary.updated_at} != nil">AND updated_at = #{Dictionary.updated_at} </if>
         </where>
     </delete>
+
+    <delete id="deleteDictionaryByUserId">
+        UPDATE dictionary set state = "deleted"
+        WHERE user_id =  #{Dictionary.user_id}
+    </delete>
 </mapper>

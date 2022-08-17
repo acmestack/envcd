@@ -65,3 +65,9 @@ func (dao *Dao) DeletePermission(model entity.Permission) (int64, error) {
 	err := dao.storage.NewSession().Delete("dao.deletePermission").Param(model).Result(&ret)
 	return ret, err
 }
+
+func (dao *Dao) DeletePermissionByUserId(model entity.Permission) (int64, error) {
+	var ret int64
+	err := dao.storage.NewSession().Delete("dao.deletePermissionByUserId").Param(model).Result(&ret)
+	return ret, err
+}

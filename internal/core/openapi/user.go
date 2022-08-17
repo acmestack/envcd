@@ -211,8 +211,29 @@ type userVO struct {
 
 func (openapi *Openapi) removeUser(ginCtx *gin.Context) {
 	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
-		fmt.Println("hello world")
-		return nil
+		id := stringsx.ToInt(ginCtx.Param("userId"))
+		param := entity.User{Id: id}
+
+		daoAction := dao.New(openapi.storage)
+		user, err := daoAction.SelectUserById(param)
+		if err != nil {
+			log.Error("select users error = %v", err)
+			return result.Failure(result.ErrorUserNotFound, err)
+		}
+		if user.Id == 0 {
+			return result.Success(nil)
+		}
+		// update user state to deleted
+		user.State = userStateDeleted
+		daoAction.UpdateUser(user)
+
+		// update user dictionary state to deleted
+		daoAction.DeleteDictionaryByUserId(entity.Dictionary{UserId: user.Id})
+
+		// update user permission state to deleted
+		daoAction.DeletePermissionByUserId(entity.Permission{UserId: user.Id})
+
+		return result.Success(nil)
 	})
 }
 

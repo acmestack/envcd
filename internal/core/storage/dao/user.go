@@ -26,6 +26,12 @@ func init() {
 	gobatis.RegisterModel(&entity.User{})
 }
 
+func (dao *Dao) SelectUserById(model entity.User) (entity.User, error) {
+	var data entity.User
+	err := dao.storage.NewSession().Select("dao.selectUserById").Param(model).Result(&data)
+	return data, err
+}
+
 func (dao *Dao) SelectUser(model entity.User) ([]entity.User, error) {
 	var dataList []entity.User
 	err := dao.storage.NewSession().Select("dao.selectUser").Param(model).Result(&dataList)

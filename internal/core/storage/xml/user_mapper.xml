@@ -19,6 +19,11 @@
 <mapper namespace="dao">
     <sql id="columns_id">id,name,password,salt,identity,state,created_at,updated_at</sql>
 
+    <select id="selectUserById">
+        SELECT <include refid="columns_id"> </include> FROM user
+        where state != "deleted" AND id = #{User.id}
+    </select>
+
     <select id="selectUser">
         SELECT <include refid="columns_id"> </include> FROM user
         <where>
