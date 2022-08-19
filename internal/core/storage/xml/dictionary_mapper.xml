@@ -17,7 +17,7 @@
   -->
 
 <mapper namespace="dao">
-    <sql id="columns_id">id,user_id,scopespace_id,dict_key,dict_value,state,created_at,updated_at</sql>
+    <sql id="columns_id">id,user_id,scopespace_id,dict_key,dict_value,version,state,created_at,updated_at</sql>
 
     <select id="selectDictionary">
         SELECT <include refid="columns_id"> </include> FROM dictionary
@@ -87,6 +87,22 @@
         WHERE id = #{Dictionary.id}
     </update>
 
+    <update id="updateDictionaryBatch">
+        UPDATE dictionary
+        SET state =
+        <foreach collection="{0}" index="index" item="item" separator=" " open="CASE id " close=" END,">
+            WHEN #{item.Dictionary.id} THEN #{item.Dictionary.state}
+        </foreach>
+        updated_at =
+        <foreach collection="{0}" index="index" item="item" separator=" " open="CASE id " close=" END ">
+            WHEN #{item.Dictionary.id} THEN #{item.Dictionary.updated_at}
+        </foreach>
+        WHERE id IN
+        <foreach collection="{0}" index="index" item="item" open="(" close=")" separator=",">
+            #{item.Dictionary.id}
+        </foreach>
+    </update>
+
     <delete id="deleteDictionary">
         DELETE FROM dictionary
         <where>
@@ -104,5 +120,13 @@
     <delete id="deleteDictionaryByUserId">
         UPDATE dictionary set state = "deleted"
         WHERE user_id =  #{Dictionary.user_id}
+    </delete>
+
+    <delete id="deleteDictionaryBatch">
+        DELETE FROM dictionary
+        WHERE id IN
+        <foreach collection="{0}" index="index" item="item" open="(" close=")" separator=",">
+            #{item.Dictionary.id}
+        </foreach>
     </delete>
 </mapper>
