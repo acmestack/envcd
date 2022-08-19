@@ -60,6 +60,12 @@ func (dao *Dao) UpdateDictionary(model entity.Dictionary) (int64, error) {
 	return ret, err
 }
 
+func (dao *Dao) UpdateDictionaryBatch(model []entity.Dictionary) (int64, error) {
+	var ret int64
+	err := dao.storage.NewSession().Update("dao.updateDictionaryBatch").Param(model).Result(&ret)
+	return ret, err
+}
+
 func (dao *Dao) DeleteDictionary(model entity.Dictionary) (int64, error) {
 	var ret int64
 	err := dao.storage.NewSession().Delete("dao.deleteDictionary").Param(model).Result(&ret)
@@ -69,5 +75,11 @@ func (dao *Dao) DeleteDictionary(model entity.Dictionary) (int64, error) {
 func (dao *Dao) DeleteDictionaryByUserId(model entity.Dictionary) (int64, error) {
 	var ret int64
 	err := dao.storage.NewSession().Delete("dao.deleteDictionaryByUserId").Param(model).Result(&ret)
+	return ret, err
+}
+
+func (dao *Dao) DeleteDictionaryBatch(model []entity.Dictionary) (int64, error) {
+	var ret int64
+	err := dao.storage.NewSession().Delete("dao.deleteDictionaryBatch").Param(model).Result(&ret)
 	return ret, err
 }

@@ -75,6 +75,22 @@
         WHERE id = #{ScopeSpace.id}
     </update>
 
+    <update id="updateScopeSpaceBatch">
+        UPDATE scopespace
+        SET state =
+        <foreach collection="{0}" index="index" item="item" separator=" " open="CASE id " close=" END,">
+            WHEN #{item.ScopeSpace.id} THEN #{item.ScopeSpace.state}
+        </foreach>
+        updated_at =
+        <foreach collection="{0}" index="index" item="item" separator=" " open="CASE id " close=" END ">
+            WHEN #{item.ScopeSpace.id} THEN #{item.ScopeSpace.updated_at}
+        </foreach>
+        WHERE id IN
+        <foreach collection="{0}" index="index" item="item" open="(" close=")" separator=",">
+            #{item.ScopeSpace.id}
+        </foreach>
+    </update>
+
     <delete id="deleteScopeSpace">
         DELETE FROM scopespace
         <where>
@@ -85,5 +101,13 @@
             <if test="{ScopeSpace.created_at} != nil">AND created_at = #{ScopeSpace.created_at} </if>
             <if test="{ScopeSpace.updated_at} != nil">AND updated_at = #{ScopeSpace.updated_at} </if>
         </where>
+    </delete>
+
+    <delete id="deleteScopeSpaceBatch">
+        DELETE FROM scopespace
+        WHERE id IN
+        <foreach collection="{0}" index="index" item="item" open="(" close=")" separator=",">
+            #{item.ScopeSpace.id}
+        </foreach>
     </delete>
 </mapper>

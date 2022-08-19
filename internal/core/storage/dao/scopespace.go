@@ -60,8 +60,20 @@ func (dao *Dao) UpdateScopeSpace(model entity.ScopeSpace) (int64, error) {
 	return ret, err
 }
 
+func (dao *Dao) UpdateScopeSpaceBatch(model []entity.ScopeSpace) (int64, error) {
+	var ret int64
+	err := dao.storage.NewSession().Update("dao.updateScopeSpaceBatch").Param(model).Result(&ret)
+	return ret, err
+}
+
 func (dao *Dao) DeleteScopeSpace(model entity.ScopeSpace) (int64, error) {
 	var ret int64
 	err := dao.storage.NewSession().Delete("dao.deleteScopeSpace").Param(model).Result(&ret)
+	return ret, err
+}
+
+func (dao *Dao) DeleteScopeSpaceBatch(model []entity.ScopeSpace) (int64, error) {
+	var ret int64
+	err := dao.storage.NewSession().Delete("dao.deleteScopeSpaceBatch").Param(model).Result(&ret)
 	return ret, err
 }
