@@ -174,7 +174,7 @@ func (openapi *Openapi) updateScopeSpaceState(defaultScopeSpace entity.ScopeSpac
 	// defaultState must not equal new state
 	// query exist dictionary
 	daoAction := dao.New(openapi.storage)
-	dictionary, queryDictErr := daoAction.SelectDictionary(entity.Dictionary{ScopeSpaceId: defaultScopeSpace.Id})
+	dictionary, queryDictErr := daoAction.SelectDictionary(entity.Dictionary{ScopeSpaceId: defaultScopeSpace.Id}, nil)
 	if queryDictErr != nil {
 		return result.InternalFailure(queryDictErr)
 	}

@@ -27,6 +27,7 @@ import (
 	"github.com/acmestack/gobatis/datasource"
 	"github.com/acmestack/gobatis/factory"
 	"github.com/acmestack/godkits/gox/errorsx"
+	"github.com/acmestack/pagehelper"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -39,8 +40,9 @@ func Start(mysql *config.Storage) *Storage {
 	// load sqlmap
 	loadSqlMap()
 	// create SessionManager
-	db := initDB(mysql)
-	return &Storage{storage: mysql, sessionManager: gobatis.NewSessionManager(db)}
+	dbFactory := initFactory(mysql)
+	pageHelpFactory := pagehelper.New(dbFactory)
+	return &Storage{storage: mysql, sessionManager: gobatis.NewSessionManager(pageHelpFactory)}
 }
 
 // NewSession new session
@@ -56,7 +58,7 @@ func (storage *Storage) NewSession() *gobatis.Session {
 // InitDB init sql session manager
 //  @param mysql config
 //  @return *gobatis.SessionManager sessionManager
-func initDB(mysql *config.Storage) factory.Factory {
+func initFactory(mysql *config.Storage) factory.Factory {
 	return gobatis.NewFactory(
 		gobatis.SetMaxConn(100),
 		gobatis.SetMaxIdleConn(50),

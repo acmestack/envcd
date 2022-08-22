@@ -21,13 +21,13 @@ import "time"
 
 type Dictionary struct {
 	//TableName gobatis.TableName `dictionary`
-	Id           int       `column:"id"`
-	UserId       int       `column:"user_id"`
-	ScopeSpaceId int       `column:"scopespace_id"`
-	DictKey      string    `column:"dict_key"`
-	DictValue    string    `column:"dict_value"`
-	Version      string    `column:"version"`
-	State        string    `column:"state"`
-	CreatedAt    time.Time `column:"created_at"`
-	UpdatedAt    time.Time `column:"updated_at"`
+	Id           int       `column:"id" json:"id"`
+	UserId       int       `column:"user_id" json:"userId"`
+	ScopeSpaceId int       `column:"scopespace_id" json:"scopeSpaceId"`
+	DictKey      string    `column:"dict_key" json:"dictKey"`
+	DictValue    string    `column:"dict_value" json:"dictValue"`
+	Version      string    `column:"version" json:"version"`
+	State        string    `column:"state" json:"state"`
+	CreatedAt    time.Time `column:"created_at" json:"createdAt"`
+	UpdatedAt    time.Time `column:"updated_at" json:"updatedAt"`
 }

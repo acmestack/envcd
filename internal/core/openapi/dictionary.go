@@ -18,6 +18,7 @@
 package openapi
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"time"
@@ -27,6 +28,7 @@ import (
 	"github.com/acmestack/envcd/internal/pkg/entity"
 	"github.com/acmestack/envcd/pkg/entity/result"
 	"github.com/acmestack/godkits/gox/stringsx"
+	"github.com/acmestack/pagehelper"
 	"github.com/gin-gonic/gin"
 )
 
@@ -45,6 +47,14 @@ type dictionUpdateDTO struct {
 	State     string `json:"state"`
 }
 
+type dictionaryVO struct {
+	PageNum      int64               `json:"pageNum"`
+	PageSize     int64               `json:"pageSize"`
+	Total        int64               `json:"total"`
+	TotalPage    int64               `json:"totalPage"`
+	Dictionaries []entity.Dictionary `json:"dictionaries"`
+}
+
 // dictionary query single dictionary mapping
 //  @receiver openapi common openapi
 //  @param ginCtx gin context
@@ -53,11 +63,11 @@ func (openapi *Openapi) dictionary(ginCtx *gin.Context) {
 		// get user id from gin context
 		dictId := stringsx.ToInt(ginCtx.Param("dictionaryId"))
 		dict := entity.Dictionary{Id: dictId}
-		dictionary, err := dao.New(openapi.storage).SelectDictionary(dict)
+		dictionary, err := dao.New(openapi.storage).SelectDictionary(dict, nil)
 		if err != nil {
 			return result.InternalFailure(err)
 		}
-		return result.Success(dictionary)
+		return result.Success(getFirstDictionary(dictionary))
 	})
 }
 
@@ -142,7 +152,7 @@ func (openapi *Openapi) removeDictionary(ginCtx *gin.Context) {
 		dict := entity.Dictionary{Id: dictId}
 		// query dictionary exist
 		daoAction := dao.New(openapi.storage)
-		dictionary, err := daoAction.SelectDictionary(dict)
+		dictionary, err := daoAction.SelectDictionary(dict, nil)
 		if err != nil {
 			return result.InternalFailure(err)
 		}
@@ -177,12 +187,23 @@ func (openapi *Openapi) removeDictionary(ginCtx *gin.Context) {
 
 func (openapi *Openapi) dictionaries(ginCtx *gin.Context) {
 	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
-		fmt.Println("hello world")
-		// create config
-		// ConfigDao.save();
-		// go LogDao.save()
-		// openapi.exchange.Put("key", "value")
-		return nil
+		pageNum := stringsx.ToInt(ginCtx.DefaultQuery("page", "1"))
+		pageSize := stringsx.ToInt(ginCtx.DefaultQuery("pageSize", "10"))
+		daoAction := dao.New(openapi.storage)
+		ctx := pagehelper.C(context.Background()).PageWithCount(int64(pageNum-1), int64(pageSize), "").Build()
+		dictionary, err := daoAction.SelectDictionary(entity.Dictionary{}, ctx)
+		if err != nil {
+			return result.InternalFailure(err)
+		}
+		pageInfo := pagehelper.GetPageInfo(ctx)
+		dictionaries := &dictionaryVO{
+			PageNum:      pageInfo.Page + 1,
+			PageSize:     pageInfo.PageSize,
+			Total:        pageInfo.GetTotal(),
+			TotalPage:    pageInfo.GetTotalPage(),
+			Dictionaries: dictionary,
+		}
+		return result.Success(dictionaries)
 	})
 }
 
@@ -243,7 +264,7 @@ func doLog(daoAction *dao.Dao, userId int, message string) {
 //  @return *result.EnvcdResult
 func (openapi *Openapi) updateDictionaryState(dictId int, state string) *result.EnvcdResult {
 	daoAction := dao.New(openapi.storage)
-	dictionary, dictErr := daoAction.SelectDictionary(entity.Dictionary{Id: dictId})
+	dictionary, dictErr := daoAction.SelectDictionary(entity.Dictionary{Id: dictId}, nil)
 	if dictErr != nil {
 		return result.InternalFailure(dictErr)
 	}
