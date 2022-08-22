@@ -48,7 +48,7 @@ type dictionUpdateDTO struct {
 }
 
 type PageListVO struct {
-	PageNum   int64       `json:"pageNum"`
+	Page      int64       `json:"page"`
 	PageSize  int64       `json:"pageSize"`
 	Total     int64       `json:"total"`
 	TotalPage int64       `json:"totalPage"`
@@ -197,7 +197,7 @@ func (openapi *Openapi) dictionaries(ginCtx *gin.Context) {
 		}
 		pageInfo := pagehelper.GetPageInfo(ctx)
 		dictionaries := &PageListVO{
-			PageNum:   pageInfo.Page + 1,
+			Page:      pageInfo.Page + 1,
 			PageSize:  pageInfo.PageSize,
 			Total:     pageInfo.GetTotal(),
 			TotalPage: pageInfo.GetTotalPage(),
