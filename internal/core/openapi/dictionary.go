@@ -47,12 +47,12 @@ type dictionUpdateDTO struct {
 	State     string `json:"state"`
 }
 
-type DictionaryVO struct {
-	PageNum      int64               `json:"pageNum"`
-	PageSize     int64               `json:"pageSize"`
-	Total        int64               `json:"total"`
-	TotalPage    int64               `json:"totalPage"`
-	Dictionaries []entity.Dictionary `json:"dictionaries"`
+type PageListVO struct {
+	PageNum   int64       `json:"pageNum"`
+	PageSize  int64       `json:"pageSize"`
+	Total     int64       `json:"total"`
+	TotalPage int64       `json:"totalPage"`
+	List      interface{} `json:"list"`
 }
 
 // dictionary query single dictionary mapping
@@ -196,12 +196,12 @@ func (openapi *Openapi) dictionaries(ginCtx *gin.Context) {
 			return result.InternalFailure(err)
 		}
 		pageInfo := pagehelper.GetPageInfo(ctx)
-		dictionaries := &DictionaryVO{
-			PageNum:      pageInfo.Page + 1,
-			PageSize:     pageInfo.PageSize,
-			Total:        pageInfo.GetTotal(),
-			TotalPage:    pageInfo.GetTotalPage(),
-			Dictionaries: dictionary,
+		dictionaries := &PageListVO{
+			PageNum:   pageInfo.Page + 1,
+			PageSize:  pageInfo.PageSize,
+			Total:     pageInfo.GetTotal(),
+			TotalPage: pageInfo.GetTotalPage(),
+			List:      dictionary,
 		}
 		return result.Success(dictionaries)
 	})
