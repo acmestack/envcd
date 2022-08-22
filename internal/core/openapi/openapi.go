@@ -102,7 +102,7 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 	// user group routers
 	usersGroup := v1.Group("/users")
 	{
-		// fuzzy filter => ?page=2&per_page=100&name=
+		// fuzzy filter => ?page=2&name=
 		usersGroup.GET("", openapi.users)
 		usersGroup.POST("", openapi.createUser)
 		usersGroup.PUT("/:userId", openapi.updateUser)
@@ -110,22 +110,22 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 		usersGroup.DELETE("/:userId", openapi.removeUser)
 
 		// user's all scopespaces
-		// fuzzy filter => ?page=2&per_page=100&scopespace_name=
+		// fuzzy filter => ?page=2&scopespace-name=
 		usersGroup.GET("/:userId/scopespaces", openapi.userScopeSpaces)
 
 		// user's all dictionaries under one scopespace
-		// fuzzy filter => ?page=2&per_page=100&scopespace_name=abc&dictionary_key=aaa
+		// fuzzy filter => ?page=2&scopespace-name=abc&dictionary-key=aaa
 		usersGroup.GET("/:userId/scopespace/:scopeSpaceId/dictionaries", openapi.userDictionariesUnderScopeSpace)
 
 		// user's all dictionaries
-		// fuzzy filter => ?page=2&per_page=100&dictionary_key=aaa
+		// fuzzy filter => ?page=2&dictionary-key=aaa
 		usersGroup.GET("/:userId/dictionaries", openapi.userDictionaries)
 	}
 
 	// scopespaces group routers
 	scopeSpacesGroup := v1.Group("/scopespaces")
 	{
-		// fuzzy filter => ?page=2&per_page=100&userId=123&scopespace_name=
+		// fuzzy filter => ?page=2&user=abc&scopespace-name=
 		scopeSpacesGroup.GET("", openapi.scopespaces)
 		scopeSpacesGroup.POST("", openapi.createScopeSpace)
 		scopeSpacesGroup.GET("/:scopeSpaceId", openapi.scopeSpace)
@@ -136,7 +136,7 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 	// dictionaries group routers
 	dictionariesGroup := v1.Group("/dictionaries")
 	{
-		// fuzzy filter => ?page=2&per_page=100&userId=123&name=
+		// fuzzy filter => ?page=2&user=abc&dictionary-key=
 		dictionariesGroup.GET("", openapi.dictionaries)
 		dictionariesGroup.POST("", openapi.createDictionary)
 		dictionariesGroup.GET("/:dictionaryId", openapi.dictionary)
