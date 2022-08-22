@@ -18,6 +18,8 @@
 package dao
 
 import (
+	"context"
+
 	"github.com/acmestack/envcd/internal/pkg/entity"
 	"github.com/acmestack/gobatis"
 )
@@ -26,9 +28,14 @@ func init() {
 	gobatis.RegisterModel(&entity.Dictionary{})
 }
 
-func (dao *Dao) SelectDictionary(model entity.Dictionary) ([]entity.Dictionary, error) {
+func (dao *Dao) SelectDictionary(model entity.Dictionary, ctx context.Context) ([]entity.Dictionary, error) {
 	var dataList []entity.Dictionary
-	err := dao.storage.NewSession().Select("dao.selectDictionary").Param(model).Result(&dataList)
+	var err error
+	if ctx != nil {
+		err = dao.storage.NewSession().SetContext(ctx).Select("dao.selectDictionary").Param(model).Result(&dataList)
+	} else {
+		err = dao.storage.NewSession().Select("dao.selectDictionary").Param(model).Result(&dataList)
+	}
 	return dataList, err
 }
 
