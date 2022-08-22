@@ -47,7 +47,7 @@ type dictionUpdateDTO struct {
 	State     string `json:"state"`
 }
 
-type dictionaryVO struct {
+type DictionaryVO struct {
 	PageNum      int64               `json:"pageNum"`
 	PageSize     int64               `json:"pageSize"`
 	Total        int64               `json:"total"`
@@ -196,7 +196,7 @@ func (openapi *Openapi) dictionaries(ginCtx *gin.Context) {
 			return result.InternalFailure(err)
 		}
 		pageInfo := pagehelper.GetPageInfo(ctx)
-		dictionaries := &dictionaryVO{
+		dictionaries := &DictionaryVO{
 			PageNum:      pageInfo.Page + 1,
 			PageSize:     pageInfo.PageSize,
 			Total:        pageInfo.GetTotal(),
