@@ -215,6 +215,7 @@ func (openapi *Openapi) dictionaries(ginCtx *gin.Context) {
 //  @return string path
 //  @return error message
 func buildEtcdPath(daoAction *dao.Dao, dictionary entity.Dictionary) (string, error) {
+	// todo user name from jwt
 	user, userErr := daoAction.SelectUser(entity.User{Id: dictionary.UserId})
 	if userErr != nil {
 		return "", userErr
