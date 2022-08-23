@@ -23,10 +23,12 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/acmestack/envcd/internal/core/storage"
 	"github.com/acmestack/envcd/internal/core/storage/dao"
 	"github.com/acmestack/envcd/internal/pkg/constant"
 	"github.com/acmestack/envcd/internal/pkg/entity"
 	"github.com/acmestack/envcd/pkg/entity/result"
+	"github.com/acmestack/godkits/array"
 	"github.com/acmestack/godkits/gox/stringsx"
 	"github.com/acmestack/pagehelper"
 	"github.com/gin-gonic/gin"
@@ -47,12 +49,21 @@ type dictionUpdateDTO struct {
 	State     string `json:"state"`
 }
 
-type PageListVO struct {
-	Page      int64       `json:"page"`
-	PageSize  int64       `json:"pageSize"`
-	Total     int64       `json:"total"`
-	TotalPage int64       `json:"totalPage"`
-	List      interface{} `json:"list"`
+func dictionary(storage *storage.Storage, dictionaryId *int, ginCtx *gin.Context) (*entity.Dictionary, error) {
+	// get user id from gin context
+	dictId := stringsx.ToInt(ginCtx.Param("dictionaryId"))
+	if dictionaryId != nil {
+		dictId = *dictionaryId
+	}
+	dict := entity.Dictionary{Id: dictId}
+	dictionaries, err := dao.New(storage).SelectDictionary(dict, nil)
+	if err != nil {
+		return nil, err
+	}
+	if array.Empty(dictionaries) {
+		return nil, nil
+	}
+	return &dictionaries[0], nil
 }
 
 // dictionary query single dictionary mapping
@@ -60,14 +71,11 @@ type PageListVO struct {
 //  @param ginCtx gin context
 func (openapi *Openapi) dictionary(ginCtx *gin.Context) {
 	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
-		// get user id from gin context
-		dictId := stringsx.ToInt(ginCtx.Param("dictionaryId"))
-		dict := entity.Dictionary{Id: dictId}
-		dictionary, err := dao.New(openapi.storage).SelectDictionary(dict, nil)
+		dict, err := dictionary(openapi.storage, nil, ginCtx)
 		if err != nil {
 			return result.InternalFailure(err)
 		}
-		return result.Success(getFirstDictionary(dictionary))
+		return result.Success(dict)
 	})
 }
 
@@ -96,7 +104,7 @@ func (openapi *Openapi) createDictionary(ginCtx *gin.Context) {
 		if err != nil {
 			return result.InternalFailure(err)
 		}
-		path, PathErr := buildEtcdPath(daoAction, dictParams.UserId, dictParams.ScopeSpaceId, dictionary.DictKey)
+		path, PathErr := buildEtcdPath(daoAction, dictionary)
 		if PathErr != nil {
 			return result.Failure0(result.ErrorEtcdPath)
 		}
@@ -107,7 +115,7 @@ func (openapi *Openapi) createDictionary(ginCtx *gin.Context) {
 		if exchangeErr != nil {
 			return result.InternalFailure(exchangeErr)
 		}
-		doLog(daoAction, dictParams.UserId, "create dictionary and insert into mysql and etcd")
+		openapi.doOperationLogging(dictParams.UserId, "create dictionary and insert into mysql and etcd")
 		return result.Success(id)
 	})
 }
@@ -148,26 +156,21 @@ func (openapi *Openapi) updateDictionary(ginCtx *gin.Context) {
 //  @param ginCtx gin context
 func (openapi *Openapi) removeDictionary(ginCtx *gin.Context) {
 	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
-		dictId := stringsx.ToInt(ginCtx.Param("dictionaryId"))
-		dict := entity.Dictionary{Id: dictId}
-		// query dictionary exist
-		daoAction := dao.New(openapi.storage)
-		dictionary, err := daoAction.SelectDictionary(dict, nil)
+		dict, err := dictionary(openapi.storage, nil, ginCtx)
 		if err != nil {
 			return result.InternalFailure(err)
 		}
-		if len(dictionary) == 0 {
+		if dict == nil {
 			return result.Failure0(result.ErrorDictionaryNotExist)
 		}
-		// set dictionary state: deleted
-		defaultDictionary := getFirstDictionary(dictionary)
-		retId, delErr := daoAction.DeleteDictionary(defaultDictionary)
+		daoAction := dao.New(openapi.storage)
+		// set dictionaries state: deleted
+		retId, delErr := daoAction.DeleteDictionary(*dict)
 		if delErr != nil {
 			return result.InternalFailure(delErr)
 		}
 		// delete etcd path
-		path, etcdPathError := buildEtcdPath(daoAction, defaultDictionary.UserId,
-			defaultDictionary.ScopeSpaceId, defaultDictionary.DictKey)
+		path, etcdPathError := buildEtcdPath(daoAction, *dict)
 		if etcdPathError != nil {
 			return result.Failure0(result.ErrorEtcdPath)
 		}
@@ -180,7 +183,7 @@ func (openapi *Openapi) removeDictionary(ginCtx *gin.Context) {
 				return result.InternalFailure(exchangeErr)
 			}
 		}
-		doLog(daoAction, defaultDictionary.UserId, "remove dictionary from mysql and etcd")
+		openapi.doOperationLogging(dict.UserId, "remove dictionaries from mysql and etcd")
 		return result.Success(retId)
 	})
 }
@@ -188,7 +191,7 @@ func (openapi *Openapi) removeDictionary(ginCtx *gin.Context) {
 func (openapi *Openapi) dictionaries(ginCtx *gin.Context) {
 	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		pageNum := stringsx.ToInt(ginCtx.DefaultQuery("page", "1"))
-		pageSize := stringsx.ToInt(ginCtx.DefaultQuery("pageSize", "10"))
+		pageSize := stringsx.ToInt(ginCtx.DefaultQuery("pageSize", "20"))
 		daoAction := dao.New(openapi.storage)
 		ctx := pagehelper.C(context.Background()).PageWithCount(int64(pageNum-1), int64(pageSize), "").Build()
 		dictionary, err := daoAction.SelectDictionary(entity.Dictionary{}, ctx)
@@ -196,37 +199,27 @@ func (openapi *Openapi) dictionaries(ginCtx *gin.Context) {
 			return result.InternalFailure(err)
 		}
 		pageInfo := pagehelper.GetPageInfo(ctx)
-		dictionaries := &PageListVO{
+		return result.Success(PageListVO{
 			Page:      pageInfo.Page + 1,
 			PageSize:  pageInfo.PageSize,
 			Total:     pageInfo.GetTotal(),
 			TotalPage: pageInfo.GetTotalPage(),
 			List:      dictionary,
-		}
-		return result.Success(dictionaries)
+		})
 	})
-}
-
-// getFirstDictionary get fist dictionary
-//  @param dictionaryList dictionary list
-//  @return entity.Dictionary entity
-func getFirstDictionary(dictionaryList []entity.Dictionary) entity.Dictionary {
-	return dictionaryList[0]
 }
 
 // buildEtcdPath build etcd path
 //  @param daoAction dao
-//  @param userId
-//  @param scopeSpaceId
-//  @param dictKey key
+//  @param dictionary
 //  @return string path
 //  @return error message
-func buildEtcdPath(daoAction *dao.Dao, userId int, scopeSpaceId int, dictKey string) (string, error) {
-	user, userErr := daoAction.SelectUser(entity.User{Id: userId})
+func buildEtcdPath(daoAction *dao.Dao, dictionary entity.Dictionary) (string, error) {
+	user, userErr := daoAction.SelectUser(entity.User{Id: dictionary.UserId})
 	if userErr != nil {
 		return "", userErr
 	}
-	scopeSpace, scopeSpaceErr := daoAction.SelectScopeSpace(entity.ScopeSpace{Id: scopeSpaceId})
+	scopeSpace, scopeSpaceErr := daoAction.SelectScopeSpace(entity.ScopeSpace{Id: dictionary.ScopeSpaceId})
 	if scopeSpaceErr != nil {
 		return "", scopeSpaceErr
 	}
@@ -237,24 +230,11 @@ func buildEtcdPath(daoAction *dao.Dao, userId int, scopeSpaceId int, dictKey str
 	// build path
 	build := stringsx.Builder{}
 	// /scopeSpaceName/userName/dictKey, etc. /spring/moremind/userKey@version
-	_, err := build.JoinString("/", scopeSpace[0].Name, "/", user[0].Name, "/", dictKey)
+	_, err := build.JoinString("/", scopeSpace[0].Name, "/", user[0].Name, "/", dictionary.DictKey)
 	if err != nil {
 		return "", err
 	}
 	return build.String(), nil
-}
-
-func doLog(daoAction *dao.Dao, userId int, message string) {
-	log := entity.Logging{
-		UserId:  userId,
-		Logging: message,
-	}
-	go func() {
-		_, _, err := daoAction.InsertLogging(log)
-		if err != nil {
-			fmt.Println("insert log error")
-		}
-	}()
 }
 
 // updateDictionaryState update dictionary state
@@ -264,15 +244,15 @@ func doLog(daoAction *dao.Dao, userId int, message string) {
 //  @return *result.EnvcdResult
 func (openapi *Openapi) updateDictionaryState(dictId int, state string) *result.EnvcdResult {
 	daoAction := dao.New(openapi.storage)
-	dictionary, dictErr := daoAction.SelectDictionary(entity.Dictionary{Id: dictId}, nil)
+	dictionaries, dictErr := daoAction.SelectDictionary(entity.Dictionary{Id: dictId}, nil)
 	if dictErr != nil {
 		return result.InternalFailure(dictErr)
 	}
-	if len(dictionary) == 0 {
+	if array.Empty(dictionaries) {
 		return result.Failure0(result.ErrorDictionaryNotExist)
 	}
-	defaultDictionary := getFirstDictionary(dictionary)
-	path, err := buildEtcdPath(daoAction, defaultDictionary.UserId, defaultDictionary.ScopeSpaceId, defaultDictionary.DictKey)
+	defaultDictionary := dictionaries[0]
+	path, err := buildEtcdPath(daoAction, defaultDictionary)
 	if stringsx.Empty(path) {
 		return result.Failure0(result.NilExchangePath)
 	}
@@ -290,9 +270,9 @@ func (openapi *Openapi) updateDictionaryState(dictId int, state string) *result.
 		}
 		break
 	case constant.DisabledState:
-		// case disabled, should set state in mysql and delete dictionary in etcd
+		// case disabled, should set state in mysql and delete dictionaries in etcd
 	case constant.DeletedState:
-		// case deleted, should set state in mysql and delete dictionary in etcd
+		// case deleted, should set state in mysql and delete dictionaries in etcd
 		if defaultDictionary.State == constant.DisabledState || defaultDictionary.State == constant.DeletedState {
 			_, updateErr := daoAction.UpdateDictionary(entity.Dictionary{State: state})
 			if updateErr != nil {

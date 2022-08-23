@@ -30,15 +30,32 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type SingleScopeSpace struct {
-	scopeSpace entity.ScopeSpace
-	edit       bool
+type scopeSpaceVO struct {
+	Id        int    `json:"id"`
+	Name      string `json:"name"`
+	Note      string `json:"note"`
+	State     string `json:"state"`
+	CreatedAt string `json:"createdAt"`
+	UpdatedAt string `json:"updatedAt"`
+	Editable  bool   `json:"editable"`
 }
 
-type UpdateScopeSpace struct {
+type scopeSpaceDTO struct {
 	ScopeSpaceName string `json:"scopeSpaceName"`
 	Note           string `json:"note"`
 	State          string `json:"state"`
+}
+
+func scopeSpaceConverter(scopeSpace entity.ScopeSpace, editable bool) scopeSpaceVO {
+	return scopeSpaceVO{
+		Id:        scopeSpace.Id,
+		Name:      scopeSpace.Name,
+		Note:      scopeSpace.Note,
+		State:     scopeSpace.State,
+		CreatedAt: scopeSpace.CreatedAt.Format("2006-01-02 15:04:05"),
+		UpdatedAt: scopeSpace.UpdatedAt.Format("2006-01-02 15:04:05"),
+		Editable:  editable,
+	}
 }
 
 // scopeSpace get scope space by id
@@ -58,15 +75,13 @@ func (openapi *Openapi) scopeSpace(ginCtx *gin.Context) {
 			return result.InternalFailure(errors.New("no data"))
 		}
 		// TODO can refactor
-		scopeSpaceRet := getDefaultScopeSpace(scopeSpaceQueryRet)
 		// query dictionary
 		count, dictCountErr := daoAction.SelectDictionaryCount(entity.Dictionary{ScopeSpaceId: scopeSpaceId})
 		if dictCountErr != nil {
 			return result.InternalFailure(dictCountErr)
 		}
-		// no dictionary => ScopeSpace name can edit
-		vo := SingleScopeSpace{scopeSpace: scopeSpaceRet, edit: count == 0}
-		return result.Success(vo)
+		// no dictionary => scopeSpaceVO name can edit
+		return result.Success(scopeSpaceConverter(scopeSpaceQueryRet[0], count == 0))
 	})
 }
 
@@ -84,7 +99,7 @@ func (openapi *Openapi) createScopeSpace(ginCtx *gin.Context) {
 
 func (openapi *Openapi) updateScopeSpace(ginCtx *gin.Context) {
 	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
-		updateScopeSpace := &UpdateScopeSpace{}
+		updateScopeSpace := &scopeSpaceDTO{}
 		if err := ginCtx.ShouldBindJSON(updateScopeSpace); err != nil {
 			fmt.Printf("Bind error, %v\n", err)
 			return result.InternalFailure(err)
@@ -98,7 +113,7 @@ func (openapi *Openapi) updateScopeSpace(ginCtx *gin.Context) {
 		if len(scopeSpaceQueryRet) == 0 {
 			return result.InternalFailure(errors.New("no scopespace error"))
 		}
-		defaultScopeSpace := getDefaultScopeSpace(scopeSpaceQueryRet)
+		defaultScopeSpace := scopeSpaceQueryRet[0]
 		// name change, no dictionaries, just update mysql
 		if defaultScopeSpace.Name != updateScopeSpace.ScopeSpaceName {
 			updateRet, updateErr := daoAction.UpdateScopeSpace(entity.ScopeSpace{
@@ -112,27 +127,26 @@ func (openapi *Openapi) updateScopeSpace(ginCtx *gin.Context) {
 				return result.InternalFailure(updateErr)
 			}
 			return result.Success(updateRet)
-		} else {
-			// name can't change, build no name scope space, judge state and update dictionary
-			// scope space state change, following to do
-			// 1.update scope space
-			// 2.update all dictionaries
-			if defaultScopeSpace.State == updateScopeSpace.State && defaultScopeSpace.Note == updateScopeSpace.Note {
-				return result.Success(nil)
-			} else if defaultScopeSpace.State == updateScopeSpace.State && defaultScopeSpace.Note != updateScopeSpace.Note {
-				updateRet, updateErr := daoAction.UpdateScopeSpace(entity.ScopeSpace{Note: updateScopeSpace.Note, UpdatedAt: time.Now()})
-				if updateErr != nil {
-					return result.InternalFailure(updateErr)
-				}
-				return result.Success(updateRet)
-			} else {
-				openapi.updateScopeSpaceState(defaultScopeSpace, updateScopeSpace.State)
-				// if defaultScopeSpace.State != updateScopeSpace.State && defaultScopeSpace.Note == updateScopeSpace.Note
-				// defaultScopeSpace.State != updateScopeSpace.State && defaultScopeSpace.Note != updateScopeSpace.Note
-				// TODO update scope space state and update dictionary state and note need update
-				return result.Success(nil)
-			}
 		}
+		// name can't change, build no name scope space, judge state and update dictionary
+		// scope space state change, following to do
+		// 1.update scope space
+		// 2.update all dictionaries
+		if defaultScopeSpace.State == updateScopeSpace.State && defaultScopeSpace.Note == updateScopeSpace.Note {
+			return result.Success(nil)
+		}
+		if defaultScopeSpace.State == updateScopeSpace.State && defaultScopeSpace.Note != updateScopeSpace.Note {
+			updateRet, updateErr := daoAction.UpdateScopeSpace(entity.ScopeSpace{Note: updateScopeSpace.Note, UpdatedAt: time.Now()})
+			if updateErr != nil {
+				return result.InternalFailure(updateErr)
+			}
+			return result.Success(updateRet)
+		}
+		openapi.updateScopeSpaceState(defaultScopeSpace, updateScopeSpace.State)
+		// if defaultScopeSpace.State != updateScopeSpace.State && defaultScopeSpace.Note == updateScopeSpace.Note
+		// defaultScopeSpace.State != updateScopeSpace.State && defaultScopeSpace.Note != updateScopeSpace.Note
+		// TODO update scope space state and update dictionary state and note need update
+		return result.Success(nil)
 	})
 }
 
@@ -148,7 +162,7 @@ func (openapi *Openapi) removeScopeSpace(ginCtx *gin.Context) {
 	})
 }
 
-func (openapi *Openapi) scopespaces(ginCtx *gin.Context) {
+func (openapi *Openapi) scopeSpaces(ginCtx *gin.Context) {
 	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		// create config
@@ -157,14 +171,6 @@ func (openapi *Openapi) scopespaces(ginCtx *gin.Context) {
 		// openapi.exchange.Put("key", "value")
 		return nil
 	})
-}
-
-func getDefaultScopeSpace(params []entity.ScopeSpace) entity.ScopeSpace {
-	return params[0]
-}
-
-func updateScopeSpaceAndNote() {
-	//updateScopeSpace(1, "22")
 }
 
 func (openapi *Openapi) updateScopeSpaceState(defaultScopeSpace entity.ScopeSpace, newState string, note ...string) *result.EnvcdResult {
@@ -191,17 +197,15 @@ func (openapi *Openapi) updateScopeSpaceState(defaultScopeSpace entity.ScopeSpac
 			return result.InternalFailure(updateErr)
 		}
 		return result.Success(scopeSpace)
-	} else {
-		switch newState {
-		case constant.EnabledState:
-			// if new state is enabled,change scopeSpace state and change dictionary state, end generate etcd path and put
-			break
-		case constant.DisabledState:
-		case constant.DeletedState:
-			break
-		default:
-			return result.Failure0(result.ErrorNotExistState)
-		}
 	}
-	return nil
+
+	switch newState {
+	case constant.EnabledState:
+		// if new state is enabled,change scopeSpace state and change dictionary state, end generate etcd path and put
+		break
+	case constant.DisabledState:
+	case constant.DeletedState:
+		break
+	}
+	return result.Failure0(result.ErrorNotExistState)
 }

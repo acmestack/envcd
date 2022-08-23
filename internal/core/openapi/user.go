@@ -24,8 +24,8 @@ import (
 	"github.com/acmestack/envcd/internal/core/storage/dao"
 	"github.com/acmestack/envcd/internal/pkg/entity"
 	"github.com/acmestack/envcd/pkg/entity/result"
+	"github.com/acmestack/godkits/array"
 	"github.com/acmestack/godkits/gox/stringsx"
-	"github.com/acmestack/godkits/log"
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 )
@@ -55,6 +55,39 @@ const (
 	userStateDeleted  = "deleted"
 )
 
+type pageUserVO struct {
+	Page     int      `json:"page"`
+	PageSize int      `json:"pageSize"`
+	List     []userVO `json:"list"`
+}
+
+type userVO struct {
+	Id        int    `json:"id"`
+	Name      string `json:"name"`
+	Identity  int    `json:"identity"`
+	State     string `json:"state"`
+	CreatedAt string `json:"createdAt"`
+	UpdatedAt string `json:"updatedAt"`
+}
+
+func userConverter(users []entity.User) []userVO {
+	var convertUsers []userVO
+	if array.Empty(users) {
+		return convertUsers
+	}
+	for _, user := range users {
+		convertUsers = append(convertUsers, userVO{
+			Id:        user.Id,
+			Name:      user.Name,
+			Identity:  user.Identity,
+			State:     user.State,
+			CreatedAt: user.CreatedAt.Format("2006-01-02 15:04:05"),
+			UpdatedAt: user.UpdatedAt.Format("2006-01-02 15:04:05"),
+		})
+	}
+	return convertUsers
+}
+
 // claims claims
 type claims struct {
 	*jwt.RegisteredClaims
@@ -77,7 +110,8 @@ func (openapi *Openapi) login(ginCtx *gin.Context) {
 	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		param := loginParam{}
 		if err := ginCtx.ShouldBindJSON(&param); err != nil {
-			log.Error("Bind error, %v", err)
+			// todo log
+			//log.Error("Bind error, %v", err)
 			return result.InternalFailure(err)
 		}
 
@@ -85,12 +119,14 @@ func (openapi *Openapi) login(ginCtx *gin.Context) {
 			Name: param.Username,
 		})
 		if err != nil {
-			log.Error("Query User error: %v", err)
+			// todo log
+			//log.Error("Query User error: %v", err)
 			return result.InternalFailure(err)
 		}
 
 		if len(users) == 0 {
-			log.Error("User does not exist : %v", param)
+			// todo log
+			//log.Error("User does not exist : %v", param)
 			return result.Failure0(result.ErrorUserNotFound)
 		}
 		user := users[0]
@@ -124,7 +160,8 @@ func (openapi *Openapi) createUser(ginCtx *gin.Context) {
 	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		param := userParam{}
 		if err := ginCtx.ShouldBindJSON(&param); err != nil {
-			log.Error("Bind error, %v", err)
+			// todo log
+			//log.Error("Bind error, %v", err)
 			return result.InternalFailure(err)
 		}
 		daoAction := dao.New(openapi.storage)
@@ -133,11 +170,13 @@ func (openapi *Openapi) createUser(ginCtx *gin.Context) {
 			Name: param.Name,
 		})
 		if err != nil {
-			log.Error("Query User error: %v", err)
+			// todo log
+			//log.Error("Query User error: %v", err)
 			return result.InternalFailure(err)
 		}
 		if len(users) > 0 {
-			log.Error("User Has exists: %v", users)
+			// todo log
+			//log.Error("User Has exists: %v", users)
 			return result.Failure0(result.ErrorUserExisted)
 		}
 		// generate database password by salt
@@ -154,7 +193,8 @@ func (openapi *Openapi) createUser(ginCtx *gin.Context) {
 		}
 		// save user
 		if _, _, err := daoAction.InsertUser(user); err != nil {
-			log.Error("insert error=%v", err)
+			// todo log
+			//log.Error("insert error=%v", err)
 			return result.Failure(result.ErrorCreateUser, err)
 		}
 		// fixme update success message or response token and id ?
@@ -176,11 +216,13 @@ func (openapi *Openapi) user(ginCtx *gin.Context) {
 		// query user by param
 		users, err := dao.New(openapi.storage).SelectUser(param)
 		if err != nil {
-			log.Error("select user error = %v", err)
+			// todo log
+			//log.Error("select user error = %v", err)
 			return result.Failure(result.ErrorUserNotFound, err)
 		}
 		if len(users) == 0 {
-			log.Error("User does not exist : %v", param)
+			// todo log
+			//log.Error("User does not exist : %v", param)
 			return result.Failure0(result.ErrorUserNotFound)
 		}
 		return result.Success(userVO{
@@ -194,21 +236,6 @@ func (openapi *Openapi) user(ginCtx *gin.Context) {
 	})
 }
 
-type pageUserVO struct {
-	Page     int      `json:"page"`
-	PageSize int      `json:"pageSize"`
-	List     []userVO `json:"list"`
-}
-
-type userVO struct {
-	Id        int    `json:"id"`
-	Name      string `json:"name"`
-	Identity  int    `json:"identity"`
-	State     string `json:"state"`
-	CreatedAt string `json:"createdAt"`
-	UpdatedAt string `json:"updatedAt"`
-}
-
 func (openapi *Openapi) removeUser(ginCtx *gin.Context) {
 	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		id := stringsx.ToInt(ginCtx.Param("userId"))
@@ -217,13 +244,15 @@ func (openapi *Openapi) removeUser(ginCtx *gin.Context) {
 		daoAction := dao.New(openapi.storage)
 		user, err := daoAction.SelectUserById(param)
 		if err != nil {
-			log.Error("select users error = %v", err)
+			// todo log
+			//log.Error("select users error = %v", err)
 			return result.Failure(result.ErrorUserNotFound, err)
 		}
 		if user.Id == 0 {
 			return result.Success(nil)
 		}
 		// update user state to deleted
+		// todo tx and catch error @liuzhaowei
 		user.State = userStateDeleted
 		daoAction.UpdateUser(user)
 
@@ -240,45 +269,27 @@ func (openapi *Openapi) removeUser(ginCtx *gin.Context) {
 func (openapi *Openapi) users(ginCtx *gin.Context) {
 	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		// receive params from request
+		// todo use ToIntDefault func
 		page := stringsx.ToInt(ginCtx.Query("page"))
-		pageSize := stringsx.ToInt(ginCtx.Query("pageSize"))
+		pageSize := stringsx.ToIntOrDefault(ginCtx.Query("pageSize"), 20)
 		if page == 0 {
 			page = 1
 		}
-		if pageSize == 0 {
-			pageSize = 10
-		}
 		nameParam := ginCtx.Query("name")
 
-		pageParam := entity.PageUserParam{page, pageSize, nameParam}
+		pageParam := entity.PageUserParam{Page: page, PageSize: pageSize, Name: nameParam}
 
 		users, err := dao.New(openapi.storage).PageSelectUser(pageParam)
 		if err != nil {
-			log.Error("select users error = %v", err)
+			// todo log
+			//log.Error("select users error = %v", err)
 			return result.Failure(result.ErrorUserNotFound, err)
 		}
+		// todo use PageListVO
 		return result.Success(pageUserVO{
-			page, pageSize, userTransfer(users),
+			page, pageSize, userConverter(users),
 		})
 	})
-}
-
-func userTransfer(users []entity.User) []userVO {
-	back := []userVO{}
-	if users == nil || len(users) == 0 {
-		return back
-	}
-	for _, user := range users {
-		back = append(back, userVO{
-			Id:        user.Id,
-			Name:      user.Name,
-			Identity:  user.Identity,
-			State:     user.State,
-			CreatedAt: user.CreatedAt.Format("2006-01-02 15:04:05"),
-			UpdatedAt: user.UpdatedAt.Format("2006-01-02 15:04:05"),
-		})
-	}
-	return back
 }
 
 func (openapi *Openapi) userScopeSpaces(ginCtx *gin.Context) {
