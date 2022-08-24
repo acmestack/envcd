@@ -2,7 +2,7 @@ module github.com/acmestack/envcd
 
 go 1.18
 
-require github.com/acmestack/godkits v0.0.8
+require github.com/acmestack/godkits v0.0.10
 
 require (
 	github.com/acmestack/gobatis v0.2.8

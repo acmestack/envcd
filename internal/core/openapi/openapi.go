@@ -27,16 +27,25 @@ import (
 	"github.com/acmestack/envcd/internal/core/plugin/logging"
 	"github.com/acmestack/envcd/internal/core/plugin/permission"
 	"github.com/acmestack/envcd/internal/core/storage"
+	"github.com/acmestack/envcd/internal/core/storage/dao"
 	"github.com/acmestack/envcd/internal/pkg/config"
 	"github.com/acmestack/envcd/internal/pkg/context"
+	"github.com/acmestack/envcd/internal/pkg/entity"
 	"github.com/acmestack/envcd/internal/pkg/executor"
 	"github.com/acmestack/envcd/pkg/entity/result"
 	"github.com/acmestack/godkits/gox/errorsx"
-	"github.com/acmestack/godkits/log"
 	"github.com/gin-gonic/gin"
 )
 
 var requestIdHeader = "x-envcd-request-id"
+
+type PageListVO struct {
+	Page      int64       `json:"page"`
+	PageSize  int64       `json:"pageSize"`
+	Total     int64       `json:"total"`
+	TotalPage int64       `json:"totalPage"`
+	List      interface{} `json:"list"`
+}
 
 type Openapi struct {
 	exchange  *exchanger.Exchange
@@ -70,10 +79,12 @@ func (openapi *Openapi) initServer(serverSetting *config.Server) {
 		MaxHeaderBytes: 1 << 20,
 	}
 
-	log.Info("start http server listening %s", server.Addr)
+	// todo log
+	//log.Info("start http server listening %s", server.Addr)
 	err := server.ListenAndServe()
 	if err != nil {
-		log.Error("start http server error %v", err)
+		// todo log
+		//log.Error("start http server error %v", err)
 	}
 }
 
@@ -109,9 +120,9 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 		usersGroup.GET("/:userId", openapi.user)
 		usersGroup.DELETE("/:userId", openapi.removeUser)
 
-		// user's all scopespaces
+		// user's all scopeSpaces
 		// fuzzy filter => ?page=2&scopespace-name=
-		usersGroup.GET("/:userId/scopespaces", openapi.userScopeSpaces)
+		usersGroup.GET("/:userId/scopeSpaces", openapi.userScopeSpaces)
 
 		// user's all dictionaries under one scopespace
 		// fuzzy filter => ?page=2&scopespace-name=abc&dictionary-key=aaa
@@ -122,11 +133,11 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 		usersGroup.GET("/:userId/dictionaries", openapi.userDictionaries)
 	}
 
-	// scopespaces group routers
-	scopeSpacesGroup := v1.Group("/scopespaces")
+	// scopeSpaces group routers
+	scopeSpacesGroup := v1.Group("/scopeSpaces")
 	{
 		// fuzzy filter => ?page=2&user=abc&scopespace-name=
-		scopeSpacesGroup.GET("", openapi.scopespaces)
+		scopeSpacesGroup.GET("", openapi.scopeSpaces)
 		scopeSpacesGroup.POST("", openapi.createScopeSpace)
 		scopeSpacesGroup.GET("/:scopeSpaceId", openapi.scopeSpace)
 		scopeSpacesGroup.PUT("/:scopeSpaceId", openapi.updateScopeSpace)
@@ -161,4 +172,16 @@ func (openapi *Openapi) response(ginCtx *gin.Context, permissionAction context.E
 	}
 	ginCtx.JSON(ret.HttpStatusCode, ret.Data)
 	delete(openapi.contexts, requestId)
+}
+
+func (openapi *Openapi) doOperationLogging(userId int, message string) {
+	go func() {
+		_, _, err := dao.New(openapi.storage).InsertLogging(entity.Logging{
+			UserId:  userId,
+			Logging: message,
+		})
+		if err != nil {
+			fmt.Println("insert log error")
+		}
+	}()
 }

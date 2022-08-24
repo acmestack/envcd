@@ -11,6 +11,8 @@ github.com/acmestack/gobatis v0.2.8 h1:dYA3AUVXLQvHcuGA9bscqq4xw6tEC1E9dlyx4ebCH
 github.com/acmestack/gobatis v0.2.8/go.mod h1:vEEXPWzVzeDoFpYD2FoOfGfCyEuLtSiMIbP6jqO44Xg=
 github.com/acmestack/godkits v0.0.8 h1:On9Dv71MBnZXioP7p9PfpvdDPYIKYyfM/GoZJ4N62P8=
 github.com/acmestack/godkits v0.0.8/go.mod h1:d5kiqEvQl/LpXd8VTy7PZvQ5DDiasCX+QKA3+q8fWos=
+github.com/acmestack/godkits v0.0.10 h1:gIVwtJ/ZVSUr4u5NsKq35Hvp+lecTImA9EYkVACUpss=
+github.com/acmestack/godkits v0.0.10/go.mod h1:d5kiqEvQl/LpXd8VTy7PZvQ5DDiasCX+QKA3+q8fWos=
 github.com/acmestack/pagehelper v1.0.0 h1:xRTAb+3ZHuGuaCeDTNNy2PVzjR6rfSpIuZrdnboTCFY=
 github.com/acmestack/pagehelper v1.0.0/go.mod h1:sncmjrPfLMpX+2SpgotZk/dgCjss0yM7dHHn/8aoz/A=
 github.com/alecthomas/template v0.0.0-20160405071501-a0175ee3bccc/go.mod h1:LOuyumcjzFXgccqObfd/Ljyb9UuFJ6TxHnclSeseNhc=
