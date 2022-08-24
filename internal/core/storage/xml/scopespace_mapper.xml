@@ -46,7 +46,7 @@
     </select>
 
     <insert id="insertScopeSpace">
-        INSERT INTO scopespace (id,name,note,state,created_at,updated_at)
+        INSERT INTO scopespace (id,user_id,name,note,state,created_at,updated_at)
         VALUES(
         #{ScopeSpace.id},
         #{ScopeSpace.user_id},
