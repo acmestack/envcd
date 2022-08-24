@@ -23,10 +23,11 @@ import (
 
 type ScopeSpace struct {
 	//TableName gobatis.TableName `scopespace`
-	Id        int       `column:"id"`
-	Name      string    `column:"name"`
-	Note      string    `column:"note"`
-	State     string    `column:"state"`
-	CreatedAt time.Time `column:"created_at"`
-	UpdatedAt time.Time `column:"updated_at"`
+	Id        int       `column:"id" json:"id"`
+	UserId    int       `column:"user_id" json:"userId"`
+	Name      string    `column:"name" json:"name"`
+	Note      string    `column:"note" json:"note"`
+	State     string    `column:"state" json:"state"`
+	CreatedAt time.Time `column:"created_at" json:"createdAt"`
+	UpdatedAt time.Time `column:"updated_at" json:"updatedAt"`
 }
