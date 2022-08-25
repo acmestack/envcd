@@ -17,7 +17,7 @@
   -->
 
 <mapper namespace="dao">
-    <sql id="columns_id">id,name,note,state,created_at,updated_at</sql>
+    <sql id="columns_id">id,user_id,name,note,state,created_at,updated_at</sql>
 
     <select id="selectScopeSpace">
         SELECT <include refid="columns_id"> </include> FROM scopespace

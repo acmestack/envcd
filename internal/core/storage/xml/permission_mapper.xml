@@ -83,6 +83,22 @@
         WHERE id = #{Permission.id}
     </update>
 
+    <update id="updatePermissionBatch">
+        UPDATE permission
+        SET state =
+        <foreach collection="{0}" index="index" item="item" separator=" " open="CASE id " close=" END,">
+            WHEN #{item.Permission.id} THEN #{item.Permission.state}
+        </foreach>
+        updated_at =
+        <foreach collection="{0}" index="index" item="item" separator=" " open="CASE id " close=" END ">
+            WHEN #{item.Permission.id} THEN #{item.Permission.updated_at}
+        </foreach>
+        WHERE id IN
+        <foreach collection="{0}" index="index" item="item" open="(" close=")" separator=",">
+            #{item.Permission.id}
+        </foreach>
+    </update>
+
     <delete id="deletePermission">
         DELETE FROM permission
         <where>
@@ -95,11 +111,5 @@
             <if test="{Permission.created_at} != nil">AND created_at = #{Permission.created_at} </if>
             <if test="{Permission.updated_at} != nil">AND updated_at = #{Permission.updated_at} </if>
         </where>
-    </delete>
-
-
-    <delete id="deletePermissionByUserId">
-        UPDATE permission set state = "deleted"
-        WHERE user_id = #{Permission.user_id}
     </delete>
 </mapper>
