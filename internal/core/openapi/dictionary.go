@@ -94,7 +94,8 @@ func (openapi *Openapi) createDictionary(ginCtx *gin.Context) {
 		dictionary := entity.Dictionary{
 			UserId:       dictParams.UserId,
 			ScopeSpaceId: dictParams.ScopeSpaceId,
-			DictKey:      dictParams.DictKey + "@" + dictParams.Version,
+			DictKey:      dictParams.DictKey,
+			Version:      dictParams.Version,
 			DictValue:    dictParams.DictValue,
 			State:        dictParams.State,
 			CreatedAt:    time.Now(),

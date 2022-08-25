@@ -46,7 +46,7 @@
     </select>
 
     <insert id="insertScopeSpace">
-        INSERT INTO scopespace (id,name,user_id,note,state,created_at,updated_at)
+        INSERT INTO scopespace (id,user_id,name,note,state,created_at,updated_at)
         VALUES(
         #{ScopeSpace.id},
         #{ScopeSpace.user_id},
@@ -69,7 +69,6 @@
     <update id="updateScopeSpace">
         UPDATE scopespace
         <set>
-            <if test="{ScopeSpace.user_id} != nil and {ScopeSpace.user_id} != 0">user_id = #{ScopeSpace.user_id} </if>
             <if test="{ScopeSpace.name} != nil"> name = #{ScopeSpace.name} </if>
             <if test="{ScopeSpace.note} != nil"> note = #{ScopeSpace.note} </if>
             <if test="{ScopeSpace.state} != nil"> state = #{ScopeSpace.state} </if>
