@@ -60,14 +60,14 @@ func (dao *Dao) UpdatePermission(model entity.Permission) (int64, error) {
 	return ret, err
 }
 
-func (dao *Dao) DeletePermission(model entity.Permission) (int64, error) {
+func (dao *Dao) UpdatePermissionBatch(model []entity.Permission) (int64, error) {
 	var ret int64
-	err := dao.storage.NewSession().Delete("dao.deletePermission").Param(model).Result(&ret)
+	err := dao.storage.NewSession().Update("dao.updatePermissionBatch").Param(model).Result(&ret)
 	return ret, err
 }
 
-func (dao *Dao) DeletePermissionByUserId(model entity.Permission) (int64, error) {
+func (dao *Dao) DeletePermission(model entity.Permission) (int64, error) {
 	var ret int64
-	err := dao.storage.NewSession().Delete("dao.deletePermissionByUserId").Param(model).Result(&ret)
+	err := dao.storage.NewSession().Delete("dao.deletePermission").Param(model).Result(&ret)
 	return ret, err
 }

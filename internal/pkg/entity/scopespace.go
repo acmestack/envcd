@@ -24,6 +24,7 @@ import (
 type ScopeSpace struct {
 	//TableName gobatis.TableName `scopespace`
 	Id        int       `column:"id"`
+	UserId    int       `column:"user_id"`
 	Name      string    `column:"name"`
 	Note      string    `column:"note"`
 	State     string    `column:"state"`

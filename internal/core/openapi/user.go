@@ -22,6 +22,7 @@ import (
 	"time"
 
 	"github.com/acmestack/envcd/internal/core/storage/dao"
+	"github.com/acmestack/envcd/internal/pkg/constant"
 	"github.com/acmestack/envcd/internal/pkg/entity"
 	"github.com/acmestack/envcd/pkg/entity/result"
 	"github.com/acmestack/godkits/array"
@@ -49,10 +50,6 @@ const (
 	hmacSecret = "9C035514A15F78"
 	userIdKey  = "userId"
 	tokenKey   = "accessToken"
-
-	userStateEnabled  = "enabled"
-	userStateDisabled = "disabled"
-	userStateDeleted  = "deleted"
 )
 
 type pageUserVO struct {
@@ -187,7 +184,7 @@ func (openapi *Openapi) createUser(ginCtx *gin.Context) {
 			Password:  password,
 			Salt:      salt,
 			Identity:  param.Identity,
-			State:     stringsx.DefaultIfEmpty(param.State, userStateEnabled),
+			State:     stringsx.DefaultIfEmpty(param.State, constant.EnabledState),
 			CreatedAt: time.Now(),
 			UpdatedAt: time.Now(),
 		}
@@ -253,14 +250,34 @@ func (openapi *Openapi) removeUser(ginCtx *gin.Context) {
 		}
 		// update user state to deleted
 		// todo tx and catch error @liuzhaowei
-		user.State = userStateDeleted
+		user.State = constant.DeletedState
 		daoAction.UpdateUser(user)
 
-		// update user dictionary state to deleted
-		daoAction.DeleteDictionaryByUserId(entity.Dictionary{UserId: user.Id})
+		// get all the user's dictionary and update state to deleted
+		dictParam := entity.Dictionary{UserId: user.Id}
+		dictionaries, err := daoAction.SelectDictionary(dictParam, nil)
+		if err != nil {
+			return result.InternalFailure(err)
+		}
+		if len(dictionaries) != 0 {
+			for i := range dictionaries {
+				dictionaries[i].State = constant.DeletedState
+			}
+			daoAction.UpdateDictionaryBatch(dictionaries)
+		}
 
-		// update user permission state to deleted
-		daoAction.DeletePermissionByUserId(entity.Permission{UserId: user.Id})
+		// get all the user's scopespace and update state to deleted
+		spaceParam := entity.ScopeSpace{UserId: user.Id}
+		spaces, err := daoAction.SelectScopeSpace(spaceParam)
+		if err != nil {
+			return result.InternalFailure(err)
+		}
+		if len(spaces) != 0 {
+			for i := range spaces {
+				spaces[i].State = constant.DeletedState
+			}
+			daoAction.UpdateScopeSpaceBatch(spaces)
+		}
 
 		return result.Success(nil)
 	})

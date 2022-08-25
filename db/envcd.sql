@@ -24,6 +24,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS `scopespace`;
 CREATE TABLE `scopespace` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `user_id` int(10) unsigned NOT NULL,
   `name` varchar(100) NOT NULL,
   `note` varchar(150) NOT NULL,
   `state` varchar(12) NOT NULL DEFAULT 'enabled' COMMENT 'enabled; disabled; deleted',
