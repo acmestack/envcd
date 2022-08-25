@@ -117,11 +117,6 @@
         </where>
     </delete>
 
-    <delete id="deleteDictionaryByUserId">
-        UPDATE dictionary set state = "deleted"
-        WHERE user_id =  #{Dictionary.user_id}
-    </delete>
-
     <delete id="deleteDictionaryBatch">
         DELETE FROM dictionary
         WHERE id IN

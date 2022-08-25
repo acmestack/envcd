@@ -112,10 +112,4 @@
             <if test="{Permission.updated_at} != nil">AND updated_at = #{Permission.updated_at} </if>
         </where>
     </delete>
-
-
-    <delete id="deletePermissionByUserId">
-        UPDATE permission set state = "deleted"
-        WHERE user_id = #{Permission.user_id}
-    </delete>
 </mapper>
