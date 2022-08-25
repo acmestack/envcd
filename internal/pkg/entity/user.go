@@ -21,14 +21,15 @@ import "time"
 
 type User struct {
 	//TableName gobatis.TableName `user`
-	Id        int       `column:"id"`
-	Name      string    `column:"name"`
-	Password  string    `column:"password"`
-	Salt      string    `column:"salt"`
-	Identity  int       `column:"identity"`
-	State     string    `column:"state"`
-	CreatedAt time.Time `column:"created_at"`
-	UpdatedAt time.Time `column:"updated_at"`
+	Id          int       `column:"id"`
+	Name        string    `column:"name"`
+	Password    string    `column:"password"`
+	Salt        string    `column:"salt"`
+	Identity    int       `column:"identity"`
+	State       string    `column:"state"`
+	UserSession string    `column:"user_session"`
+	CreatedAt   time.Time `column:"created_at"`
+	UpdatedAt   time.Time `column:"updated_at"`
 }
 
 type PageUserParam struct {

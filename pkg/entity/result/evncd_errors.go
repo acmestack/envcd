@@ -23,6 +23,7 @@ var (
 	ErrorUserNotFound             = aError("userNotFound", "the user is not exist.", http.StatusBadRequest)
 	ErrorUserExisted              = aError("userExisted", "the user is existed.", http.StatusOK)
 	ErrorCreateUser               = aError("userCreateFault", "the user save error.", http.StatusOK)
+	ErrorUpdateUser               = aError("userUpdateFault", "the user update error.", http.StatusOK)
 	ErrorUserPasswordIncorrect    = aError("userPasswordIncorrect", "the password is incorrect for user.", http.StatusOK)
 	ErrorDictionaryNotExist       = aError("dictionaryNotExist", "the dictionary is not exist.", http.StatusBadRequest)
 	ErrorEtcdPath                 = aError("etcd path error", "build etcd path error", http.StatusBadRequest)

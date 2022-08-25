@@ -137,6 +137,12 @@ func (openapi *Openapi) login(ginCtx *gin.Context) {
 			userId:   user.Id,
 			userName: user.Name,
 		})
+		daoAction := dao.New(openapi.storage)
+		user.UserSession = token
+		_, err = daoAction.UpdateUser(user)
+		if err != nil {
+			return result.Failure0(result.ErrorUpdateUser)
+		}
 		return result.Success(map[string]interface{}{
 			userIdKey: user.Id,
 			tokenKey:  token,
@@ -150,6 +156,12 @@ func (openapi *Openapi) logout(ginCtx *gin.Context) {
 		// UserDao.save(),
 		// LogDao.save()
 		return nil
+	})
+}
+
+func (openapi *Openapi) GetUserById(userId int) ([]entity.User, error) {
+	return dao.New(openapi.storage).SelectUser(entity.User{
+		Id: userId,
 	})
 }
 
