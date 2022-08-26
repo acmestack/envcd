@@ -30,7 +30,8 @@ CREATE TABLE `scopespace` (
   `state` varchar(12) NOT NULL DEFAULT 'enabled' COMMENT 'enabled; disabled; deleted',
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `ukey` (`user_id`,`name`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
