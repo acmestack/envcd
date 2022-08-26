@@ -268,7 +268,7 @@ func handleRemoveUser(user entity.User, daoAction *dao.Dao) func(session *gobati
 		dictParam := entity.Dictionary{UserId: user.Id}
 		dictionaries, err := daoAction.SelectDictionary(dictParam, nil)
 		if err != nil {
-			return nil
+			return err
 		}
 		if len(dictionaries) != 0 {
 			for i := range dictionaries {
@@ -282,7 +282,7 @@ func handleRemoveUser(user entity.User, daoAction *dao.Dao) func(session *gobati
 		spaceParam := entity.ScopeSpace{UserId: user.Id}
 		spaces, err := daoAction.SelectScopeSpace(spaceParam)
 		if err != nil {
-			return nil
+			return err
 		}
 		if len(spaces) != 0 {
 			for i := range spaces {
