@@ -28,25 +28,25 @@ func init() {
 
 func (dao *Dao) SelectUserById(model entity.User) (entity.User, error) {
 	var data entity.User
-	err := dao.storage.NewSession().Select("dao.selectUserById").Param(model).Result(&data)
+	err := dao.session.Select("dao.selectUserById").Param(model).Result(&data)
 	return data, err
 }
 
 func (dao *Dao) SelectUser(model entity.User) ([]entity.User, error) {
 	var dataList []entity.User
-	err := dao.storage.NewSession().Select("dao.selectUser").Param(model).Result(&dataList)
+	err := dao.session.Select("dao.selectUser").Param(model).Result(&dataList)
 	return dataList, err
 }
 
 func (dao *Dao) SelectUserCount(model entity.User) (int64, error) {
 	var ret int64
-	err := dao.storage.NewSession().Select("dao.selectUserCount").Param(model).Result(&ret)
+	err := dao.session.Select("dao.selectUserCount").Param(model).Result(&ret)
 	return ret, err
 }
 
 func (dao *Dao) InsertUser(model entity.User) (int64, int64, error) {
 	var ret int64
-	runner := dao.storage.NewSession().Insert("dao.insertUser").Param(model)
+	runner := dao.session.Insert("dao.insertUser").Param(model)
 	err := runner.Result(&ret)
 	id := runner.LastInsertId()
 	return ret, id, err
@@ -54,7 +54,7 @@ func (dao *Dao) InsertUser(model entity.User) (int64, int64, error) {
 
 func (dao *Dao) InsertBatchUser(models []entity.User) (int64, int64, error) {
 	var ret int64
-	runner := dao.storage.NewSession().Insert("dao.insertBatchUser").Param(models)
+	runner := dao.session.Insert("dao.insertBatchUser").Param(models)
 	err := runner.Result(&ret)
 	id := runner.LastInsertId()
 	return ret, id, err
@@ -62,18 +62,18 @@ func (dao *Dao) InsertBatchUser(models []entity.User) (int64, int64, error) {
 
 func (dao *Dao) UpdateUser(model entity.User) (int64, error) {
 	var ret int64
-	err := dao.storage.NewSession().Update("dao.updateUser").Param(model).Result(&ret)
+	err := dao.session.Update("dao.updateUser").Param(model).Result(&ret)
 	return ret, err
 }
 
 func (dao *Dao) DeleteUser(model entity.User) (int64, error) {
 	var ret int64
-	err := dao.storage.NewSession().Delete("dao.deleteUser").Param(model).Result(&ret)
+	err := dao.session.Delete("dao.deleteUser").Param(model).Result(&ret)
 	return ret, err
 }
 
 func (dao *Dao) PageSelectUser(model entity.PageUserParam) ([]entity.User, error) {
 	var dataList []entity.User
-	err := dao.storage.NewSession().Select("dao.pageSelectUser").Param(model).Result(&dataList)
+	err := dao.session.Select("dao.pageSelectUser").Param(model).Result(&dataList)
 	return dataList, err
 }

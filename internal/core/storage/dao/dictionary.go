@@ -69,7 +69,7 @@ func (dao *Dao) UpdateDictionary(model entity.Dictionary) (int64, error) {
 
 func (dao *Dao) UpdateDictionaryBatch(model []entity.Dictionary) (int64, error) {
 	var ret int64
-	err := dao.storage.NewSession().Update("dao.updateDictionaryBatch").Param(model).Result(&ret)
+	err := dao.session.Update("dao.updateDictionaryBatch").Param(model).Result(&ret)
 	return ret, err
 }
 
