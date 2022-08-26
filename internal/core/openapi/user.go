@@ -25,6 +25,7 @@ import (
 	"github.com/acmestack/envcd/internal/pkg/constant"
 	"github.com/acmestack/envcd/internal/pkg/entity"
 	"github.com/acmestack/envcd/pkg/entity/result"
+	"github.com/acmestack/gobatis"
 	"github.com/acmestack/godkits/array"
 	"github.com/acmestack/godkits/gox/stringsx"
 	"github.com/gin-gonic/gin"
@@ -248,39 +249,51 @@ func (openapi *Openapi) removeUser(ginCtx *gin.Context) {
 		if user.Id == 0 {
 			return result.Success(nil)
 		}
-		// update user state to deleted
-		// todo tx and catch error @liuzhaowei
-		user.State = constant.DeletedState
-		daoAction.UpdateUser(user)
+		err = daoAction.GetSession().Tx(handleRemoveUser(user, daoAction))
+		if err != nil {
+			return result.InternalFailure(err)
+		}
+		return result.Success(nil)
+	})
+}
 
+func handleRemoveUser(user entity.User, daoAction *dao.Dao) func(session *gobatis.Session) error {
+	return func(session *gobatis.Session) error {
+		// update user state to deleted
+		user.State = constant.DeletedState
+		if _, err := daoAction.UpdateUser(user); err != nil {
+			return err
+		}
 		// get all the user's dictionary and update state to deleted
 		dictParam := entity.Dictionary{UserId: user.Id}
 		dictionaries, err := daoAction.SelectDictionary(dictParam, nil)
 		if err != nil {
-			return result.InternalFailure(err)
+			return nil
 		}
 		if len(dictionaries) != 0 {
 			for i := range dictionaries {
 				dictionaries[i].State = constant.DeletedState
 			}
-			daoAction.UpdateDictionaryBatch(dictionaries)
+			if _, err := daoAction.UpdateDictionaryBatch(dictionaries); err != nil {
+				return err
+			}
 		}
-
 		// get all the user's scopespace and update state to deleted
 		spaceParam := entity.ScopeSpace{UserId: user.Id}
 		spaces, err := daoAction.SelectScopeSpace(spaceParam)
 		if err != nil {
-			return result.InternalFailure(err)
+			return nil
 		}
 		if len(spaces) != 0 {
 			for i := range spaces {
 				spaces[i].State = constant.DeletedState
 			}
-			daoAction.UpdateScopeSpaceBatch(spaces)
+			if _, err := daoAction.UpdateScopeSpaceBatch(spaces); err != nil {
+				return err
+			}
 		}
-
-		return result.Success(nil)
-	})
+		return nil
+	}
 }
 
 func (openapi *Openapi) users(ginCtx *gin.Context) {
