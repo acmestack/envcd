@@ -159,12 +159,6 @@ func (openapi *Openapi) logout(ginCtx *gin.Context) {
 	})
 }
 
-func (openapi *Openapi) GetUserById(userId int) ([]entity.User, error) {
-	return dao.New(openapi.storage).SelectUser(entity.User{
-		Id: userId,
-	})
-}
-
 func (openapi *Openapi) createUser(ginCtx *gin.Context) {
 	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
 		param := userParam{}
