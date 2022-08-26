@@ -19,6 +19,15 @@ package entity
 
 import "time"
 
+type UserInfo struct {
+	Id        int    `json:"id"`
+	Name      string `json:"name"`
+	Identity  int    `json:"identity"`
+	State     string `json:"state"`
+	CreatedAt string `json:"createdAt"`
+	UpdatedAt string `json:"updatedAt"`
+}
+
 type User struct {
 	//TableName gobatis.TableName `user`
 	Id        int       `column:"id"`
