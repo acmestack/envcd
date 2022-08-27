@@ -22,6 +22,7 @@ import (
 	"github.com/acmestack/envcd/internal/pkg/entity"
 	"github.com/acmestack/godkits/core"
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 // buildContext build plugin context
@@ -45,6 +46,23 @@ func (openapi *Openapi) buildContext(ginCtx *gin.Context) {
 }
 
 func (openapi *Openapi) parserUser(ginCtx *gin.Context) *entity.UserInfo {
-	// todo parser user data
+	tokenString := ginCtx.GetHeader("token")
+	if len(tokenString) == 0 {
+		// not token
+		return nil
+	}
+	token, _ := jwt.ParseWithClaims(tokenString, &authorizationClaims{}, func(token *jwt.Token) (interface{}, error) {
+		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+		return []byte(hmacSecret), nil
+	})
+	if claim, ok := token.Claims.(*authorizationClaims); ok && token.Valid {
+		if claim.UserId == 0 {
+			return nil
+		}
+		userInfo := &entity.UserInfo{}
+		userInfo.Id = claim.UserId
+		userInfo.Token = tokenString
+		return userInfo
+	}
 	return nil
 }

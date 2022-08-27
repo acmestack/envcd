@@ -114,6 +114,11 @@ func (openapi *Openapi) login(ginCtx *gin.Context) {
 		if err != nil {
 			return result.InternalFailure(err)
 		}
+		daoAction := dao.New(openapi.storage)
+		user.UserSession = token
+		if _, err := daoAction.UpdateUser(user); err != nil {
+			return result.InternalFailure(err)
+		}
 		return result.Success(map[string]interface{}{
 			userIdKey: user.Id,
 			tokenKey:  token,

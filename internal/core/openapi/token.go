@@ -18,6 +18,9 @@
 package openapi
 
 import (
+	"github.com/acmestack/envcd/internal/core/storage/dao"
+	"github.com/acmestack/envcd/internal/pkg/entity"
+	"github.com/acmestack/godkits/array"
 	"time"
 
 	"github.com/acmestack/envcd/internal/pkg/context"
@@ -31,19 +34,19 @@ const (
 )
 
 // claims claims
-type claims struct {
+type authorizationClaims struct {
 	*jwt.RegisteredClaims
-	userId   int
-	userName string
+	UserId   int    `json:"userId"`
+	UserName string `json:"userName"`
 }
 
 func generateToken(userId int, userName string) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims{
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &authorizationClaims{
 		RegisteredClaims: &jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(10 * time.Minute)),
 		},
-		userId:   userId,
-		userName: userName,
+		UserId:   userId,
+		UserName: userName,
 	})
 	return token.SignedString([]byte(hmacSecret))
 }
@@ -55,7 +58,12 @@ func (openapi *Openapi) validate(context *context.Context) context.EnvcdActionFu
 		if context.User == nil {
 			return result.Failure0(result.ErrorUserNotAuthorized)
 		}
-		// todo validate generateToken
+		param := entity.User{Id: context.User.Id}
+		// query user by param
+		users, _ := dao.New(openapi.storage).SelectUser(param)
+		if array.Empty(users) || users[0].UserSession != context.User.Token {
+			return result.Failure0(result.ErrorUserNotAuthorized)
+		}
 		return nil
 	}
 }
