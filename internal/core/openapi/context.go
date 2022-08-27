@@ -63,7 +63,6 @@ func (openapi *Openapi) parserUser(ginCtx *gin.Context) *entity.UserInfo {
 		userInfo.Id = claim.UserId
 		userInfo.Token = tokenString
 		return userInfo
-	} else {
-		return nil
 	}
+	return nil
 }
