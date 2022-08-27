@@ -61,10 +61,7 @@ func (openapi *Openapi) validate(context *context.Context) context.EnvcdActionFu
 		param := entity.User{Id: context.User.Id}
 		// query user by param
 		users, _ := dao.New(openapi.storage).SelectUser(param)
-		if array.Empty(users) {
-			return result.Failure0(result.ErrorUserNotAuthorized)
-		}
-		if users[0].UserSession != context.User.Token {
+		if array.Empty(users) || users[0].UserSession != context.User.Token {
 			return result.Failure0(result.ErrorUserNotAuthorized)
 		}
 		return nil
