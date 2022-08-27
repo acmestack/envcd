@@ -18,8 +18,8 @@
 package configuration
 
 import (
-	"github.com/acmestack/envcd/pkg/entity"
-	"github.com/acmestack/envcd/pkg/entity/data"
+	"github.com/acmestack/envcd/internal/pkg/data"
+	"github.com/acmestack/envcd/internal/pkg/entity"
 )
 
 type Configuration struct {

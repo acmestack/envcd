@@ -19,6 +19,7 @@ package openapi
 
 import (
 	"github.com/acmestack/envcd/internal/pkg/context"
+	"github.com/acmestack/envcd/internal/pkg/entity"
 	"github.com/acmestack/godkits/core"
 	"github.com/gin-gonic/gin"
 )
@@ -39,5 +40,11 @@ func (openapi *Openapi) buildContext(ginCtx *gin.Context) {
 		Body:        ginCtx.Request.Body,
 		Request:     ginCtx.Request,
 		RequestId:   requestId,
+		User:        openapi.parserUser(ginCtx),
 	}
+}
+
+func (openapi *Openapi) parserUser(ginCtx *gin.Context) *entity.UserInfo {
+	// todo parser user data
+	return nil
 }
