@@ -20,6 +20,7 @@ package openapi
 import (
 	"github.com/acmestack/envcd/internal/core/storage/dao"
 	"github.com/acmestack/envcd/internal/pkg/entity"
+	"github.com/acmestack/godkits/array"
 	"time"
 
 	"github.com/acmestack/envcd/internal/pkg/context"
@@ -60,7 +61,7 @@ func (openapi *Openapi) validate(context *context.Context) context.EnvcdActionFu
 		param := entity.User{Id: context.User.Id}
 		// query user by param
 		users, _ := dao.New(openapi.storage).SelectUser(param)
-		if len(users) == 0 {
+		if array.Empty(users) {
 			return result.Failure0(result.ErrorUserNotAuthorized)
 		}
 		if users[0].UserSession != context.User.Token {
