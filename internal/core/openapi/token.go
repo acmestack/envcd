@@ -89,6 +89,7 @@ func (openapi *Openapi) validate(context *context.Context) context.EnvcdActionFu
 		// query user by param
 		users, err := dao.New(openapi.storage).SelectUser(param)
 		if err != nil {
+			// todo log
 			return result.InternalFailure(err)
 		}
 		if array.Empty(users) || users[0].UserSession != user.Token {
