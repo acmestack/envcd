@@ -36,5 +36,21 @@ type Context struct {
 	Body        interface{}
 	Request     *http.Request
 	RequestId   string
-	User        *entity.UserInfo
+	user        *entity.UserInfo
+}
+
+// AssignUser when the context's user is not assign
+func (c *Context) AssignUser(user *entity.UserInfo) *Context {
+	if c != nil && c.user == nil {
+		c.user = user
+	}
+	return c
+}
+
+// User return the context assigned user
+func (c *Context) User() *entity.UserInfo {
+	if c == nil {
+		return nil
+	}
+	return c.user
 }

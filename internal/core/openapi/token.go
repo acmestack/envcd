@@ -18,10 +18,11 @@
 package openapi
 
 import (
+	"time"
+
 	"github.com/acmestack/envcd/internal/core/storage/dao"
 	"github.com/acmestack/envcd/internal/pkg/entity"
 	"github.com/acmestack/godkits/array"
-	"time"
 
 	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/result"
@@ -31,15 +32,40 @@ import (
 const (
 	// hmacSecret secret
 	hmacSecret = "9C035514A15F78"
+	// tokenHeader
+	tokenHeader = "token"
 )
 
-// claims claims
+// authorizationClaims claims
 type authorizationClaims struct {
 	*jwt.RegisteredClaims
 	UserId   int    `json:"userId"`
 	UserName string `json:"userName"`
 }
 
+// convertTokenToUser parser token to user
+func convertTokenToUser(tokenString string) *entity.UserInfo {
+	token, err := jwt.ParseWithClaims(tokenString, &authorizationClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(hmacSecret), nil
+	})
+	if err != nil {
+		// todo log
+		return nil
+	}
+	if claim, ok := token.Claims.(*authorizationClaims); ok && token.Valid {
+		if claim.UserId == 0 {
+			return nil
+		}
+		userInfo := &entity.UserInfo{}
+		userInfo.Id = claim.UserId
+		userInfo.Token = tokenString
+		userInfo.Name = claim.UserName
+		return userInfo
+	}
+	return nil
+}
+
+// generateToken with userId and userName
 func generateToken(userId int, userName string) (string, error) {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &authorizationClaims{
 		RegisteredClaims: &jwt.RegisteredClaims{
@@ -55,13 +81,17 @@ func generateToken(userId int, userName string) (string, error) {
 // user state and generateToken validation
 func (openapi *Openapi) validate(context *context.Context) context.EnvcdActionFunc {
 	return func() *result.EnvcdResult {
-		if context.User == nil {
+		user := context.User()
+		if user == nil {
 			return result.Failure0(result.ErrorUserNotAuthorized)
 		}
-		param := entity.User{Id: context.User.Id}
+		param := entity.User{Id: user.Id}
 		// query user by param
-		users, _ := dao.New(openapi.storage).SelectUser(param)
-		if array.Empty(users) || users[0].UserSession != context.User.Token {
+		users, err := dao.New(openapi.storage).SelectUser(param)
+		if err != nil {
+			return result.InternalFailure(err)
+		}
+		if array.Empty(users) || users[0].UserSession != user.Token {
 			return result.Failure0(result.ErrorUserNotAuthorized)
 		}
 		return nil

@@ -37,7 +37,7 @@ type loginParam struct {
 	Password string `json:"password"`
 }
 
-// userParam Create User Param
+// userParam Create AssignUser Param
 type userParam struct {
 	Name     string `json:"name"`
 	Password string `json:"password"`
@@ -97,13 +97,13 @@ func (openapi *Openapi) login(ginCtx *gin.Context) {
 		})
 		if err != nil {
 			// todo log
-			//log.Error("Query User error: %v", err)
+			//log.Error("Query AssignUser error: %v", err)
 			return result.InternalFailure(err)
 		}
 
 		if len(users) == 0 {
 			// todo log
-			//log.Error("User does not exist : %v", param)
+			//log.Error("AssignUser does not exist : %v", param)
 			return result.Failure0(result.ErrorUserNotFound)
 		}
 		user := users[0]
@@ -152,12 +152,12 @@ func (openapi *Openapi) createUser(ginCtx *gin.Context) {
 		})
 		if err != nil {
 			// todo log
-			//log.Error("Query User error: %v", err)
+			//log.Error("Query AssignUser error: %v", err)
 			return result.InternalFailure(err)
 		}
 		if len(users) > 0 {
 			// todo log
-			//log.Error("User Has exists: %v", users)
+			//log.Error("AssignUser Has exists: %v", users)
 			return result.Failure0(result.ErrorUserExisted)
 		}
 		// generate database password by salt
@@ -203,7 +203,7 @@ func (openapi *Openapi) user(ginCtx *gin.Context) {
 		}
 		if len(users) == 0 {
 			// todo log
-			//log.Error("User does not exist : %v", param)
+			//log.Error("AssignUser does not exist : %v", param)
 			return result.Failure0(result.ErrorUserNotFound)
 		}
 		return result.Success(userVO{
