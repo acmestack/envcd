@@ -156,7 +156,8 @@ func (openapi *Openapi) execute(ginCtx *gin.Context, permissionAction context.En
 	c := openapi.contexts[requestId]
 	ret := result.InternalFailure0()
 	if c != nil && c.RequestId == requestId {
-		for _, action := range []context.EnvcdActionFunc{openapi.validate(c), permissionAction, logicAction} {
+
+		for _, action := range []context.EnvcdActionFunc{openapi.validate(c, ginCtx), permissionAction, logicAction} {
 			if action == nil {
 				continue
 			}
