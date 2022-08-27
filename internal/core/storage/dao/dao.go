@@ -19,13 +19,19 @@ package dao
 
 import (
 	"github.com/acmestack/envcd/internal/core/storage"
+	"github.com/acmestack/gobatis"
 )
 
 type Dao struct {
 	storage *storage.Storage
+	session *gobatis.Session
 }
 
 // New dao instance
 func New(storage *storage.Storage) *Dao {
-	return &Dao{storage: storage}
+	return &Dao{storage: storage, session: storage.NewSession()}
+}
+
+func (dao *Dao) GetSession() *gobatis.Session {
+	return dao.session
 }

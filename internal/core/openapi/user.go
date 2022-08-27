@@ -24,11 +24,11 @@ import (
 	"github.com/acmestack/envcd/internal/core/storage/dao"
 	"github.com/acmestack/envcd/internal/pkg/constant"
 	"github.com/acmestack/envcd/internal/pkg/entity"
-	"github.com/acmestack/envcd/pkg/entity/result"
+	"github.com/acmestack/envcd/internal/pkg/result"
+	"github.com/acmestack/gobatis"
 	"github.com/acmestack/godkits/array"
 	"github.com/acmestack/godkits/gox/stringsx"
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
 )
 
 // loginParam Login
@@ -46,10 +46,8 @@ type userParam struct {
 }
 
 const (
-	// hmacSecret secret
-	hmacSecret = "9C035514A15F78"
-	userIdKey  = "userId"
-	tokenKey   = "accessToken"
+	userIdKey = "userId"
+	tokenKey  = "accessToken"
 )
 
 type pageUserVO struct {
@@ -85,26 +83,8 @@ func userConverter(users []entity.User) []userVO {
 	return convertUsers
 }
 
-// claims claims
-type claims struct {
-	*jwt.RegisteredClaims
-	userId   int
-	userName string
-}
-
-// newJWTToken secret
-func newJWTToken(authClaims claims) string {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, authClaims)
-	tokenString, err := token.SignedString([]byte(hmacSecret))
-	if err != nil {
-		// todo
-		return ""
-	}
-	return tokenString
-}
-
 func (openapi *Openapi) login(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	loginRet := func() *result.EnvcdResult {
 		param := loginParam{}
 		if err := ginCtx.ShouldBindJSON(&param); err != nil {
 			// todo log
@@ -130,28 +110,21 @@ func (openapi *Openapi) login(ginCtx *gin.Context) {
 		if saltPassword(param.Password, user.Salt) != user.Password {
 			return result.Failure0(result.ErrorUserPasswordIncorrect)
 		}
-		token := newJWTToken(claims{
-			RegisteredClaims: &jwt.RegisteredClaims{
-				ExpiresAt: jwt.NewNumericDate(time.Now().Add(10 * time.Minute)),
-			},
-			userId:   user.Id,
-			userName: user.Name,
-		})
-		daoAction := dao.New(openapi.storage)
-		user.UserSession = token
-		_, err = daoAction.UpdateUser(user)
+		token, err := generateToken(user.Id, user.Name)
 		if err != nil {
-			return result.Failure0(result.ErrorUpdateUser)
+			return result.InternalFailure(err)
 		}
 		return result.Success(map[string]interface{}{
 			userIdKey: user.Id,
 			tokenKey:  token,
 		})
-	})
+	}()
+	ginCtx.JSON(loginRet.HttpStatusCode, loginRet.Data)
+	delete(openapi.contexts, ginCtx.Request.Header.Get(requestIdHeader))
 }
 
 func (openapi *Openapi) logout(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		// UserDao.save(),
 		// LogDao.save()
@@ -160,7 +133,7 @@ func (openapi *Openapi) logout(ginCtx *gin.Context) {
 }
 
 func (openapi *Openapi) createUser(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		param := userParam{}
 		if err := ginCtx.ShouldBindJSON(&param); err != nil {
 			// todo log
@@ -200,20 +173,20 @@ func (openapi *Openapi) createUser(ginCtx *gin.Context) {
 			//log.Error("insert error=%v", err)
 			return result.Failure(result.ErrorCreateUser, err)
 		}
-		// fixme update success message or response token and id ?
+		// fixme update success message or execute generateToken and id ?
 		return result.Success("ok")
 	})
 }
 
 func (openapi *Openapi) updateUser(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		return nil
 	})
 }
 
 func (openapi *Openapi) user(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		id := stringsx.ToInt(ginCtx.Param("userId"))
 		param := entity.User{Id: id}
 		// query user by param
@@ -240,7 +213,7 @@ func (openapi *Openapi) user(ginCtx *gin.Context) {
 }
 
 func (openapi *Openapi) removeUser(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		id := stringsx.ToInt(ginCtx.Param("userId"))
 		param := entity.User{Id: id}
 
@@ -254,43 +227,55 @@ func (openapi *Openapi) removeUser(ginCtx *gin.Context) {
 		if user.Id == 0 {
 			return result.Success(nil)
 		}
-		// update user state to deleted
-		// todo tx and catch error @liuzhaowei
-		user.State = constant.DeletedState
-		daoAction.UpdateUser(user)
+		err = daoAction.GetSession().Tx(handleRemoveUser(user, daoAction))
+		if err != nil {
+			return result.InternalFailure(err)
+		}
+		return result.Success(nil)
+	})
+}
 
+func handleRemoveUser(user entity.User, daoAction *dao.Dao) func(session *gobatis.Session) error {
+	return func(session *gobatis.Session) error {
+		// update user state to deleted
+		user.State = constant.DeletedState
+		if _, err := daoAction.UpdateUser(user); err != nil {
+			return err
+		}
 		// get all the user's dictionary and update state to deleted
 		dictParam := entity.Dictionary{UserId: user.Id}
 		dictionaries, err := daoAction.SelectDictionary(dictParam, nil)
 		if err != nil {
-			return result.InternalFailure(err)
+			return err
 		}
 		if len(dictionaries) != 0 {
 			for i := range dictionaries {
 				dictionaries[i].State = constant.DeletedState
 			}
-			daoAction.UpdateDictionaryBatch(dictionaries)
+			if _, err := daoAction.UpdateDictionaryBatch(dictionaries); err != nil {
+				return err
+			}
 		}
-
 		// get all the user's scopespace and update state to deleted
 		spaceParam := entity.ScopeSpace{UserId: user.Id}
 		spaces, err := daoAction.SelectScopeSpace(spaceParam)
 		if err != nil {
-			return result.InternalFailure(err)
+			return err
 		}
 		if len(spaces) != 0 {
 			for i := range spaces {
 				spaces[i].State = constant.DeletedState
 			}
-			daoAction.UpdateScopeSpaceBatch(spaces)
+			if _, err := daoAction.UpdateScopeSpaceBatch(spaces); err != nil {
+				return err
+			}
 		}
-
-		return result.Success(nil)
-	})
+		return nil
+	}
 }
 
 func (openapi *Openapi) users(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		// receive params from request
 		// todo use ToIntDefault func
 		page := stringsx.ToInt(ginCtx.Query("page"))
@@ -316,21 +301,21 @@ func (openapi *Openapi) users(ginCtx *gin.Context) {
 }
 
 func (openapi *Openapi) userScopeSpaces(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		return nil
 	})
 }
 
 func (openapi *Openapi) userDictionaries(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		return nil
 	})
 }
 
 func (openapi *Openapi) userDictionariesUnderScopeSpace(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		return nil
 	})

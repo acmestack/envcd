@@ -23,16 +23,12 @@ import (
 	"time"
 
 	"github.com/acmestack/envcd/internal/core/exchanger"
-	"github.com/acmestack/envcd/internal/core/plugin"
-	"github.com/acmestack/envcd/internal/core/plugin/logging"
-	"github.com/acmestack/envcd/internal/core/plugin/permission"
 	"github.com/acmestack/envcd/internal/core/storage"
 	"github.com/acmestack/envcd/internal/core/storage/dao"
 	"github.com/acmestack/envcd/internal/pkg/config"
 	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/entity"
-	"github.com/acmestack/envcd/internal/pkg/executor"
-	"github.com/acmestack/envcd/pkg/entity/result"
+	"github.com/acmestack/envcd/internal/pkg/result"
 	"github.com/acmestack/godkits/gox/errorsx"
 	"github.com/gin-gonic/gin"
 )
@@ -48,21 +44,17 @@ type PageListVO struct {
 }
 
 type Openapi struct {
-	exchange  *exchanger.Exchange
-	storage   *storage.Storage
-	executors []executor.Executor
-	contexts  map[string]*context.Context
+	exchange *exchanger.Exchange
+	storage  *storage.Storage
+	contexts map[string]*context.Context
 }
 
 func Start(serverSetting *config.Server, exchange *exchanger.Exchange, storage *storage.Storage) {
 	openapi := &Openapi{
-		exchange:  exchange,
-		storage:   storage,
-		executors: []executor.Executor{logging.New(), permission.New()},
-		contexts:  map[string]*context.Context{},
+		exchange: exchange,
+		storage:  storage,
+		contexts: map[string]*context.Context{},
 	}
-	// sort plugin
-	plugin.Sort(openapi.executors)
 	openapi.initServer(serverSetting)
 }
 
@@ -158,16 +150,19 @@ func (openapi *Openapi) buildRouter() *gin.Engine {
 	return router
 }
 
-// response to caller
-func (openapi *Openapi) response(ginCtx *gin.Context, permissionAction context.EnvcdActionFunc, action context.EnvcdActionFunc) {
+// execute to caller
+func (openapi *Openapi) execute(ginCtx *gin.Context, permissionAction context.EnvcdActionFunc, logicAction context.EnvcdActionFunc) {
 	requestId := ginCtx.Request.Header.Get(requestIdHeader)
 	c := openapi.contexts[requestId]
 	ret := result.InternalFailure0()
 	if c != nil && c.RequestId == requestId {
-		c.PermissionAction = permissionAction
-		c.Action = action
-		if exeRet := plugin.NewChain(openapi.executors).Execute(c); exeRet != nil {
-			ret = exeRet
+		for _, action := range []context.EnvcdActionFunc{openapi.validate(c), permissionAction, logicAction} {
+			if action == nil {
+				continue
+			}
+			if ret = action(); ret != nil {
+				break
+			}
 		}
 	}
 	ginCtx.JSON(ret.HttpStatusCode, ret.Data)

@@ -27,7 +27,7 @@ import (
 	"github.com/acmestack/envcd/internal/core/storage/dao"
 	"github.com/acmestack/envcd/internal/pkg/constant"
 	"github.com/acmestack/envcd/internal/pkg/entity"
-	"github.com/acmestack/envcd/pkg/entity/result"
+	"github.com/acmestack/envcd/internal/pkg/result"
 	"github.com/acmestack/godkits/array"
 	"github.com/acmestack/godkits/gox/stringsx"
 	"github.com/acmestack/pagehelper"
@@ -70,7 +70,7 @@ func dictionary(storage *storage.Storage, dictionaryId *int, ginCtx *gin.Context
 //  @receiver openapi common openapi
 //  @param ginCtx gin context
 func (openapi *Openapi) dictionary(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		dict, err := dictionary(openapi.storage, nil, ginCtx)
 		if err != nil {
 			return result.InternalFailure(err)
@@ -83,7 +83,7 @@ func (openapi *Openapi) dictionary(ginCtx *gin.Context) {
 //  @receiver openapi openapi
 //  @param ginCtx gin context
 func (openapi *Openapi) createDictionary(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		dictParams := &DictionaryDTO{}
 		if err := ginCtx.ShouldBindJSON(dictParams); err != nil {
 			fmt.Printf("Bind error, %v\n", err)
@@ -125,7 +125,7 @@ func (openapi *Openapi) createDictionary(ginCtx *gin.Context) {
 //  @receiver openapi openapi
 //  @param ginCtx gin context
 func (openapi *Openapi) updateDictionary(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		dictParams := &dictionUpdateDTO{}
 		if err := ginCtx.ShouldBindJSON(dictParams); err != nil {
 			fmt.Printf("Bind error, %v\n", err)
@@ -156,7 +156,7 @@ func (openapi *Openapi) updateDictionary(ginCtx *gin.Context) {
 //  @receiver openapi
 //  @param ginCtx gin context
 func (openapi *Openapi) removeDictionary(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		dict, err := dictionary(openapi.storage, nil, ginCtx)
 		if err != nil {
 			return result.InternalFailure(err)
@@ -190,7 +190,7 @@ func (openapi *Openapi) removeDictionary(ginCtx *gin.Context) {
 }
 
 func (openapi *Openapi) dictionaries(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		pageNum := stringsx.ToInt(ginCtx.DefaultQuery("page", "1"))
 		pageSize := stringsx.ToInt(ginCtx.DefaultQuery("pageSize", "20"))
 		daoAction := dao.New(openapi.storage)
