@@ -24,6 +24,7 @@ type UserInfo struct {
 	Name      string `json:"name"`
 	Identity  int    `json:"identity"`
 	State     string `json:"state"`
+	Token     string `json:"token"`
 	CreatedAt string `json:"createdAt"`
 	UpdatedAt string `json:"updatedAt"`
 }
