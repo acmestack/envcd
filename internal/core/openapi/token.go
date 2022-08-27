@@ -79,6 +79,9 @@ func (openapi *Openapi) validate(context *context.Context, ctx *gin.Context) con
 			if len(users) == 0 {
 				return result.Failure0(result.ErrorUserNotAuthorized)
 			}
+			if users[0].UserSession != tokenString {
+				return result.Failure0(result.ErrorUserNotAuthorized)
+			}
 			userInfo := &entity.UserInfo{}
 			userInfo.Id = users[0].Id
 			userInfo.Name = users[0].Name
