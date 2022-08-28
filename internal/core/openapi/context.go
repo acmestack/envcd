@@ -21,8 +21,8 @@ import (
 	"github.com/acmestack/envcd/internal/pkg/context"
 	"github.com/acmestack/envcd/internal/pkg/entity"
 	"github.com/acmestack/godkits/core"
+	"github.com/acmestack/godkits/gox/stringsx"
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
 )
 
 // buildContext build plugin context
@@ -32,7 +32,7 @@ func (openapi *Openapi) buildContext(ginCtx *gin.Context) {
 	// create request id by uuid
 	requestId := core.RandomUUID()
 	ginCtx.Request.Header.Add(requestIdHeader, requestId)
-	openapi.contexts[requestId] = &context.Context{
+	openapi.contexts[requestId] = (&context.Context{
 		Uri:         ginCtx.Request.RequestURI,
 		Method:      ginCtx.Request.Method,
 		Headers:     ginCtx.Request.Header,
@@ -41,28 +41,14 @@ func (openapi *Openapi) buildContext(ginCtx *gin.Context) {
 		Body:        ginCtx.Request.Body,
 		Request:     ginCtx.Request,
 		RequestId:   requestId,
-		User:        openapi.parserUser(ginCtx),
-	}
+	}).AssignUser(openapi.parserUser(ginCtx))
 }
 
 func (openapi *Openapi) parserUser(ginCtx *gin.Context) *entity.UserInfo {
-	tokenString := ginCtx.GetHeader("token")
-	if len(tokenString) == 0 {
+	tokenString := ginCtx.GetHeader(tokenHeader)
+	if stringsx.Empty(tokenString) {
 		// not token
 		return nil
 	}
-	token, _ := jwt.ParseWithClaims(tokenString, &authorizationClaims{}, func(token *jwt.Token) (interface{}, error) {
-		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
-		return []byte(hmacSecret), nil
-	})
-	if claim, ok := token.Claims.(*authorizationClaims); ok && token.Valid {
-		if claim.UserId == 0 {
-			return nil
-		}
-		userInfo := &entity.UserInfo{}
-		userInfo.Id = claim.UserId
-		userInfo.Token = tokenString
-		return userInfo
-	}
-	return nil
+	return convertTokenToUser(tokenString)
 }
