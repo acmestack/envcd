@@ -33,8 +33,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var requestIdHeader = "x-envcd-request-id"
-
 type PageListVO struct {
 	Page      int64       `json:"page"`
 	PageSize  int64       `json:"pageSize"`

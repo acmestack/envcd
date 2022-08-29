@@ -92,7 +92,8 @@ func (openapi *Openapi) login(ginCtx *gin.Context) {
 			return result.InternalFailure(err)
 		}
 
-		users, err := dao.New(openapi.storage).SelectUser(entity.User{
+		daoAction := dao.New(openapi.storage)
+		users, err := daoAction.SelectUser(entity.User{
 			Name: param.Username,
 		})
 		if err != nil {
@@ -114,7 +115,6 @@ func (openapi *Openapi) login(ginCtx *gin.Context) {
 		if err != nil {
 			return result.InternalFailure(err)
 		}
-		daoAction := dao.New(openapi.storage)
 		user.UserSession = token
 		if _, err := daoAction.UpdateUser(user); err != nil {
 			return result.InternalFailure(err)
