@@ -19,16 +19,27 @@ package entity
 
 import "time"
 
+type UserInfo struct {
+	Id        int    `json:"id"`
+	Name      string `json:"name"`
+	Identity  int    `json:"identity"`
+	State     string `json:"state"`
+	Token     string `json:"token"`
+	CreatedAt string `json:"createdAt"`
+	UpdatedAt string `json:"updatedAt"`
+}
+
 type User struct {
 	//TableName gobatis.TableName `user`
-	Id        int       `column:"id"`
-	Name      string    `column:"name"`
-	Password  string    `column:"password"`
-	Salt      string    `column:"salt"`
-	Identity  int       `column:"identity"`
-	State     string    `column:"state"`
-	CreatedAt time.Time `column:"created_at"`
-	UpdatedAt time.Time `column:"updated_at"`
+	Id          int       `column:"id"`
+	Name        string    `column:"name"`
+	Password    string    `column:"password"`
+	Salt        string    `column:"salt"`
+	Identity    int       `column:"identity"`
+	State       string    `column:"state"`
+	UserSession string    `column:"user_session"`
+	CreatedAt   time.Time `column:"created_at"`
+	UpdatedAt   time.Time `column:"updated_at"`
 }
 
 type PageUserParam struct {

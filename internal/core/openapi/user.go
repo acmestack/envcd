@@ -24,12 +24,11 @@ import (
 	"github.com/acmestack/envcd/internal/core/storage/dao"
 	"github.com/acmestack/envcd/internal/pkg/constant"
 	"github.com/acmestack/envcd/internal/pkg/entity"
-	"github.com/acmestack/envcd/pkg/entity/result"
+	"github.com/acmestack/envcd/internal/pkg/result"
 	"github.com/acmestack/gobatis"
 	"github.com/acmestack/godkits/array"
 	"github.com/acmestack/godkits/gox/stringsx"
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v4"
 )
 
 // loginParam Login
@@ -38,7 +37,7 @@ type loginParam struct {
 	Password string `json:"password"`
 }
 
-// userParam Create User Param
+// userParam Create AssignUser Param
 type userParam struct {
 	Name     string `json:"name"`
 	Password string `json:"password"`
@@ -47,10 +46,8 @@ type userParam struct {
 }
 
 const (
-	// hmacSecret secret
-	hmacSecret = "9C035514A15F78"
-	userIdKey  = "userId"
-	tokenKey   = "accessToken"
+	userIdKey = "userId"
+	tokenKey  = "accessToken"
 )
 
 type pageUserVO struct {
@@ -86,26 +83,8 @@ func userConverter(users []entity.User) []userVO {
 	return convertUsers
 }
 
-// claims claims
-type claims struct {
-	*jwt.RegisteredClaims
-	userId   int
-	userName string
-}
-
-// newJWTToken secret
-func newJWTToken(authClaims claims) string {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, authClaims)
-	tokenString, err := token.SignedString([]byte(hmacSecret))
-	if err != nil {
-		// todo
-		return ""
-	}
-	return tokenString
-}
-
 func (openapi *Openapi) login(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	loginRet := func() *result.EnvcdResult {
 		param := loginParam{}
 		if err := ginCtx.ShouldBindJSON(&param); err != nil {
 			// todo log
@@ -118,35 +97,39 @@ func (openapi *Openapi) login(ginCtx *gin.Context) {
 		})
 		if err != nil {
 			// todo log
-			//log.Error("Query User error: %v", err)
+			//log.Error("Query AssignUser error: %v", err)
 			return result.InternalFailure(err)
 		}
 
 		if len(users) == 0 {
 			// todo log
-			//log.Error("User does not exist : %v", param)
+			//log.Error("AssignUser does not exist : %v", param)
 			return result.Failure0(result.ErrorUserNotFound)
 		}
 		user := users[0]
 		if saltPassword(param.Password, user.Salt) != user.Password {
 			return result.Failure0(result.ErrorUserPasswordIncorrect)
 		}
-		token := newJWTToken(claims{
-			RegisteredClaims: &jwt.RegisteredClaims{
-				ExpiresAt: jwt.NewNumericDate(time.Now().Add(10 * time.Minute)),
-			},
-			userId:   user.Id,
-			userName: user.Name,
-		})
+		token, err := generateToken(user.Id, user.Name)
+		if err != nil {
+			return result.InternalFailure(err)
+		}
+		daoAction := dao.New(openapi.storage)
+		user.UserSession = token
+		if _, err := daoAction.UpdateUser(user); err != nil {
+			return result.InternalFailure(err)
+		}
 		return result.Success(map[string]interface{}{
 			userIdKey: user.Id,
 			tokenKey:  token,
 		})
-	})
+	}()
+	ginCtx.JSON(loginRet.HttpStatusCode, loginRet.Data)
+	delete(openapi.contexts, ginCtx.Request.Header.Get(requestIdHeader))
 }
 
 func (openapi *Openapi) logout(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		// UserDao.save(),
 		// LogDao.save()
@@ -155,7 +138,7 @@ func (openapi *Openapi) logout(ginCtx *gin.Context) {
 }
 
 func (openapi *Openapi) createUser(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		param := userParam{}
 		if err := ginCtx.ShouldBindJSON(&param); err != nil {
 			// todo log
@@ -169,12 +152,12 @@ func (openapi *Openapi) createUser(ginCtx *gin.Context) {
 		})
 		if err != nil {
 			// todo log
-			//log.Error("Query User error: %v", err)
+			//log.Error("Query AssignUser error: %v", err)
 			return result.InternalFailure(err)
 		}
 		if len(users) > 0 {
 			// todo log
-			//log.Error("User Has exists: %v", users)
+			//log.Error("AssignUser Has exists: %v", users)
 			return result.Failure0(result.ErrorUserExisted)
 		}
 		// generate database password by salt
@@ -195,20 +178,20 @@ func (openapi *Openapi) createUser(ginCtx *gin.Context) {
 			//log.Error("insert error=%v", err)
 			return result.Failure(result.ErrorCreateUser, err)
 		}
-		// fixme update success message or response token and id ?
+		// fixme update success message or execute generateToken and id ?
 		return result.Success("ok")
 	})
 }
 
 func (openapi *Openapi) updateUser(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		return nil
 	})
 }
 
 func (openapi *Openapi) user(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		id := stringsx.ToInt(ginCtx.Param("userId"))
 		param := entity.User{Id: id}
 		// query user by param
@@ -220,7 +203,7 @@ func (openapi *Openapi) user(ginCtx *gin.Context) {
 		}
 		if len(users) == 0 {
 			// todo log
-			//log.Error("User does not exist : %v", param)
+			//log.Error("AssignUser does not exist : %v", param)
 			return result.Failure0(result.ErrorUserNotFound)
 		}
 		return result.Success(userVO{
@@ -235,7 +218,7 @@ func (openapi *Openapi) user(ginCtx *gin.Context) {
 }
 
 func (openapi *Openapi) removeUser(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		id := stringsx.ToInt(ginCtx.Param("userId"))
 		param := entity.User{Id: id}
 
@@ -297,7 +280,7 @@ func handleRemoveUser(user entity.User, daoAction *dao.Dao) func(session *gobati
 }
 
 func (openapi *Openapi) users(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		// receive params from request
 		// todo use ToIntDefault func
 		page := stringsx.ToInt(ginCtx.Query("page"))
@@ -323,21 +306,21 @@ func (openapi *Openapi) users(ginCtx *gin.Context) {
 }
 
 func (openapi *Openapi) userScopeSpaces(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		return nil
 	})
 }
 
 func (openapi *Openapi) userDictionaries(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		return nil
 	})
 }
 
 func (openapi *Openapi) userDictionariesUnderScopeSpace(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		return nil
 	})

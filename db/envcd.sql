@@ -92,6 +92,7 @@ CREATE TABLE `user` (
   `salt` varchar(100) NOT NULL,
   `identity` tinyint(4) unsigned NOT NULL DEFAULT 1 COMMENT '1:admin;2:standard',
   `state` varchar(12) NOT NULL DEFAULT 'enabled' COMMENT 'enabled; disabled; deleted',
+  `user_session` varchar(256) NOT NULL DEFAULT '' COMMENT 'jwt token',
   `created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `updated_at` datetime NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),

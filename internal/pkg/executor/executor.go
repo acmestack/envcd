@@ -19,7 +19,7 @@ package executor
 
 import (
 	"github.com/acmestack/envcd/internal/pkg/context"
-	"github.com/acmestack/envcd/pkg/entity/result"
+	"github.com/acmestack/envcd/internal/pkg/result"
 )
 
 // Executor the executor

@@ -15,11 +15,22 @@
  * limitations under the License.
  */
 
-package plugin
+package openapi
 
-const (
-	// LoggingSorted plugin of logging order
-	LoggingSorted = 1
-	// PermissionSorted plugin of logging order
-	PermissionSorted = 10
+import (
+	"github.com/golang-jwt/jwt/v4"
+	"testing"
 )
+
+// saltPassword Password generation Policy Test
+func TestToken(t *testing.T) {
+	tokenString, _ := generateToken(6, "userName")
+	t.Logf(tokenString)
+	token, _ := jwt.ParseWithClaims(tokenString, &authorizationClaims{}, func(token *jwt.Token) (interface{}, error) {
+		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
+		return []byte(hmacSecret), nil
+	})
+	if claim, ok := token.Claims.(*authorizationClaims); ok && token.Valid {
+		t.Logf(claim.UserName)
+	}
+}

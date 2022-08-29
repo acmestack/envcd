@@ -19,7 +19,9 @@ package openapi
 
 import (
 	"github.com/acmestack/envcd/internal/pkg/context"
+	"github.com/acmestack/envcd/internal/pkg/entity"
 	"github.com/acmestack/godkits/core"
+	"github.com/acmestack/godkits/gox/stringsx"
 	"github.com/gin-gonic/gin"
 )
 
@@ -30,7 +32,7 @@ func (openapi *Openapi) buildContext(ginCtx *gin.Context) {
 	// create request id by uuid
 	requestId := core.RandomUUID()
 	ginCtx.Request.Header.Add(requestIdHeader, requestId)
-	openapi.contexts[requestId] = &context.Context{
+	openapi.contexts[requestId] = (&context.Context{
 		Uri:         ginCtx.Request.RequestURI,
 		Method:      ginCtx.Request.Method,
 		Headers:     ginCtx.Request.Header,
@@ -39,5 +41,14 @@ func (openapi *Openapi) buildContext(ginCtx *gin.Context) {
 		Body:        ginCtx.Request.Body,
 		Request:     ginCtx.Request,
 		RequestId:   requestId,
+	}).AssignUser(openapi.parserUser(ginCtx))
+}
+
+func (openapi *Openapi) parserUser(ginCtx *gin.Context) *entity.UserInfo {
+	tokenString := ginCtx.GetHeader(tokenHeader)
+	if stringsx.Empty(tokenString) {
+		// not token
+		return nil
 	}
+	return convertTokenToUser(tokenString)
 }

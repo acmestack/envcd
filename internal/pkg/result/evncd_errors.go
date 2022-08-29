@@ -20,14 +20,16 @@ package result
 import "net/http"
 
 var (
-	ErrorUserNotFound             = aError("userNotFound", "the user is not exist.", http.StatusBadRequest)
-	ErrorUserExisted              = aError("userExisted", "the user is existed.", http.StatusOK)
-	ErrorCreateUser               = aError("userCreateFault", "the user save error.", http.StatusOK)
-	ErrorUserPasswordIncorrect    = aError("userPasswordIncorrect", "the password is incorrect for user.", http.StatusOK)
-	ErrorDictionaryNotExist       = aError("dictionaryNotExist", "the dictionary is not exist.", http.StatusBadRequest)
-	ErrorEtcdPath                 = aError("etcd path error", "build etcd path error", http.StatusBadRequest)
-	ErrorNotExistState            = aError("state not exist", "current state is error", http.StatusBadRequest)
-	NilExchangePath               = aError("exchange path error", "exchange path is nil", http.StatusBadRequest)
+	// todo refactor etcd path and exchange path error
+	ErrorUserNotAuthorized        = aError("userNotAuthorized", "The user is not authorized, login first.", http.StatusUnauthorized)
+	ErrorUserNotFound             = aError("userNotFound", "The user is not exist.", http.StatusBadRequest)
+	ErrorUserExisted              = aError("userExisted", "The user is existed.", http.StatusOK)
+	ErrorCreateUser               = aError("userCreateFault", "The user save error.", http.StatusOK)
+	ErrorUserPasswordIncorrect    = aError("userPasswordIncorrect", "The password is incorrect for user.", http.StatusOK)
+	ErrorDictionaryNotExist       = aError("dictionaryNotExist", "The dictionary is not exist.", http.StatusBadRequest)
+	ErrorEtcdPath                 = aError("pathError", "Build etcd path error", http.StatusBadRequest)
+	ErrorNotExistState            = aError("stateNotExist", "Current state is error", http.StatusBadRequest)
+	NilExchangePath               = aError("exchangePathError", "Exchange path is nil", http.StatusBadRequest)
 	errorEnvcdInternalServerError = aError("envcdInternalServerError", "Envcd Internal Server Error, try again lately.", http.StatusInternalServerError)
 )
 

@@ -20,21 +20,37 @@ package context
 import (
 	"net/http"
 
-	"github.com/acmestack/envcd/pkg/entity/result"
+	"github.com/acmestack/envcd/internal/pkg/entity"
+	"github.com/acmestack/envcd/internal/pkg/result"
 )
 
 type EnvcdActionFunc func() *result.EnvcdResult
 
 // Context for peer request
 type Context struct {
-	Uri              string
-	Method           string
-	Headers          http.Header
-	ContentType      string
-	Cookies          []*http.Cookie
-	Body             interface{}
-	PermissionAction EnvcdActionFunc
-	Action           EnvcdActionFunc
-	Request          *http.Request
-	RequestId        string
+	Uri         string
+	Method      string
+	Headers     http.Header
+	ContentType string
+	Cookies     []*http.Cookie
+	Body        interface{}
+	Request     *http.Request
+	RequestId   string
+	user        *entity.UserInfo
+}
+
+// AssignUser when the context's user is not assign
+func (c *Context) AssignUser(user *entity.UserInfo) *Context {
+	if c != nil && c.user == nil {
+		c.user = user
+	}
+	return c
+}
+
+// User return the context assigned user
+func (c *Context) User() *entity.UserInfo {
+	if c == nil {
+		return nil
+	}
+	return c.user
 }

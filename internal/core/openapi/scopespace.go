@@ -25,7 +25,7 @@ import (
 	"github.com/acmestack/envcd/internal/core/storage/dao"
 	"github.com/acmestack/envcd/internal/pkg/constant"
 	"github.com/acmestack/envcd/internal/pkg/entity"
-	"github.com/acmestack/envcd/pkg/entity/result"
+	"github.com/acmestack/envcd/internal/pkg/result"
 	"github.com/acmestack/godkits/gox/stringsx"
 	"github.com/gin-gonic/gin"
 )
@@ -62,7 +62,7 @@ func scopeSpaceConverter(scopeSpace entity.ScopeSpace, editable bool) scopeSpace
 //  @receiver openapi openapi
 //  @param ginCtx gin context
 func (openapi *Openapi) scopeSpace(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		scopeSpaceId := stringsx.ToInt(ginCtx.Param("scopeSpaceId"))
 		scopeSpace := entity.ScopeSpace{Id: scopeSpaceId}
 		daoAction := dao.New(openapi.storage)
@@ -86,7 +86,7 @@ func (openapi *Openapi) scopeSpace(ginCtx *gin.Context) {
 }
 
 func (openapi *Openapi) createScopeSpace(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		// query user have same scopeSpace for one person.
 		fmt.Println("hello world")
 		// create config
@@ -98,7 +98,7 @@ func (openapi *Openapi) createScopeSpace(ginCtx *gin.Context) {
 }
 
 func (openapi *Openapi) updateScopeSpace(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		updateScopeSpace := &scopeSpaceDTO{}
 		if err := ginCtx.ShouldBindJSON(updateScopeSpace); err != nil {
 			fmt.Printf("Bind error, %v\n", err)
@@ -151,7 +151,7 @@ func (openapi *Openapi) updateScopeSpace(ginCtx *gin.Context) {
 }
 
 func (openapi *Openapi) removeScopeSpace(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		// TODO remove scopeSpace
 		// 1.query dictionary by scopeSpaceId
@@ -163,7 +163,7 @@ func (openapi *Openapi) removeScopeSpace(ginCtx *gin.Context) {
 }
 
 func (openapi *Openapi) scopeSpaces(ginCtx *gin.Context) {
-	openapi.response(ginCtx, nil, func() *result.EnvcdResult {
+	openapi.execute(ginCtx, nil, func() *result.EnvcdResult {
 		fmt.Println("hello world")
 		// create config
 		// ConfigDao.save();
