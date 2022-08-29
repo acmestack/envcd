@@ -32,8 +32,6 @@ import (
 const (
 	// hmacSecret secret
 	hmacSecret = "9C035514A15F78"
-	// tokenHeader
-	tokenHeader = "token"
 )
 
 // authorizationClaims claims

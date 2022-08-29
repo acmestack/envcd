@@ -25,6 +25,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const (
+	requestIdHeader = "x-envcd-request-id"
+	// tokenHeader
+	tokenHeader = "x-envcd-token"
+)
+
 // buildContext build plugin context
 //  @param params params
 //  @return *context.Context context
