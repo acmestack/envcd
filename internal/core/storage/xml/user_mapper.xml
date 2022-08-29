@@ -17,7 +17,7 @@
   -->
 
 <mapper namespace="dao">
-    <sql id="columns_id">id,name,password,salt,identity,state,created_at,updated_at</sql>
+    <sql id="columns_id">id,name,password,salt,identity,state,user_session,created_at,updated_at</sql>
 
     <select id="selectUserById">
         SELECT <include refid="columns_id"> </include> FROM user
@@ -81,6 +81,7 @@
             <if test="{User.password} != nil"> password = #{User.password} </if>
             <if test="{User.salt} != nil"> salt = #{User.salt} </if>
             <if test="{User.identity} != nil and {User.identity} != 0"> identity = #{User.identity} </if>
+            <if test="{User.user_session} != nil"> user_session = #{User.user_session} </if>
             <if test="{User.state} != nil"> state = #{User.state} </if>
             <if test="{User.created_at} != nil"> created_at = #{User.created_at} </if>
             <if test="{User.updated_at} != nil"> updated_at = #{User.updated_at} </if>
